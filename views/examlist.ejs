@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Document</title>
     <style>
         th {
@@ -18,17 +19,6 @@
         tr:nth-child(odd) {
             background-color: lightpink;
         }
-
-        .startExam {
-            background-color: #4CAF50;
-            border: 1px solid black;
-            color: white;
-            padding: 5px 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-        }
     </style>
 </head>
 
@@ -40,15 +30,68 @@
                 <th>Exam ID</th>
                 <th>Exam Name</th>
                 <th>Time Duration</th>
+                <th>Exam Status</th>
                 <th>Action</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>maths</td>
-                <td>10 minite</td>
-                <td> <a class="startExam" href="">Start</a></td>
-            </tr>
+            <% for(var i=0;i<examlist.length;i++){ %>
+                <tr>
+
+                    <td>
+                        <%=examlist[i].exam_id%>
+                    </td>
+                    <td>
+                        <%=examlist[i].exam_name%>
+                    </td>
+                    <td>
+                        <%=examlist[i].exam_time%>
+                    </td>
+                    <td>
+                        <%=examlist[i].exam_status%>
+                    </td>
+                    <td>
+                        <a class="hello" href="javascript:popupdata('<%=examlist[i].exam_id%>')">Start</a>
+                    </td>
+                </tr>
+                <%}%>
         </table>
     </body>
-</body>
+
+</html>
+<script>
+
+
+    async function popupdata(id) {
+        console.log(id);
+        console.log("id=" + id);
+        
+        //     var href = "examdata";
+        //     if(href) {
+        //        location.href = href + `?id=${id}`;
+        //     e.preventDefault();
+        // }
+
+    }
+
+
+    async function hello() {
+        var student = await (await fetch("/studentdata")).json();
+        console.log(student[0].email);
+        var examdata = await (await fetch("/examdata")).json();
+        console.log(examdata[0].exam_access_code);
+        var firstname = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var accesscode = document.getElementById('accesscode').value;
+        console.log(accesscode);
+       
+        console.log("hello");
+        if (student[0].email == email && examdata[0].exam_access_code == accesscode) {
+            console.log("hello");
+        }
+        else {
+            document.getElementById("error").innerHTML = "data does not match";
+        }
+
+    }
+</script>
+
 </html>

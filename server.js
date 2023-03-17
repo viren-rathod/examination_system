@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+
+var sessionstorage = require('sessionstorage');
 const body_parser = require("body-parser");
 const path = require("path");
 const mysql = require("mysql2");
@@ -23,9 +25,41 @@ app.set("view engine", "ejs");
 
 //examlist
 app.get("/", (req, res) => {
-  res.render("examlist");
+  try {
+    connection.query("select * from exam", (err, result) => {
+      res.render("examlist", { examlist: result });
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
+
+
+//student data
+app.get("/studentdata", (req, res) => {
+  let studentdata = "select * from user_login  WHERE user_id = 1";
+
+  connection.query(studentdata, (err, result) => {
+    if (err) throw err;
+
+    res.send(result);
+  });
+});
+
+
+
+//exam data
+app.get("/examdata", (req, res) => {
+  let examid = 1;
+  console.log(examid); 
+  let examdata = `select * from exam WHERE exam_id = ${examid}`;
+  connection.query(examdata, (err, examresult) => {
+    if (err) throw err;
+    res.send(examresult);
+  });
+
+});
 
 
 
