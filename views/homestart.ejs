@@ -5,28 +5,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HomePage</title>
     <!-- Latest compiled and minified CSS -->
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900&display=swap" rel="stylesheet"> -->
     <!-- Bootstrap CSS -->
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
+    <!-- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'> -->
     <!-- Font Awesome CSS -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css'>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"> -->
+
+    <!-- <link rel="stylesheet" href="/Css/style.css" type="text/css"> -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/Css/style.css" type="text/css">
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
     <div class="site-page">
         <header>
-            <nav class="navbar navbar-expand-lg bg-dark">
+            <nav class="navbar navbar-expand-lg bg-warning">
                 <div class="container-fluid">
-                    <a class="navbar-brand text-white" href="/">Home</a>
+                    <img src="/exam_logo.jpg" class="img-circle" alt="logo">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -35,13 +38,17 @@
                         <ul class="navbar-nav">
 
                             <li class="nav-item">
-                                <a class="nav-link active text-white" href="/profile">VIEW PROFILE</a>
+                                <a class="nav-link active" href="/">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active text-white " href="/instruction">INSTRUCTIONS</a>
+                                <a class="nav-link active" href="/profile">Profile</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active text-white" href="#">LOGOUT</a>
+                                <!-- <a class="nav-link active" href="#">Logout</a> -->
+                                <button type="button" class="btn " data-bs-toggle="modal"
+                                    data-bs-target="#myModal">
+                                    Logout
+                                </button>
                             </li>
                         </ul>
 
@@ -50,6 +57,32 @@
 
                 </div>
             </nav>
+
+            <div class="modal fade" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                        <h3>Do you want to Logout ?</h3>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-primary">Yes</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </header>
 
         <div class="body">
@@ -60,45 +93,22 @@
                             <div class="d-flex flex-column justify-content-center mt-2">
                                 <h1 class="heading1">WELCOME TO ONLINE EXAMINATION SYSTEM</h1>
                                 <p class="para1  mt-4">Are You Ready to Take the Challenge ?</p>
-                                <button class="btn btn-exm  btn-primary">Enter Into Exam</button>
+                                <button class="btn btn-exm bg-warning ">Enter Into Exam</button>
                             </div>
                         </div>
                         <div class="col">
-                            <div class="img-thumbnail"><img src="/job.jpg" alt="test"></div>
+                            <div class="img-thumbnail"><img src="/Home.jpg" alt="test" style="height: 500px;"></div>
                         </div>
                     </div>
                 </div>
         </div>
 
-        <div class="modal">
-            <div class="modal-content">
-                <span class="close-button">×</span>
-                <h1>Hello, I am a modal!</h1>
-            </div>
-        </div>
+
+
         </section>
     </div>
 
     <script>
-        var modal = document.querySelector(".modal");
-        var trigger = document.querySelector(".trigger");
-        var closeButton = document.querySelector(".close-button");
-
-        function toggleModal() {
-            modal.classList.toggle("show-modal");
-        }
-
-        function windowOnClick(event) {
-            if (event.target === modal) {
-                toggleModal();
-            }
-        }
-
-        trigger.addEventListener("click", toggleModal);
-        closeButton.addEventListener("click", toggleModal);
-        window.addEventListener("click", windowOnClick);
-
-
 
         function myProfile() {
             return fetch('/profile').then(response => response.json())
@@ -108,12 +118,13 @@
                 .catch(error => console.error(error))
         }
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script> -->
+
+
+    <!-- Latest compiled JavaScript -->
 </body>
 
 </html>

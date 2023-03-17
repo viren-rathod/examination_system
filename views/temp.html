@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .hero {
+        width: 100%;
+        min-height: 100vh;
+        color: black;
+    }
+
+    nav {
+        width: 100%;
+        padding: 10px 10%;
+        display: flex;
+        align-items: flex;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    nav ul {
+        width: 100%;
+        text-align: right;
+    }
+
+    nav ul li {
+        display: inline-block;
+        list-style-type: none;
+    }
+    .sub_menu_wrap
+    {
+        position: absolute;
+        top:100%;
+        right:10%;
+        width:300px;
+    }
+    .sub-menu
+    {
+        background:#fff;
+        padding: 10px;
+        margin: 10px;
+    }
+    .user-info
+    {
+        display: flex;
+        align-items: center;
+    }
+    .user-info img{
+        width: 50px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+</style>
+
+<body>
+    <div class="hero">
+        <nav>
+            <img src="/public/img/exam_logo.jpg" alt="" height="50px">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Fetures</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">login</a></li>
+            </ul>
+            <img src="/public/img/exam_logo.jpg" alt="" height="50px">
+        </nav>
+    </div>
+
+    <div class="sub_menu_wrap">
+        <div class="sub-menu">
+            <div class="user-info">
+                <img src="/public/img/exam_logo.jpg" alt="">
+                <h2>Dhruv</h2>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
