@@ -14,6 +14,7 @@ app.use(express.static('public'));
 const ejs = require('ejs');
 const { signedCookie } = require('cookie-parser');
 app.use(express.static(__dirname + '/registercss'));
+app.use(express.static(__dirname + '/photo'));
 const PORT = process.env.PORT || 5050;
 app.set('view engine', 'ejs');
 
@@ -45,9 +46,37 @@ conn.connect((err) => {
     if (err) throw err;
 });
 
-app.get('/', async(req, res) => {
+// app.get('/', async(req, res) => {
 
 
+//     var selectState = `select state_name from state `;
+//     var stateResult = await exe(selectState);
+
+
+//     var selectCity = `select city_name from city where state_id = 1`;
+//     var cityResult = await exe(selectCity);
+
+//     var selectCollege = `select * from colleges`;
+//     var collegeResult = await exe(selectCollege);
+
+
+//     res.render('register', {
+//         stateResult: stateResult,
+//         cityResult: cityResult,
+//         collegeResult: collegeResult
+//     });
+
+
+// });
+
+app.get("/login", (req, res) => {
+
+    res.render('login');
+
+})
+
+app.get('/register', async(req, res) => {
+    // res.render('register')
     var selectState = `select state_name from state `;
     var stateResult = await exe(selectState);
 
@@ -64,8 +93,6 @@ app.get('/', async(req, res) => {
         cityResult: cityResult,
         collegeResult: collegeResult
     });
-
-
 });
 
 app.post("/register", async(req, res) => {
@@ -80,8 +107,6 @@ app.post("/register", async(req, res) => {
     var state = req.body.state;
     var city = req.body.city;
     var college = req.body.college;
-
-
 
     var snum = await bcrypt.genSalt(10);
     var passwordStrong = await bcrypt.hash(password, snum);
@@ -102,11 +127,17 @@ app.post("/register", async(req, res) => {
         return res.send('This Email is already Exectute');
     } else {
 
-        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${sid[0].state_id}', '${city}' , '${cid[0].college_id}')`;
+        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${sid[0].state_id}', '${city}' , '${cid[0].college_id}' )`;
         var insertResult = await exe(insertQuery);
 
         var insrertRole = `Insert into user_login (email , password , role , user_login_status) values ('${email}' , '${passwordStrong}' , '0' , '0')`;
         var roleResult = await exe(insrertRole);
+
+
+        var resultRandom = Math.random().toString(36).substring(2, 7);
+        var link = `/activation?token=${resultRandom}`
+        console.log(link)
+            // res.render("activation_page.ejs",{ link })
 
 
         var session = req.session;
@@ -114,12 +145,31 @@ app.post("/register", async(req, res) => {
         if (session.userid) {
             res.send("Welcome User <a href=\'/logout'>click to logout</a>");
         } else
-            res.render("hello")
+            res.render("activation.ejs", {
+                resultRandom,
+                email: email
+            })
 
     }
 
 
 })
+
+
+
+app.post('/login', async(req, res) => {
+    var email = req.body.email;
+    var password = req.body.password;
+
+    var selectEmail = `SELECT email, password FROM student where email = '${email}' `
+    var emailResult = await exe(selectEmail);
+    console.log(emailResult)
+
+})
+
+
+
+
 app.get('/city', async(req, res) => {
     var state = req.query.state;
 
@@ -132,8 +182,24 @@ app.get('/city', async(req, res) => {
         res.json({ result9 });
     })
 
-
     // console.log(signedCookie);
+})
+
+
+app.post("/active/:resultRandom", async(req, res) => {
+    var email = req.body.email;
+    var resultRandom = req.params.resultRandom;
+    console.log(resultRandom)
+    var updateQuery = `update student set student_status = 1 where email ="${email}"`;
+    console.log(updateQuery)
+    var resultUpdate = await exe(updateQuery)
+    console.log(resultUpdate)
+    let d = (Array(resultUpdate))
+    console.log("Array", d[0].changedRows)
+    let a = d[0].changedRows;
+    if (a == 1) {
+        res.json({ UpdateStatus: 1 })
+    }
 })
 
 
@@ -150,7 +216,6 @@ app.post('/valid1', async(req, res) => {
     }
 })
 
-
 app.listen(PORT, (err) => {
-    console.log(`http://localhost:${PORT}`);
+    console.log(`http://localhost:${PORT}/register`);
 })
