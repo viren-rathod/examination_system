@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+            font-size: 1rem;
+            line-height: 2.15;
+            padding-left: .75em;
+            padding-right: .75em;
+        }
+        
+        .card-registration .select-arrow {
+            top: 13px;
+        }
+        
+        .justify-content-end {
+            justify-content: center!important;
+        }
+        
+        .sizeBox {
+            flex: 0 0 auto;
+            width: 55%;
+        }
+        
+        .sizeBox1 {
+            flex: 0 0 auto;
+            width: 45%;
+        }
+        
+        .row {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            padding: auto 0;
+        }
+        
+        .col-xl-6 {
+            flex: 0 0 auto;
+            /* width: 50%; */
+            display: flex;
+        }
+        
+        .boxRow {
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .passDiv {
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="h-100 bg-dark">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col">
+                    <div class="card card-registration my-4">
+                        <div class="row g-0">
+                            <div class="col-xl-6 sizeBox d-none d-xl-block">
+                                <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img4.webp" alt="Sample photo" class="img-fluid" style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" /> -->
+                                <img src="login.jpg" alt="Sample photo" class="img-fluid" style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                            </div>
+                            <div class="col-xl-6 sizeBox1">
+                                <div class="card-body p-md-5 text-black">
+                                    <h3 class="mb-5 text-uppercase">Login form</h3>
+
+                                    <form method="post" action="/login" onsubmit="return validateForm()">
+                                        <div class="row">
+
+
+                                            <div class="form-outline mb-4">
+                                                <input type="email" id="form3Example90" name="email" class="form-control form-control-lg" onkeyup="validitionOfEmail(this.value)" onchange="valid_email(this.value)" placeholder="Email" name="email" required />
+                                                <p id="email_valid"></p>
+
+                                            </div>
+
+                                            <div class="form-outline mb-4">
+                                                <input type="text" id="password" name="password" class="form-control form-control-lg" onkeyup="validPass(this.value)" placeholder="Password" name="password" required />
+                                                <p id="password_lable"></p>
+
+                                                <div class="boxRow">
+                                                    <div class="passDiv">
+                                                        <input type="checkbox">
+                                                        <label class="" for="form3Example8"> Remember Me </label>
+
+                                                    </div>
+                                                    <div class="passDiv">
+                                                        <label class="" for="form3Example8"> <a href="#!"> Forget Password ? </a></label>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+
+                                            <div class="d-flex justify-content-end pt-3">
+                                                <input type="submit" id="submitAll" class="btn btn-warning btn-lg ms-2" value="Login">
+                                            </div>
+                                            <div class="d-flex justify-content-end pt-3">
+                                                <label for="">Don't Have Account ? <a href="/register"> Register Here </a></label>
+                                            </div>
+
+
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+</body>
+
+
+</html>

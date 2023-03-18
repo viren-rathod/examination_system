@@ -7,7 +7,7 @@ var utils = require('util');
 const { decode } = require('punycode');
 let bodyParser = require('body-parser')
 const mysql = require('mysql2');
-
+const flash = require('connect-flash');
 
 const app = express();
 app.use(express.static('public'));
@@ -15,22 +15,21 @@ const ejs = require('ejs');
 const { signedCookie } = require('cookie-parser');
 app.use(express.static(__dirname + '/registercss'));
 app.use(express.static(__dirname + '/photo'));
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 8050;
 app.set('view engine', 'ejs');
 
-
 app.use(cookie());
+app.use(flash());
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const oneDay = 1000 * 60 * 60 * 24;
+// const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({
     secret: "bhimanikevin",
     saveUninitialized: true,
-    cookie: { maxAge: oneDay },
     resave: false
 }));
 
@@ -70,7 +69,10 @@ conn.connect((err) => {
 // });
 
 app.get("/login", (req, res) => {
-
+    // var email = req.query.email;
+    // var password = req.body.password;
+    // console.log("diretct login ", email, password);
+    console.log(req.session.name);
     res.render('login');
 
 })
@@ -136,35 +138,68 @@ app.post("/register", async(req, res) => {
 
         var resultRandom = Math.random().toString(36).substring(2, 7);
         var link = `/activation?token=${resultRandom}`
-        console.log(link)
             // res.render("activation_page.ejs",{ link })
+        let load = {
+            email: email,
+            passwordStrong: passwordStrong
+        }
 
 
-        var session = req.session;
-        console.log(session)
-        if (session.userid) {
-            res.send("Welcome User <a href=\'/logout'>click to logout</a>");
-        } else
-            res.render("activation.ejs", {
-                resultRandom,
-                email: email
-            })
+        req.session.email = email;
 
+        console.log(" register session ", req.session.email)
+        res.render("activation.ejs", {
+            resultRandom,
+            email: email
+        })
     }
-
 
 })
 
+app.get("/home", async(req, res) => {
 
+    console.log(req.session.email);
+    if (req.session.email == undefined) {
+        res.redirect("/logout");
+    } else {
+
+        res.render("home.ejs")
+    }
+})
 
 app.post('/login', async(req, res) => {
+
     var email = req.body.email;
     var password = req.body.password;
 
     var selectEmail = `SELECT email, password FROM student where email = '${email}' `
     var emailResult = await exe(selectEmail);
-    console.log(emailResult)
 
+
+    if (emailResult.length == 0) {
+        res.send("email is not match");
+    } else {
+        var comparePassword = emailResult[0].password;
+
+        var compare = await bcrypt.compare(password, comparePassword);
+
+
+        if (!compare) {
+            res.send("Password is not match")
+        } else {
+            req.session.email = email;
+
+            console.log("sessionResult", email, comparePassword);
+            res.redirect("/home");
+
+        }
+    }
+
+})
+app.get('/logout', async(req, res) => {
+    // res.clearCookie("connect.sid")
+    req.session.destroy();
+    res.redirect("/login");
 })
 
 
@@ -182,20 +217,20 @@ app.get('/city', async(req, res) => {
         res.json({ result9 });
     })
 
-    // console.log(signedCookie);
+
 })
 
 
 app.post("/active/:resultRandom", async(req, res) => {
     var email = req.body.email;
     var resultRandom = req.params.resultRandom;
-    console.log(resultRandom)
+
     var updateQuery = `update student set student_status = 1 where email ="${email}"`;
-    console.log(updateQuery)
+
     var resultUpdate = await exe(updateQuery)
-    console.log(resultUpdate)
+
     let d = (Array(resultUpdate))
-    console.log("Array", d[0].changedRows)
+
     let a = d[0].changedRows;
     if (a == 1) {
         res.json({ UpdateStatus: 1 })

@@ -337,7 +337,7 @@
 
     async function city_select(state) {
 
-        fetch(`http://localhost:5050/city?state=${state}`, {
+        fetch(`http://localhost:8050/city?state=${state}`, {
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json'
@@ -363,7 +363,7 @@
 
 
     async function valid_email(email1) {
-        let emailValid = await fetch('http://localhost:5050/valid1', {
+        let emailValid = await fetch('http://localhost:8050/valid1', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
