@@ -4,8 +4,8 @@ const util = require('util')
 const bod = require('body-parser');
 const path = require('path')
 const mysql = require('mysql2');
-const profile=require("./models/profile");
-const active_link=require("./models/activation");
+// const profile=require("./models/profile");
+// const active_link=require("./models/activation");
 
 
 
@@ -38,8 +38,8 @@ var conn = mysql.createConnection({
 
  
 var query= util.promisify(conn.query).bind(conn);
-app.use(profile)
-app.use(active_link)
+// app.use(profile)
+// app.use(active_link)
 
 
 
@@ -47,8 +47,18 @@ app.get("/form1",(req,res)=>{
     res.render("form")
 })
 
-app.get("/examlist",(req,res)=>{
-    res.render("examlist")
+app.get("/examlist",async(req,res)=>{
+    try{
+        let sql=await query (`select exam_id,exam_name,access_code,total_ques,time,user_id,exam_status from sys.exam`)
+        console.log(sql)
+
+        res.render("examlist",{sql})
+
+    }
+    catch(exception ){
+        console.log(exception)
+    }
+    
 })
 
 
