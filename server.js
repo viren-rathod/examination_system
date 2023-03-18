@@ -12,14 +12,16 @@ const con = mysql2.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'vrn'
+    database: 'exam_system'
 });
 app.get('/exam', async (req, res) => {
     try {
+        let exam_id = 1;
+        let [exam] = await con.execute(`SELECT * FROM exam WHERE exam_id = '${exam_id}'`);
+        // console.log(exam[0].exam_id);
         let [data] = await con.execute(`SELECT * FROM exam_system.questions`);
-        // console.log(data);
         if (data.length) {
-            res.render("exam_question", { data: data });
+            res.render("exam_question", { data: data, exam_name: exam[0].exam_name });
         }
         else res.send("Data not found");
     }
@@ -30,6 +32,7 @@ app.get('/exam', async (req, res) => {
 app.post('/answers', async (req, res) => {
     let b = req.body;
     console.log(b);
+    // res.send(b);
 });
 
 app.get('/test', () => { });

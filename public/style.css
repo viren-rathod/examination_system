@@ -1,8 +1,10 @@
-.question {
-    width: 100%;
-	/* position: relative; */
-	/* right: 0%; */
-}
 .question > div {
-    transition: all 1s;
+  transition: all 1s;
 }
+.buttons {
+  width: 1076px;
+}
+/* .mcq {
+  justify-content: space-between!important;
+  width: 1076px;
+} */
