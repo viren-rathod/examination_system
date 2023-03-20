@@ -1,59 +1,102 @@
-const updateLength = () => {
-    let allQuesttions = document.querySelectorAll("form > div > div");
-    console.log(document.querySelector("form"));
-    document.querySelector("form > div").style.width = `${allQuesttions.length * 100
-        }%`;
-};
-updateLength();
-const updateTransition = (i) => {
-    let allQuesttions = document.querySelectorAll(".question > div");
-    allQuesttions.forEach((cur) => {
-        console.log(cur);
-        cur.style.transform = `translateX(-${i * 100}%)`;
-    });
-};
+async function fetcher(str) {
+  let temp = await fetch(str);
+  let ans = await temp.json();
+  let s = `<div id="que">
+              <div class="d-flex flex-row align-items-center question-title">
+                <h3 class="text-danger">Q.</h3>
+                <h5 class="mt-1 ml-2">${ans[0].question_text}</h5>
+              </div>
+              <div class="ans ml-2">
+                <label class="radio">
+                  <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_a}">
+                  <span>${ans[0].option_a}</span>
+                </label>
+              </div>
+              <div class="ans ml-2">
+                <label class="radio">
+                  <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_b}">
+                  <span>${ans[0].option_b}</span>
+                </label>
+              </div>
+              <div class="ans ml-2">
+                <label class="radio">
+                  <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_c}">
+                  <span>${ans[0].option_c}</span>
+                </label>
+              </div>
+              <div class="ans ml-2">
+                <label class="radio">
+                  <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_d}">
+                  <span>${ans[0].option_d}</span>
+                </label>
+              </div>
+            </div>`;
+  que.innerHTML = s;
+  let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
+  que_no.innerHTML = qn;
+}
 
-let i = 0;
-checkStatus(i);
-next.addEventListener("click", (e) => {
-    ++i;
-    updateTransition(i);
-    checkStatus(i);
-});
+async function next_btn(id) {
+  let temp1 = await fetch(`http://localhost:4321/next?id=${id}`);
+  let tmp = await temp1.json();
+  await fetcher(`/paging/?question_no=${tmp[0].question_id}`);
+  let s = `<div class="buttons p-3 bg-white">
+  <div
+    class="row justify-content-around align-items-center"
+    id="row"
+  >
+    <input
+      type="button"
+      value="PREV"
+      onclick="fetcher('${tmp[0].question_id}')"
+      class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
+      id="prev"
+    />
 
-prev.addEventListener("click", (e) => {
-    --i;
-    updateTransition(i);
-    checkStatus(i);
-});
+    <input
+      type="button"
+      value="NEXT"
+      onclick="next_btn('${tmp[0].question_id}')"
+      class="btn btn-primary btn-success col-2 font-weight-bold"
+      id="next"
+    />
+  </div>
+</div>`;
+  btns.innerHTML = s;
+}
 
-function checkStatus(i) {
-    let allQuesttions = document.querySelectorAll(".question > div");
-    if (i == 0) {
-        que_no.innerText = i + 1;
-        prev.style.opacity = 0.5;
-        prev.style.cursor = "not-allowed";
-        next.style.width = "20%";
-        prev.style.width = "20%";
-        prev.disabled = true;
-        row.style.justifyContent = "space-around";
-    } else if (i == allQuesttions.length - 1 || i == allQuesttions.length) {
-        que_no.innerText = i + 1;
-        prev.disabled = false;
-        prev.style.cursor = "pointer";
-        next.setAttribute("value", "SUBMIT");
-        setTimeout(() => {
-            next.setAttribute("type", "submit");
-        }, 1);
-    } else {
-        que_no.innerText = i + 1;
-        prev.disabled = false;
-        prev.style.opacity = 1;
-        prev.style.cursor = "pointer";
-        prev.style.display = "block";
-        prev.style.width = "20%";
-        next.setAttribute("value", "NEXT");
-        next.setAttribute("type", "button");
-    }
-    // console.log(allQuesttions.length);
+// async function prev_btn(id) {
+//   let temp2 = await fetch(`http://localhost:4321/prev?id=${id}`);
+//   console.log(temp2);
+  // let tmp = await temp2.json();
+//   await fetcher(`/paging/?question_no=${tmp[0].question_id}`);
+//   let s = `<div class="buttons p-3 bg-white">
+//   <div
+//     class="row justify-content-around align-items-center"
+//     id="row"
+//   >
+//     <input
+//       type="button"
+//       value="PREV"
+//       onclick="fetcher('${tmp[0].question_id}')"
+//       class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
+//       id="prev"
+//     />
+
+//     <input
+//       type="button"
+//       value="NEXT"
+//       onclick="next_btn('${tmp[0].question_id}')"
+//       class="btn btn-primary btn-success col-2 font-weight-bold"
+//       id="next"
+//     />
+//   </div>
+// </div>`;
+//   btns.innerHTML = s;
+// }
+
+async function previous_btn(id) {
+  console.log(id);
+  // let temp2 = await fetch(`htp://localhost:4321/previous?id=${id}`);
+  
 }
