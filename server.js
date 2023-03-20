@@ -34,15 +34,12 @@ connection.connect((err) => {
 
 
 // home page
-app.get('/', (req, res) => {
-    res.render('homestart')
+app.get('/', async (req, res) => {
+    const result = await queryExecuter(`select id,first_name,last_name,address1,email,phone_num,state,city,gender from  job_new.basic_details where id=1`);
+    // console.log(result);
+    res.render('homestart', { editdata: result })
 })
 
-//profile page
-// app.get('/profile', (req, res) => {
-
-//     res.render('profile')
-// });
 
 //result page
 app.get('/result', (req, res) => {
@@ -50,28 +47,16 @@ app.get('/result', (req, res) => {
 })
 
 
-//profile page
-app.get("/profile", async (req, res) => {
-    try {
-        let sql1 = `select id,first_name,last_name,email,gender,phone_num ,date,city,state from basic_details where id=${req.query.id}`;
-        let data = await queryExecuter(sql1);
-        console.log(data)
-        res.render("Profile", { data})
-    }
-    catch (exception) {
-        console.log(exception)
-    }
-})
+
 
 //profile-update page
-app.get("/profile_update", async (req, res) => {
+app.post("/profile_update", async (req, res) => {
 
     try {
-        const { id, city, state, gender, dob } = req.query
-        console.log(gender)
-        let sql = `update basic_details set city='${city}',state='${state}',gender='${gender}',date='${dob}' where id=${id} `
-
-        await queryExecuter(sql)
+        const { id, firstname, lastname, email } = req.body
+        console.log(id, firstname, lastname, email)
+        let sql = `update basic_details set first_name='${firstname}',last_name='${lastname}',email='${email}' where id=${id} `
+        await queryExecuter(sql);
         res.json("ok")
 
     }
@@ -80,6 +65,16 @@ app.get("/profile_update", async (req, res) => {
     }
 
 })
+
+//exam_home
+app.get('/exam_home', async (req, res) => {
+
+    const result = await queryExecuter(`select * from exam_system.questions;`)
+    console.log(result);
+    res.render('exam_start', { exam_que: result })
+})
+
+
 
 app.listen(PORT, (err) => {
     if (err)
@@ -91,13 +86,13 @@ app.listen(PORT, (err) => {
 
 
 // Good Evening sir,
-// My task for today:-
-// Desgining of:- 
-// 1. Create Homepage 
-// 2. instruction page
+//     My task for today: -
+//         Desgining of: -
+//             1. create dashboard ui
+// 2. works on JavaScript
 
 
 // Done!
 
-// Tomorrow task:-
-// -> add to Javascript pages
+// Tomorrow task: -
+//     -> To Perform JavaScript operations and render data
