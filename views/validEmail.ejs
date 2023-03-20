@@ -71,52 +71,31 @@
                     <div class="card card-registration my-4">
                         <div class="row g-0">
                             <div class="col-xl-6 sizeBox d-none d-xl-block">
-                                <!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img4.webp" alt="Sample photo" class="img-fluid" style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" /> -->
+
                                 <img src="login.jpg" alt="Sample photo" class="img-fluid" style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
                             </div>
                             <div class="col-xl-6 sizeBox1">
                                 <div class="card-body p-md-5 text-black">
-                                    <h3 class="mb-5 text-uppercase">Login form</h3>
+                                    <h3 class="mb-5 text-uppercase">Valid Email </h3>
 
-                                    <form method="post" action="/login" onsubmit="return validateForm()">
+                                    <form method="post" action="/setPassword">
                                         <div class="row">
 
-
                                             <div class="form-outline mb-4">
-                                                <input type="email" id="form3Example90" name="email" class="form-control form-control-lg" onkeyup="validitionOfEmail(this.value)" onchange="valid_email(this.value)" placeholder="Email" name="email" required />
+
+                                                <input type="email" id="email" name="email" class="form-control form-control-lg" oninput="valid_email(this.value)" placeholder="Enter Your Email" required />
                                                 <p id="email_valid"></p>
 
-                                            </div>
-
-                                            <div class="form-outline mb-4">
-                                                <input type="text" id="password" name="password" class="form-control form-control-lg" onkeyup="validPass(this.value)" placeholder="Password" name="password" required />
+                                                <label for="">Plese enter your otp : </label>
+                                                <input type="text" id="enterOtp" onchange="validOtp()" name="password" class="form-control form-control-lg" placeholder="Enter Otp" required />
                                                 <p id="password_lable"></p>
-
-                                                <div class="boxRow">
-                                                    <div class="passDiv">
-                                                        <input type="checkbox">
-                                                        <label class="" for="form3Example8"> Remember Me </label>
-
-                                                    </div>
-                                                    <div class="passDiv">
-                                                        <label class="" for="form3Example8"> <a href="/forget"> Forget Password ? </a></label>
-
-                                                    </div>
-
-                                                </div>
-
                                             </div>
-
-
 
 
                                             <div class="d-flex justify-content-end pt-3">
-                                                <input type="submit" id="submitAll" class="btn btn-warning btn-lg ms-2" value="Login">
+                                                <input type="button" onclick='clickFetch()' id="sendBtn" class="btn btn-warning btn-lg ms-2" value="Send Otp">
+                                                <input type="submit" id="submitAll" class="btn btn-warning btn-lg ms-2" value="Next">
                                             </div>
-                                            <div class="d-flex justify-content-end pt-3">
-                                                <label for="">Don't Have Account ? <a href="/register"> Register Here </a></label>
-                                            </div>
-
 
                                     </form>
                                     </div>
@@ -129,5 +108,67 @@
     </section>
 </body>
 
+<script>
+    var otp;
+    async function clickFetch() {
+        var email = document.getElementById("email").value;
+        var fetch_method = await fetch('/fetch_api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email
+                })
+            }).then(res => res.json())
+            .then(data => {
+                otp = data.otp;
+
+
+            })
+    }
+
+    function validOtp() {
+        console.log("valid open")
+
+        var enterOtp = document.getElementById("enterOtp").value;
+
+        if (otp == enterOtp) {
+            console.log("same in if")
+            document.getElementById("password_lable").innerHTML = "";
+            document.getElementById("submitAll").disabled = false;
+        } else {
+            console.log("not same in else")
+            document.getElementById("password_lable").innerHTML = "Otp is not same"
+            document.getElementById("password_lable").style.color = "red";
+            document.getElementById("submitAll").disabled = true;
+        }
+
+    }
+
+
+    async function valid_email(email1) {
+        let emailValid = await fetch('http://localhost:8050/changePassword', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email1
+            })
+        })
+
+        let nameData1 = await emailValid.json();
+
+        if (nameData1.status == 404) {
+            document.getElementById("email_valid").innerHTML = "This email id not register ! Pelese enter valid email id for forget password";
+            document.getElementById("email_valid").style.color = "red";
+            document.getElementById("sendBtn").disabled = true;
+        } else {
+            document.getElementById("email_valid").innerHTML = ""
+            document.getElementById("sendBtn").disabled = false;
+        }
+    }
+</script>
 
 </html>

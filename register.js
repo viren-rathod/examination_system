@@ -8,6 +8,7 @@ const { decode } = require('punycode');
 let bodyParser = require('body-parser')
 const mysql = require('mysql2');
 const flash = require('connect-flash');
+var nodemailer = require('nodemailer');
 
 const app = express();
 app.use(express.static('public'));
@@ -68,14 +69,7 @@ conn.connect((err) => {
 
 // });
 
-app.get("/login", (req, res) => {
-    // var email = req.query.email;
-    // var password = req.body.password;
-    // console.log("diretct login ", email, password);
-    console.log(req.session.name);
-    res.render('login');
 
-})
 
 app.get('/register', async(req, res) => {
     // res.render('register')
@@ -139,15 +133,9 @@ app.post("/register", async(req, res) => {
         var resultRandom = Math.random().toString(36).substring(2, 7);
         var link = `/activation?token=${resultRandom}`
             // res.render("activation_page.ejs",{ link })
-        let load = {
-            email: email,
-            passwordStrong: passwordStrong
-        }
-
 
         req.session.email = email;
 
-        console.log(" register session ", req.session.email)
         res.render("activation.ejs", {
             resultRandom,
             email: email
@@ -156,15 +144,15 @@ app.post("/register", async(req, res) => {
 
 })
 
-app.get("/home", async(req, res) => {
+app.get("/forget", async(req, res) => {
 
-    console.log(req.session.email);
-    if (req.session.email == undefined) {
-        res.redirect("/logout");
-    } else {
+    res.render("validEmail")
+})
 
-        res.render("home.ejs")
-    }
+app.get("/login", (req, res) => {
+
+    res.render('login');
+
 })
 
 app.post('/login', async(req, res) => {
@@ -188,21 +176,12 @@ app.post('/login', async(req, res) => {
             res.send("Password is not match")
         } else {
             req.session.email = email;
-
-            console.log("sessionResult", email, comparePassword);
-            res.redirect("/home");
+            res.render("home.ejs")
 
         }
     }
 
 })
-app.get('/logout', async(req, res) => {
-    // res.clearCookie("connect.sid")
-    req.session.destroy();
-    res.redirect("/login");
-})
-
-
 
 
 app.get('/city', async(req, res) => {
@@ -217,8 +196,61 @@ app.get('/city', async(req, res) => {
         res.json({ result9 });
     })
 
-
 })
+app.get('/setPassword', async(req, res) => {
+    res.redirect('/login');
+})
+app.post('/setPassword', async(req, res) => {
+    res.render("setPassword")
+})
+
+
+app.post('/fetch_api', (req, res) => {
+
+    var email = req.body.email;
+    console.log("Send email in post method", email)
+    let testAccount = nodemailer.createTestAccount();
+    var otp = generateOTP();
+    console.log("otp", otp);
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        auth: {
+            type: 'OAUTH2',
+            user: 'patelnokano000@gmail.com',
+            clientId: '67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com',
+            clientSecret: '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',
+            refreshToken: '1//04zKr1mHUFLaUCgYIARAAGAQSNwF-L9Ir4G3A-ZbFzD8UDxyL1m3B70W4pmoI_T3UMq0FYYKkSZdcjn48d0JwIbfTz2utFts-Vsc',
+            accessToken: 'ya29.a0AVvZVsrTTPvWdLrKPI8g1ApH6OJGF6WEDoKapf16G-555x3h7wywvEA3Gyo_BryLnyYcYRixND4CdKbkym0aEDJsNq3a2XiUcIyBU0-uSfCTt9G-LhxL4oczfo-xBIsjQ03PlGlBiMCNYPXgqMWjjukutehFAbwaCgYKASUSARISFQGbdwaIc2AjLhspFzy5fGdi1TualQ0166',
+        }
+    });
+
+    let info = transporter.sendMail({
+        from: 'hello <patelnokano000@gmail.com>', // sender address
+        to: email, // list of receivers
+        subject: "OTP Validation ✔", // Subject line
+        text: "OTP", // plain text body
+        html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+        <div style="margin:50px auto;width:70%;padding:20px 0">
+          <div style="border-bottom:1px solid #eee">
+            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Brand</a>
+          </div>
+          <p style="font-size:1.1em">Hi,</p>
+          <p>Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+          <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+          <p style="font-size:0.9em;">Regards,<br />EsparkBiz</p>
+          <hr style="border:none;border-top:1px solid #eee" />
+        </div>
+      </div>`
+    });
+    req.session.email = email;
+    res.json({
+        otp
+    });
+})
+
+
 
 
 app.post("/active/:resultRandom", async(req, res) => {
@@ -235,6 +267,49 @@ app.post("/active/:resultRandom", async(req, res) => {
     if (a == 1) {
         res.json({ UpdateStatus: 1 })
     }
+})
+
+app.post("/changePassword", async(req, res) => {
+
+    var email11 = req.body.email1;
+
+
+    var selectEmail = `select email from student where email = '${email11}'`
+    var emailResult = await exe(selectEmail)
+
+
+    if (emailResult.length == 0) {
+        res.json({ msg1: "kevin", status: 404 })
+    } else {
+        res.json({ msg1: "right" });
+    }
+
+})
+app.get("/updatePassword", (req, res) => {
+    res.redirect("/login");
+})
+
+app.post("/updatePassword", async(req, res) => {
+    var email = req.session.email;
+
+    var password = req.body.password;
+
+
+    var set = await bcrypt.genSalt(10);
+    var resetPassword = await bcrypt.hash(password, set);
+
+
+    var updateQuery = `update student set password = '${resetPassword}' where email = '${email}'`;
+    console.log("update query", updateQuery)
+    var updateResult = await exe(updateQuery)
+    res.redirect("/login");
+})
+
+app.get('/updatePassword', (req, res) => {
+    res.redirect('/login');
+})
+app.post('/updatePassword', (req, res) => {
+    res.render('/setPassword');
 })
 
 
@@ -254,3 +329,18 @@ app.post('/valid1', async(req, res) => {
 app.listen(PORT, (err) => {
     console.log(`http://localhost:${PORT}/register`);
 })
+
+
+
+
+
+// function for otp 
+function generateOTP() {
+
+    var digits = '0123456789';
+    let OTP = '';
+    for (let i = 0; i < 4; i++) {
+        OTP += digits[Math.floor(Math.random() * 10)];
+    }
+    return OTP;
+}

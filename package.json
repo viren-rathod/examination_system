@@ -22,6 +22,7 @@
     "get": "^1.4.0",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.0",
+    "nodemailer": "^6.9.1",
     "nodemon": "^2.0.21",
     "post": "^0.0.1",
     "punycode": "^2.3.0",
