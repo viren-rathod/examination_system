@@ -22,9 +22,6 @@ app.use(bod.urlencoded({ extended: false }))
 app.set('view engine', 'ejs');
 app.set("views", "./views");
 
-app.get("/",(req,res)=>{
-    res.render("dashboard")
-})
 
 
 
@@ -41,6 +38,9 @@ var query= util.promisify(conn.query).bind(conn);
 // app.use(profile)
 // app.use(active_link)
 
+app.get("/",(req,res)=>{
+    res.render("dashboard")
+})
 
 
 app.get("/form1",(req,res)=>{
@@ -60,6 +60,25 @@ app.get("/examlist",async(req,res)=>{
     }
     
 })
+
+app.get("/exam",(async (req,res)=>{
+    try{
+        let user=await query(`select user_id,exam_id,exam_name,total_ques,time,exam_status from exam`)
+        console.log(user)
+        const result=await query('SELECT * FROM question');
+        const option=await query(`select option_value,option_name,questionid from options `)
+        console.log(option);
+        console.log(result);
+        res.render('exam',{result,option,user});
+
+        
+    }
+    catch(exception){
+        console.log(exception);
+    }
+ 
+})
+)
 
 
 app.listen(8000)
