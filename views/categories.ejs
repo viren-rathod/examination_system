@@ -1,186 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>categories</title>
-   
-    <style>
-        
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>categories</title>
+
+  <style>
     .container {
-            margin: 0 auto;
-            max-width: 1170px;
+      margin: 0 auto;
+      max-width: 1170px;
     }
-    
+
     body {
-        margin: 0px;
-        margin-top: 100px;
-    }
-    .exam{
-        border: 1px solid black;
-        padding: 25px;
-    }
-    .time_left{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      
-    }
-    .catg{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-       
-        
+      margin: 0px;
+      margin-top: 100px;
+      background-color: aliceblue;
     }
 
-    .cat{
-        border: 1px solid black;
-        width: 120px;
-        text-align: center;
-        cursor: pointer;
+    .exam {
+      border: 1px solid black;
+      padding: 25px;
+      background-color: white;
     }
 
-    .que{
-        margin-top: 30px;
+    .time_left {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
     }
-    .option{
-        margin-top: 10px;
-        
-    }
-    .next{
-        margin-top: 10px;
 
+    .catg {
+      display: flex;
+      flex-wrap: wrap;
+      /* justify-content: space-between; */
+      /* margin-top: 10px; */
     }
-   
 
-    </style>
+    .catg span {
+      font-size: large;
+      font-weight: bold;
+    }
+
+    .cat {
+      border: 1px solid black;
+      width: 100px;
+      text-align: center;
+      cursor: pointer;
+      padding: 10px;
+      margin: 10px;
+      background-color: rgb(233, 210, 214);
+    }
+
+    .que {
+      margin-top: 30px;
+    }
+
+    .option {
+      margin-top: 10px;
+    }
+
+    .next {
+      margin-top: 10px;
+    }
+
+    .next input {
+      background-color: rgb(232, 200, 205);
+      width: 100px;
+      height: 30px;
+    }
+  </style>
 </head>
-<body>
-    
-    <div class="container">
-        <div class="exam">
-            <div class="time_left">
-                <h3>Math Exam</h3>
-                <h4>Time Left- 00:00:00 </h4>
-            </div> 
-            <hr>
+<body  >
+  <div class="container">
+      <div class="ex_over" id="ex_over"></div>
 
-            <div class="catg">
-               <span> select category:</span> 
-            </div>
+    <div class="exam" id="ex">
+      <div class="time_left">
+        <h3>Math Exam</h3>
+        <div class="timer" id="timer">
+          <h4>Time Left:- 00:00:00</h4>
+        </div>
+      </div>
+      <hr />
 
-            <div class="catg">
-                <% for(let i=0;i<4;i++){ %>
-                <div class="cat" onclick="gen_qz(this.id);" id="<%= i+1%>">cat-<%=i+1%></div>
-                <% } %>
-               
-            </div>
-            <hr>
+      <div class="catg">
+        <span> select category:</span>
+      </div>
 
-            <div id="quiz" class="quiz">
-                <div class="que"> 
-                   Que: <p><%= cat_1[0].que  %></p>
-                    </div>
+      <div class="catg">
+        <% for(let i=0;i<exam_cat.length;i++){ %>
+          <div class="cat" onclick="gen_qz(this.id);" id="<%= i+1%>">
+            <%=exam_cat[i].category_name%>
+          </div>
+          <% } %>
+      </div>
+      <hr />
 
-                <div class="option">
-                    <div>A.<%= cat_1[0].A  %></div>
-                    <div>B.<%= cat_1[0].B  %></div>
-                    <div>C.<%= cat_1[0].C  %></div>
-                    <div>D.<%= cat_1[0].D  %></div>
-                </div>
 
-                <div class="next">
-                    <input type="submit" onclick="next_q();" value="next">
-                </div> 
-             
+      <div id="quiz" class="quiz">
+        <div class="que">
+          Que:
+          <p>
+            <%= cat_1_que[0].question_text%>
+          </p>
+        </div>
 
-            </div>
-          
-        </div>    
+        <div class="option">
+          <div>A.<%= cat_1_que[0].option_a %>
+          </div>
+          <div>B.<%= cat_1_que[0].option_b %>
+          </div>
+          <div>C.<%= cat_1_que[0].option_c %>
+          </div>
+          <div>D.<%= cat_1_que[0].option_d %>
+          </div>
+        </div>
+
+        <div class="next">
+          <input type="submit" value="next" />
+        </div>
+      </div>
 
     </div>
+  </div>
 
+  <script>
+    
+    function gen_qz(id) {
+      let g_id = id;
 
-    <script>
-
-        function gen_qz(id){
-                let g_id=id;
-                
-                if(g_id=='2'){
-                    let quiz = document.getElementById('quiz')
-                    quiz.innerHTML=`      <div class="que"> 
-                   Que: <p><%= cat_2[0].que  %></p>
-                    </div>
+      if (g_id == '1') {
+        let quiz = document.getElementById("quiz");
+        quiz.innerHTML = `    <div class="que"> 
+                     Que: <p><%= cat_1_que[0].question_text%></p>
+                      </div>
 
                 <div class="option">
-                    <div>A.<%= cat_2[0].A  %></div>
-                    <div>B.<%= cat_2[0].B  %></div>
-                    <div>C.<%= cat_2[0].C  %></div>
-                    <div>D.<%= cat_2[0].D  %></div>
+                    <div>A.<%= cat_1_que[0].option_a%></div>
+                    <div>B.<%= cat_1_que[0].option_b%></div>
+                    <div>C.<%= cat_1_que[0].option_c%></div>
+                    <div>D.<%= cat_1_que[0].option_d%></div>
                 </div>
 
                 <div class="next">
-                    <input type="submit" onclick="next_q();" value="next">
-                </div>`;
-                }
+                    <input type="submit"  value="next">
+                </div>
+               
+                `;
 
+      }
 
-                else if(g_id=='3'){
-                    let quiz = document.getElementById('quiz')
-                    quiz.innerHTML=`      <div class="que"> 
-                   Que: <p><%= cat_3[0].que  %></p>
-                    </div>
+      else if (g_id == "2") {
+        let quiz = document.getElementById("quiz");
+        quiz.innerHTML = `      <div class="que"> 
+                     Que: <p><%= cat_2_que[0].question_text%></p>
+                      </div>
+
 
                 <div class="option">
-                    <div>A.<%= cat_3[0].A  %></div>
-                    <div>B.<%= cat_3[0].B  %></div>
-                    <div>C.<%= cat_3[0].C  %></div>
-                    <div>D.<%= cat_3[0].D  %></div>
+                    <div>A.<%= cat_2_que[0].option_a%></div>
+                    <div>B.<%= cat_2_que[0].option_b%></div>
+                    <div>C.<%= cat_2_que[0].option_c%></div>
+                    <div>D.<%= cat_2_que[0].option_d%></div>
                 </div>
 
                 <div class="next">
-                    <input type="submit" onclick="next_q();" value="next">
+                    <input type="submit"  value="next">
                 </div>`;
 
-                }
-                else if(g_id=='4'){
-                    let quiz = document.getElementById('quiz')
-                    quiz.innerHTML=`      <div class="que"> 
-                   Que: <p><%= cat_4[0].que  %></p>
-                    </div>
+      }
+
+      else if (g_id == '3') {
+        let quiz = document.getElementById("quiz");
+        quiz.innerHTML = `      <div class="que"> 
+                      Que: <p><%= cat_3_que[0].question_text%></p>
+                        </div>
 
                 <div class="option">
-                    <div>A.<%= cat_4[0].A  %></div>
-                    <div>B.<%= cat_4[0].B  %></div>
-                    <div>C.<%= cat_4[0].C  %></div>
-                    <div>D.<%= cat_4[0].D  %></div>
+                    <div>A.<%= cat_3_que[0].option_a%></div>
+                    <div>B.<%= cat_3_que[0].option_b%></div>
+                    <div>C.<%= cat_3_que[0].option_c%></div>
+                    <div>D.<%= cat_3_que[0].option_d%></div>
                 </div>
 
                 <div class="next">
-                    <input type="submit" onclick="next_q();" value="next">
+                    <input type="submit" value="next">
                 </div>`;
-                }
-                else{
-                    let quiz = document.getElementById('quiz')
-                    quiz.innerHTML=`      <div class="que"> 
-                   Que: <p><%= cat_1[0].que  %></p>
-                    </div>
+      }
+    }
 
-                <div class="option">
-                    <div>A.<%= cat_1[0].A  %></div>
-                    <div>B.<%= cat_1[0].B  %></div>
-                    <div>C.<%= cat_1[0].C  %></div>
-                    <div>D.<%= cat_1[0].D  %></div>
-                </div>
-
-                <div class="next">
-                    <input type="submit" onclick="next_q();" value="next">
-                </div>`;
-                }
-        }
-
-    </script>
+  </script>
 </body>
+
 </html>
+
+
