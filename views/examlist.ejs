@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8" />
@@ -40,7 +40,7 @@
             height: 100vh;
             z-index: -1;
             opacity: 0;
-            transition: 1s;
+            transition: -5s;
         }
 
         .loginform {
@@ -48,7 +48,7 @@
             padding: 30px 20px;
             background-color: white;
             position: absolute;
-            transition: 2s;
+            transition: 1s;
             left: 50%;
             z-index: 9;
             top: -50%;
@@ -97,7 +97,7 @@
 <body>
 
     <body>
-        <% if(examlist) {%>
+        <% if(result) {%>
             <table border="1px solid black">
                 <tr>
                     <th>Exam ID</th>
@@ -106,42 +106,34 @@
                     <th>Exam Status</th>
                     <th>Action</th>
                 </tr>
-                <% for(var i=0;i<examlist.length;i++){ %>
-                    <tr>
+                    <% result.forEach(function(result){ %>
+                        <tr>
 
-                        <td>
-                            <%=examlist[i].exam_id%>
-                        </td>
-                        <td>
-                            <%=examlist[i].exam_name%>
-                        </td>
-                        <td>
-                            <%=examlist[i].exam_time%>
-                        </td>
-                        <td>
-                            <%=examlist[i].exam_status%>
-                        </td>
-                        <td>
-                            <button class="btn-login" onclick="popupdata('<%=examlist[i].exam_id%>')">Login</button>
-                        </td>
-                    </tr>
-                    <%}%>
+                            <td>
+                                <%=result.exam_id%>
+                            </td>
+                            <td>
+                                <%=result.exam_name%>
+                            </td>
+                            <td>
+                                <%=result.exam_time%>
+                            </td>
+                            <td>
+                                <%=result.exam_status%>
+                            </td>
+                            <td>
+                            
+                                  <% if (result.exam_status == "Active") { %>
+                                    <button class="btn-login" onclick="popupdata('<%=result.exam_id%>')">Start</button>
+                                <% }else { %>
+                                    <button disabled class="btn-login" onclick="popupdata('<%=result.exam_id%>')">Start</button>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <%})%>
             </table>
             <%}%>
-                <div class="page">
-                    <%for(var i=1;i<=numberOfpage;i++){%>
-                        <% if(i===page){ %>
-                            <span><a class="selectlink" href="/?page=<%=i%>">
-                                    <%=i%>
-                                </a></span>
-                            <% continue; %>
-                                <% } %>
-                                    <span><a class="student" href="/?page=<%=i%>">
-                                            <%=i%>
-                                        </a></span>
-                                    <% } %>
-                </div>
-
+           
                 <div class="overlay" onclick="closeModel()"></div>
 
                 <div class="loginform">
@@ -172,7 +164,6 @@
 </html>
 <script>
 
-
     async function popupdata(id) {
         console.log(id);
         console.log("id=" + id);
@@ -187,6 +178,7 @@
         document.querySelector(".overlay").classList.remove("showoverlay");
         document.querySelector(".loginform").classList.remove("showloginform");
     }
+
     // var btnlogin = document.querySelector(".btn-login"); //Button
     // btnlogin.addEventListener("click", showmodel); //Button click
 
@@ -208,20 +200,16 @@
         var student = await (await fetch("/studentdata")).json();
         var examdata = await (await fetch(`/examdata?id=${id}`)).json();
         console.log(examdata);
-        // // console.log(examdata[0].exam_access_code);
         var firstname = document.getElementById('name').value;
         console.log(firstname);
         var email = document.getElementById('email').value;
         var accesscode = document.getElementById('accesscode').value;
-        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         if (firstname == "") {
             document.getElementById('firstnameError').innerHTML = "please write your firstname ";
         }
         else {
             document.getElementById('firstnameError').innerHTML = "";
-
         }
-
         if (email == "") {
             document.getElementById('emailError').innerHTML = "please write your email ";
         }
@@ -242,19 +230,6 @@
         else {
             document.getElementById('error').innerHTML = "accesscode does not match";
         }
-
-    }
-
-    pagination();
-    function pagination(){
-       let numberOfpage;
-       let page=0;
-
-       fetch(`/?page=${page}`).then((response) => {
-        return response.json()
-       }).then((resdata)=>{
-        console.log("resdata", resdata);
-       })
     }
 
 </script>
