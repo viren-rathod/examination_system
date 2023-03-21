@@ -93,7 +93,7 @@
                                         </span>
                                     </div>
                                     <div class="inputs"> <span>Last Name</span>
-                                        <input type="hidden" value="<%=editdata[0].id %>" id="id_data">
+                                        <input type="hidden" value="<%=editdata[0].student_id %>" id="id_data">
                                         <input type="text" name="last_name" id="last_name" readonly
                                             value="<%=editdata[0].last_name %>" oninput="checkNameValid2(this)">
                                         <span class="text-danger" id="err_name1">
@@ -210,7 +210,8 @@
 
         savebutton.addEventListener('click', async function () {
             for (var i = 0; i < inputs.length; i++) {
-                inputs[i].toggleAttribute('readonly');
+                // inputs[i].toggleAttribute('readonly');
+                console.log(inputs[i]);
             };
         });
 

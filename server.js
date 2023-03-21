@@ -48,7 +48,6 @@ app.get('/result', (req, res) => {
 
 
 
-
 //profile-update page
 app.post("/profile_update", async (req, res) => {
 
@@ -85,14 +84,4 @@ app.listen(PORT, (err) => {
 
 
 
-// Good Evening sir,
-//     My task for today: -
-//         Desgining of: -
-//             1. create dashboard ui
-// 2. works on JavaScript
-
-
-// Done!
-
-// Tomorrow task: -
-//     -> To Perform JavaScript operations and render data
+// 

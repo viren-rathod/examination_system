@@ -47,7 +47,11 @@
 
                 <div class="row">
                     <div class="col-6 col-md-8 border">
-                        <div class="container"></div>
+                        <div class="container border">
+
+
+                            <button class="btn btn-primary" id="save_id">Save</button>
+                        </div>
 
                     </div>
                     <div class="col-12 col-md-4 border">
@@ -86,34 +90,25 @@
         </section>
     </div>
     <script>
-        const current_selected = 0;
+        let save_arr = [];
+
         const inputs = document.querySelectorAll('.padd-4');
-        // console.log(inputs[0]);
         let flag = 1;
+        let arr = [];
         for (let i = 0; i < inputs.length; i++) {
+            arr.push(parseInt(inputs[i].id))
+
             inputs[i].addEventListener('click', async (ele) => {
 
                 const id = ele.target.id;
-                console.log(i, id);
-                if (flag) {
-                    document.getElementById(id).style.backgroundColor = '#0d6efd';
-                    flag = 0;
-                }
-                else {
-
-                    document.getElementById(id).style.backgroundColor = 'rgb(232, 237, 241)';
-                }
-
+                arr.forEach(element => {
+                    if (element == parseInt(id))
+                        document.getElementById(element).style.backgroundColor = '#0d6efd';
+                    else
+                        document.getElementById(element).style.backgroundColor = 'rgb(232, 237, 241)';
+                });
             })
         }
-
-        // inputs.forEach(element => {
-        //     // console.log(element.id);
-        //     const id = document.getAnimations(element.id);
-        //     element.addEventListener('click', (ele) => {
-        //         console.log(ele.target.id, element.id);
-        //     })
-        // });
     </script>
 </body>
 
