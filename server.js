@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 
 //student data
 app.get("/studentdata", (req, res) => {
-  let studentdata = "select * from user_login  WHERE user_id = 1";
+  let studentdata = "select email from user_login  WHERE user_id = 1";
   connection.query(studentdata, (err, result) => {
     if (err) throw err;
 
@@ -51,7 +51,7 @@ app.get("/studentdata", (req, res) => {
 app.get("/examdata", (req, res) => {
   const id = req.query.id;
   console.log("id", id);
-  let examdata = `select * from exam WHERE exam_id = ${id}`;
+  let examdata = `select exam_access_code exam WHERE exam_id = ${id}`;
   connection.query(examdata, (err, examresult) => {
     if (err) throw err;
     res.send(examresult);

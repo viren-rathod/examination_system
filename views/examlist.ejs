@@ -106,34 +106,35 @@
                     <th>Exam Status</th>
                     <th>Action</th>
                 </tr>
-                    <% result.forEach(function(result){ %>
-                        <tr>
+                <% result.forEach(function(result){ %>
+                    <tr>
 
-                            <td>
-                                <%=result.exam_id%>
-                            </td>
-                            <td>
-                                <%=result.exam_name%>
-                            </td>
-                            <td>
-                                <%=result.exam_time%>
-                            </td>
-                            <td>
-                                <%=result.exam_status%>
-                            </td>
-                            <td>
-                            
-                                  <% if (result.exam_status == "Active") { %>
-                                    <button class="btn-login" onclick="popupdata('<%=result.exam_id%>')">Start</button>
+                        <td>
+                            <%=result.exam_id%>
+                        </td>
+                        <td>
+                            <%=result.exam_name%>
+                        </td>
+                        <td>
+                            <%=result.exam_time%>
+                        </td>
+                        <td>
+                            <%=result.exam_status%>
+                        </td>
+                        <td>
+
+                            <% if (result.exam_status=="Active" ) { %>
+                                <button class="btn-login" onclick="popupdata('<%=result.exam_id%>')">Start</button>
                                 <% }else { %>
-                                    <button disabled class="btn-login" onclick="popupdata('<%=result.exam_id%>')">Start</button>
-                                <% } %>
-                            </td>
-                        </tr>
+                                    <button disabled class="btn-login"
+                                        onclick="popupdata('<%=result.exam_id%>')">Start</button>
+                                    <% } %>
+                        </td>
+                    </tr>
                     <%})%>
             </table>
             <%}%>
-           
+
                 <div class="overlay" onclick="closeModel()"></div>
 
                 <div class="loginform">
@@ -142,39 +143,125 @@
                         <input type="hidden" id="id" name="id">
                         <div>
                             <label for="">Name</label>
-                            <input type="text" name="name" id="name" />
-                            <div id="firstnameError" style="color: red;"></div>
+                            <input type="text" name="name" id="name" oninput="checkNameValidName(this)" />
+                            <div id="err_name" style="color: red;"></div>
+
                         </div>
                         <div>
                             <label for="">Email:</label>
-                            <input type="text" name="email" id="email" />
-                            <div id="emailError" style="color: red;"></div>
+                            <input type="text" name="email" id="email" oninput="checkEmail(this)" />
+                            <div id="email_id" style="color: red;"></div>
                         </div>
                         <div>
                             <label for="">Access Code:</label>
-                            <input type="text" name="accesscode" id="accesscode" />
+                            <input type="text" name="accesscode" id="accesscode" oninput="checkAccesscode(this)" />
                             <div id="accesscodeError" style="color: red;"></div>
                         </div>
                         <div id="error"></div>
-                        <button type="button" onclick="submitData()">Submit</button>
+                        <button type="button" oninput="checksubmit()">Submit</button>
                     </form>
                 </div>
     </body>
 
 </html>
+
+
 <script>
 
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var accesscode = document.getElementById('accesscode').value;
+    let ischeckname = true;
+    let ischeckemail = true;
+    let ischeckAccesscode = true;
+    async function checkNameValidName(ele) {
+
+        let input_val = ele.value;
+        let err_mes = document.getElementById('err_name');
+
+        var regex = /^[a-zA-Z ]*$/;
+        if (input_val == "" || !regex.test(input_val)) {
+            err_mes.innerHTML = "Please Enter Valid Name";
+            ischeckname = false;
+        }
+        else {
+            firstname = input_val;
+            err_mes.innerHTML = "";
+            ischeckname = true;
+        }
+        await checksubmit();
+    }
+
+    async function checkEmail(ele) {
+        var id = document.getElementById('id').value;
+        var student = await (await fetch("/studentdata")).json();
+        const inputtxt = ele.value;
+        const email_id = document.getElementById('email_id');
+        const regExEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (regExEmail.test(inputtxt.trim())) {
+            email = inputtxt;
+            email_id.innerHTML = '';
+            ischeckemail = true;
+        } else {
+            email_id.innerHTML = 'please Enter valid email';
+            ischeckemail = false;
+        }
+        if (student[0].email != email) {
+            email_id.innerHTML = 'email does not exits';
+        }
+        await checksubmit();
+    }
+
+    async function checkAccesscode(ele) {
+        var id = document.getElementById('id').value;
+        fetch(`/examdata?id=${id}`).then((response) => {
+            return response.json()
+        }).then((resdata) => {
+            // console.log("resdata", resdata);
+        })
+
+        var examdata = await (await fetch(`/examdata?id=${id}`)).json();
+        let input_val = ele.value;
+        let err_mes = document.getElementById('accesscodeError');
+
+        var regex = /^[a-zA-Z ]*$/;
+        if (input_val == "" || isNaN(input_val)) {
+            err_mes.innerHTML = "Please Enter Valid Accesscode";
+            ischeckAccesscode = false;
+        }
+        else
+            if (examdata[0].exam_access_code != input_val) {
+                err_mes.innerHTML = "Accesscode does not match";
+                ischeckAccesscode = false;
+            }
+            else {
+                firstname = input_val;
+                err_mes.innerHTML = "";
+                ischeckAccesscode = true;
+            }
+        await checksubmit();
+    }
+
+
+
+    async function checksubmit() {
+        if (ischeckname && ischeckemail && ischeckAccesscode) {
+            console.log("data match suucessfully")
+         }
+        else {
+            console.log("data does not match");
+        }
+    }
+
+
     async function popupdata(id) {
-        console.log(id);
-        console.log("id=" + id);
         document.querySelector(".overlay").classList.add("showoverlay");
         document.querySelector(".loginform").classList.add("showloginform");
         document.getElementById('id').value = id;
     }
-
+;
 
     function closeModel() {
-        // alert("hello");
         document.querySelector(".overlay").classList.remove("showoverlay");
         document.querySelector(".loginform").classList.remove("showloginform");
     }
@@ -184,53 +271,6 @@
 
     var c = document.querySelector("span"); //Button
     c.addEventListener("click", closeModel); //Button click
-
-
-
-
-    async function submitData() {
-        var id = document.getElementById('id').value;
-        console.log(id);
-        fetch(`/examdata?id=${id}`).then((response) => {
-            return response.json()
-        }).then((resdata) => {
-            console.log("resdata", resdata);
-        })
-        // console.log(resdata);
-        var student = await (await fetch("/studentdata")).json();
-        var examdata = await (await fetch(`/examdata?id=${id}`)).json();
-        console.log(examdata);
-        var firstname = document.getElementById('name').value;
-        console.log(firstname);
-        var email = document.getElementById('email').value;
-        var accesscode = document.getElementById('accesscode').value;
-        if (firstname == "") {
-            document.getElementById('firstnameError').innerHTML = "please write your firstname ";
-        }
-        else {
-            document.getElementById('firstnameError').innerHTML = "";
-        }
-        if (email == "") {
-            document.getElementById('emailError').innerHTML = "please write your email ";
-        }
-        else {
-            document.getElementById('emailError').innerHTML = "";
-        }
-        if (accesscode == "") {
-            document.getElementById('accesscodeError').innerHTML = "please write your exam access code ";
-        }
-        else {
-            document.getElementById('accesscodeError').innerHTML = "";
-        }
-        if (student[0].email == email && examdata[0].exam_access_code == accesscode) {
-            console.log("hello");
-            closeModel();
-            document.getElementById('error').innerHTML = "";
-        }
-        else {
-            document.getElementById('error').innerHTML = "accesscode does not match";
-        }
-    }
 
 </script>
 
