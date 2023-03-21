@@ -3,7 +3,7 @@ const app = express();
 const util = require('util')
 const bod = require('body-parser');
 const path = require('path')
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 // const profile=require("./models/profile");
 // const active_link=require("./models/activation");
 
@@ -25,16 +25,16 @@ app.set("views", "./views");
 
 
 
-var conn = mysql.createConnection({
+var con = mysql.createPool({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "job_application",
+    database: "sys",
     port: 3306
 });
 
  
-var query= util.promisify(conn.query).bind(conn);
+// var query= util.promisify(conn.query).bind(conn);
 // app.use(profile)
 // app.use(active_link)
 
@@ -49,7 +49,7 @@ app.get("/form1",(req,res)=>{
 
 app.get("/examlist",async(req,res)=>{
     try{
-        let sql=await query (`select exam_id,exam_name,access_code,total_ques,time,user_id,exam_status from sys.exam`)
+        let [sql]=await con.execute(`select exam_id,exam_name,access_code,total_ques,time,user_id,exam_status from sys.exam`)
         console.log(sql)
 
         res.render("examlist",{sql})
@@ -63,10 +63,10 @@ app.get("/examlist",async(req,res)=>{
 
 app.get("/exam",(async (req,res)=>{
     try{
-        let user=await query(`select user_id,exam_id,exam_name,total_ques,time,exam_status from exam`)
+        let [user]=await con.execute(`select user_id,exam_id,exam_name,total_ques,time,exam_status from exam`)
         console.log(user)
-        const result=await query('SELECT * FROM question');
-        const option=await query(`select option_value,option_name,questionid from options `)
+        const [result]=await con.execute('SELECT * FROM question');
+        const [option]=await con.execute(`select option_value,option_name,questionid from options `)
         console.log(option);
         console.log(result);
         res.render('exam',{result,option,user});

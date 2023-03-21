@@ -37,3 +37,9 @@ function edit(){
 
    
   }
+  // testing
+
+  let demo = document.getElementById("demo");
+  demo.addEventListener('click', (e)=>{
+    console.log(e);
+  })
