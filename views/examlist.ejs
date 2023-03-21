@@ -19,41 +19,154 @@
         tr:nth-child(odd) {
             background-color: lightpink;
         }
+
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .btn-login {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: black;
+            color: white;
+        }
+
+        .overlay {
+            width: 100%;
+            position: fixed;
+            top: 0%;
+            background: rgba(0, 0, 0, 0);
+            height: 100vh;
+            z-index: -1;
+            opacity: 0;
+            transition: 1s;
+        }
+
+        .loginform {
+            width: 300px;
+            padding: 30px 20px;
+            background-color: white;
+            position: absolute;
+            transition: 2s;
+            left: 50%;
+            z-index: 9;
+            top: -50%;
+            box-shadow: 0px 0px 10px 3px #CCC;
+            transform: translate(-50%, -50%);
+        }
+
+        .loginform input {
+            width: 100%;
+            margin-bottom: 15px;
+            height: 35px;
+        }
+
+        /* .loginform button {
+            background-color: black;
+        } */
+
+        .loginform span {
+            position: absolute;
+            right: 0px;
+            width: 30px;
+            color: white;
+            line-height: 30px;
+            cursor: pointer;
+            height: 30px;
+            top: 0px;
+            background-color: green;
+            text-align: center;
+        }
+
+        .showoverlay {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .showloginform {
+            top: 50%;
+        }
+
+        #error {
+            color: red;
+        }
     </style>
 </head>
 
 <body>
 
     <body>
-        <table border="1px solid black">
-            <tr>
-                <th>Exam ID</th>
-                <th>Exam Name</th>
-                <th>Time Duration</th>
-                <th>Exam Status</th>
-                <th>Action</th>
-            </tr>
-            <% for(var i=0;i<examlist.length;i++){ %>
+        <% if(examlist) {%>
+            <table border="1px solid black">
                 <tr>
-
-                    <td>
-                        <%=examlist[i].exam_id%>
-                    </td>
-                    <td>
-                        <%=examlist[i].exam_name%>
-                    </td>
-                    <td>
-                        <%=examlist[i].exam_time%>
-                    </td>
-                    <td>
-                        <%=examlist[i].exam_status%>
-                    </td>
-                    <td>
-                        <a class="hello" href="javascript:popupdata('<%=examlist[i].exam_id%>')">Start</a>
-                    </td>
+                    <th>Exam ID</th>
+                    <th>Exam Name</th>
+                    <th>Time Duration</th>
+                    <th>Exam Status</th>
+                    <th>Action</th>
                 </tr>
-                <%}%>
-        </table>
+                <% for(var i=0;i<examlist.length;i++){ %>
+                    <tr>
+
+                        <td>
+                            <%=examlist[i].exam_id%>
+                        </td>
+                        <td>
+                            <%=examlist[i].exam_name%>
+                        </td>
+                        <td>
+                            <%=examlist[i].exam_time%>
+                        </td>
+                        <td>
+                            <%=examlist[i].exam_status%>
+                        </td>
+                        <td>
+                            <button class="btn-login" onclick="popupdata('<%=examlist[i].exam_id%>')">Login</button>
+                        </td>
+                    </tr>
+                    <%}%>
+            </table>
+            <%}%>
+                <div class="page">
+                    <%for(var i=1;i<=numberOfpage;i++){%>
+                        <% if(i===page){ %>
+                            <span><a class="selectlink" href="/?page=<%=i%>">
+                                    <%=i%>
+                                </a></span>
+                            <% continue; %>
+                                <% } %>
+                                    <span><a class="student" href="/?page=<%=i%>">
+                                            <%=i%>
+                                        </a></span>
+                                    <% } %>
+                </div>
+
+                <div class="overlay" onclick="closeModel()"></div>
+
+                <div class="loginform">
+                    <span>&times;</span>
+                    <form action="">
+                        <input type="hidden" id="id" name="id">
+                        <div>
+                            <label for="">Name</label>
+                            <input type="text" name="name" id="name" />
+                            <div id="firstnameError" style="color: red;"></div>
+                        </div>
+                        <div>
+                            <label for="">Email:</label>
+                            <input type="text" name="email" id="email" />
+                            <div id="emailError" style="color: red;"></div>
+                        </div>
+                        <div>
+                            <label for="">Access Code:</label>
+                            <input type="text" name="accesscode" id="accesscode" />
+                            <div id="accesscodeError" style="color: red;"></div>
+                        </div>
+                        <div id="error"></div>
+                        <button type="button" onclick="submitData()">Submit</button>
+                    </form>
+                </div>
     </body>
 
 </html>
@@ -63,35 +176,87 @@
     async function popupdata(id) {
         console.log(id);
         console.log("id=" + id);
-        
-        //     var href = "examdata";
-        //     if(href) {
-        //        location.href = href + `?id=${id}`;
-        //     e.preventDefault();
-        // }
-
+        document.querySelector(".overlay").classList.add("showoverlay");
+        document.querySelector(".loginform").classList.add("showloginform");
+        document.getElementById('id').value = id;
     }
 
 
-    async function hello() {
+    function closeModel() {
+        // alert("hello");
+        document.querySelector(".overlay").classList.remove("showoverlay");
+        document.querySelector(".loginform").classList.remove("showloginform");
+    }
+    // var btnlogin = document.querySelector(".btn-login"); //Button
+    // btnlogin.addEventListener("click", showmodel); //Button click
+
+    var c = document.querySelector("span"); //Button
+    c.addEventListener("click", closeModel); //Button click
+
+
+
+
+    async function submitData() {
+        var id = document.getElementById('id').value;
+        console.log(id);
+        fetch(`/examdata?id=${id}`).then((response) => {
+            return response.json()
+        }).then((resdata) => {
+            console.log("resdata", resdata);
+        })
+        // console.log(resdata);
         var student = await (await fetch("/studentdata")).json();
-        console.log(student[0].email);
-        var examdata = await (await fetch("/examdata")).json();
-        console.log(examdata[0].exam_access_code);
+        var examdata = await (await fetch(`/examdata?id=${id}`)).json();
+        console.log(examdata);
+        // // console.log(examdata[0].exam_access_code);
         var firstname = document.getElementById('name').value;
+        console.log(firstname);
         var email = document.getElementById('email').value;
         var accesscode = document.getElementById('accesscode').value;
-        console.log(accesscode);
-       
-        console.log("hello");
-        if (student[0].email == email && examdata[0].exam_access_code == accesscode) {
-            console.log("hello");
+        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (firstname == "") {
+            document.getElementById('firstnameError').innerHTML = "please write your firstname ";
         }
         else {
-            document.getElementById("error").innerHTML = "data does not match";
+            document.getElementById('firstnameError').innerHTML = "";
+
+        }
+
+        if (email == "") {
+            document.getElementById('emailError').innerHTML = "please write your email ";
+        }
+        else {
+            document.getElementById('emailError').innerHTML = "";
+        }
+        if (accesscode == "") {
+            document.getElementById('accesscodeError').innerHTML = "please write your exam access code ";
+        }
+        else {
+            document.getElementById('accesscodeError').innerHTML = "";
+        }
+        if (student[0].email == email && examdata[0].exam_access_code == accesscode) {
+            console.log("hello");
+            closeModel();
+            document.getElementById('error').innerHTML = "";
+        }
+        else {
+            document.getElementById('error').innerHTML = "accesscode does not match";
         }
 
     }
+
+    pagination();
+    function pagination(){
+       let numberOfpage;
+       let page=0;
+
+       fetch(`/?page=${page}`).then((response) => {
+        return response.json()
+       }).then((resdata)=>{
+        console.log("resdata", resdata);
+       })
+    }
+
 </script>
 
 </html>

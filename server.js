@@ -26,20 +26,37 @@ app.set("view engine", "ejs");
 //examlist
 app.get("/", (req, res) => {
   try {
-    connection.query("select * from exam", (err, result) => {
-      res.render("examlist", { examlist: result });
+    const page = req.query;
+    console.log(page);
+    
+    const numberOfperpage = 5;
+    let numberOfResult;
+    let numberOfpage;
+    connection.query('select * from exam', (err, dataresult) => {
+      numberOfResult = dataresult.length;
+      numberOfpage = Math.ceil(numberOfResult/numberOfperpage);
+      let page = req.query.page? Number(req.query.page) : 1;
+      // console.log(page);
+      const startingLimit = (page-1)*numberOfperpage;
+      // console.log(startingLimit);
+      // console.log(numberOfperpage);
+      let sql = 'select * from exam LIMIT '+ startingLimit +","+numberOfperpage;
+      connection.query(sql, (err,result) => {
+        numberOfpage = Math.ceil(numberOfResult/numberOfperpage);
+        // console.log(numberOfpage);
+      res.render("examlist", { examlist: result,numberOfpage,page,numberOfperpage });
+      });
     });
   } catch (err) {
     console.log(err);
   }
 });
-
-
+      
 
 //student data
 app.get("/studentdata", (req, res) => {
+  
   let studentdata = "select * from user_login  WHERE user_id = 1";
-
   connection.query(studentdata, (err, result) => {
     if (err) throw err;
 
@@ -51,16 +68,15 @@ app.get("/studentdata", (req, res) => {
 
 //exam data
 app.get("/examdata", (req, res) => {
-  let examid = 1;
-  console.log(examid); 
-  let examdata = `select * from exam WHERE exam_id = ${examid}`;
+  const id = req.query.id;
+  console.log("id" ,id); 
+  let examdata = `select * from exam WHERE exam_id = ${id}`;
   connection.query(examdata, (err, examresult) => {
     if (err) throw err;
     res.send(examresult);
   });
 
 });
-
 
 
 app.listen(port, () => {
