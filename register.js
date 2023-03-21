@@ -14,8 +14,9 @@ const app = express();
 app.use(express.static('public'));
 const ejs = require('ejs');
 const { signedCookie } = require('cookie-parser');
-app.use(express.static(__dirname + '/registercss'));
-app.use(express.static(__dirname + '/photo'));
+const { Console } = require('console');
+app.use(express.static(__dirname + '/public/css'));
+app.use(express.static(__dirname + '/public/photo'));
 const PORT = process.env.PORT || 8050;
 app.set('view engine', 'ejs');
 
@@ -128,20 +129,18 @@ app.post("/register", async(req, res) => {
 
         var insrertRole = `Insert into user_login (email , password , role , user_login_status) values ('${email}' , '${passwordStrong}' , '0' , '0')`;
         var roleResult = await exe(insrertRole);
-
-
-        var resultRandom = Math.random().toString(36).substring(2, 7);
-        var link = `/activation?token=${resultRandom}`
-            // res.render("activation_page.ejs",{ link })
-
+        // var resultRandom = Math.random().toString(36).substring(2, 7);
+        // var link = `/activation?token=${resultRandom}`
+        //     // res.render("activation_page.ejs",{ link })
         req.session.email = email;
 
-        res.render("activation.ejs", {
-            resultRandom,
-            email: email
-        })
+        res.render("login")
     }
 
+})
+
+app.get("login_direct", (req, res) => {
+    res.redirect("/login")
 })
 
 app.get("/forget", async(req, res) => {
@@ -163,23 +162,52 @@ app.post('/login', async(req, res) => {
     var selectEmail = `SELECT email, password FROM student where email = '${email}' `
     var emailResult = await exe(selectEmail);
 
+    var selectUser = `SELECT email, password , user_login_status  , role from user_login where email = '${email}'`;
+    var userData = await exe(selectUser);
+    console.log(userData)
 
-    if (emailResult.length == 0) {
+
+    if (userData.length == 0) {
         res.send("email is not match");
     } else {
-        var comparePassword = emailResult[0].password;
+
+        var comparePassword = userData[0].password;
 
         var compare = await bcrypt.compare(password, comparePassword);
-
+        var resultRandom = Math.random().toString(36).substring(2, 7);
 
         if (!compare) {
             res.send("Password is not match")
         } else {
-            req.session.email = email;
-            res.render("home.ejs")
 
+            if (userData[0].user_login_status == 0) {
+                res.render("activation.ejs", { email: email, resultRandom: resultRandom })
+            } else {
+                req.session.email = email;
+                if (userData[0].role == 0) {
+                    res.render("home.ejs")
+                } else {
+                    res.render("admin.ejs");
+                }
+            }
         }
     }
+    // if (emailResult.length == 0) {
+    //     res.send("email is not match");
+    // } else {
+    //     var comparePassword = emailResult[0].password;
+
+    //     var compare = await bcrypt.compare(password, comparePassword);
+
+
+    //     if (!compare) {
+    //         res.send("Password is not match")
+    //     } else {
+    //         req.session.email = email;
+    //         res.render("home.ejs")
+
+    //     }
+    // }
 
 })
 
@@ -221,8 +249,8 @@ app.post('/fetch_api', (req, res) => {
             user: 'patelnokano000@gmail.com',
             clientId: '67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com',
             clientSecret: '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',
-            refreshToken: '1//04zKr1mHUFLaUCgYIARAAGAQSNwF-L9Ir4G3A-ZbFzD8UDxyL1m3B70W4pmoI_T3UMq0FYYKkSZdcjn48d0JwIbfTz2utFts-Vsc',
-            accessToken: 'ya29.a0AVvZVsrTTPvWdLrKPI8g1ApH6OJGF6WEDoKapf16G-555x3h7wywvEA3Gyo_BryLnyYcYRixND4CdKbkym0aEDJsNq3a2XiUcIyBU0-uSfCTt9G-LhxL4oczfo-xBIsjQ03PlGlBiMCNYPXgqMWjjukutehFAbwaCgYKASUSARISFQGbdwaIc2AjLhspFzy5fGdi1TualQ0166',
+            refreshToken: '1//04yx5ojWVo5DXCgYIARAAGAQSNwF-L9IrN6feymV06hCXnl3zctvHIoWxgIc_Y7i4igtQH3G7xDgxc9EYRImZjEgkPjBALF3Qi3w',
+            accessToken: 'ya29.a0AVvZVsphLeu7soD_Wt2VeB4TfaQleek0K_viXrVdaYjz9riWyxJ2QgeF7jaXNqSNqM-3Dd30BZc50FpSnCVYzfHbXWJws2Onks-htY3hkSTlyTrvWUr4P7xwYQqgOhTAZ8HV-cFm11odjpIdEPi5_Z-15SQI9K0aCgYKAScSARISFQGbdwaI5JJaB814o4NOhWO_91goWw0166',
         }
     });
 
@@ -250,18 +278,17 @@ app.post('/fetch_api', (req, res) => {
     });
 })
 
-
-
-
 app.post("/active/:resultRandom", async(req, res) => {
     var email = req.body.email;
     var resultRandom = req.params.resultRandom;
 
     var updateQuery = `update student set student_status = 1 where email ="${email}"`;
+    var updateQuery1 = `update user_login set user_login_status = 1 where email ="${email}"`;
 
     var resultUpdate = await exe(updateQuery)
+    var resultUpdate1 = await exe(updateQuery1)
 
-    let d = (Array(resultUpdate))
+    let d = (Array(resultUpdate1))
 
     let a = d[0].changedRows;
     if (a == 1) {
@@ -274,7 +301,7 @@ app.post("/changePassword", async(req, res) => {
     var email11 = req.body.email1;
 
 
-    var selectEmail = `select email from student where email = '${email11}'`
+    var selectEmail = `select email from user_login where email = '${email11}'`
     var emailResult = await exe(selectEmail)
 
 
@@ -299,8 +326,8 @@ app.post("/updatePassword", async(req, res) => {
     var resetPassword = await bcrypt.hash(password, set);
 
 
-    var updateQuery = `update student set password = '${resetPassword}' where email = '${email}'`;
-    console.log("update query", updateQuery)
+    var updateQuery = `update user_login set password = '${resetPassword}' where email = '${email}'`;
+
     var updateResult = await exe(updateQuery)
     res.redirect("/login");
 })
@@ -325,6 +352,31 @@ app.post('/valid1', async(req, res) => {
         res.json({ msg1: "right" });
     }
 })
+app.post('/validPassword', async(req, res) => {
+    var email = req.body.useremail;
+    var password = req.body.userPassword
+
+    var nameSelect1 = `select email , password from user_login where email = '${email}'`;
+
+    var data1 = await exe(nameSelect1);
+
+
+    if (data1.length != 0) {
+        var comparePassword = data1[0].password;
+        console.log("comparePassword : ", comparePassword)
+        var compare = await bcrypt.compare(password, comparePassword);
+
+
+        if (!compare) {
+            res.json({ msg1: "wrongPassword", status: 400 });
+        } else {
+            res.json({ msg1: "rightPassword", status: 200 });
+        }
+
+    } else {
+        res.json({ msg1: "right", status: 404 });
+    }
+})
 
 app.listen(PORT, (err) => {
     console.log(`http://localhost:${PORT}/register`);
@@ -332,7 +384,29 @@ app.listen(PORT, (err) => {
 
 
 
-
+// // password in email validation in login page
+// app.post('/abc', async(req, res) => {
+//     let p = req.body.password;
+//     let e = req.body.email;
+//     if (e.length != 0) {
+//         var q = `select * from user_login where email='${e}'`;
+//         let [ans] = await exe(q)
+//         if (ans.length != 0) {
+//             flg = true;
+//             arr.push(flg)
+//             arr[1] = ans[0].email;
+//             bcrypt.compare(p, ans[0].password, function(err, result) {
+//                 if (result) {
+//                     res.json(true)
+//                 } else {
+//                     res.json(false)
+//                 }
+//             });
+//         } else {
+//             res.json(false)
+//         }
+//     }
+// })
 
 // function for otp 
 function generateOTP() {
