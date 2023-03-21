@@ -15,14 +15,20 @@
     <div class="container mt-5">
       <div class="d-flex justify-content-center row">
         <div class="overflow-hidden col-md-10 col-lg-10 border">
+          <h1 class="m-1">Exam 1</h1>
+          <h2 id="category-title"></h2>
+          <div id="category-buttons">
+            <a id="1" onclick="category_changer(this)">Category 1</a>
+            <a id="2" onclick="category_changer(this)">Category 2</a>
+          </div>
           <div class="bg-white p-3 border-bottom">
             <div
               class="mcq d-flex flex-row justify-content-between align-items-center"
             >
-              <h4><%= category[0].category_name %></h4>
+              <h4 class="category-title"><%= category[0].category_name %></h4>
               <span
                 ><span id="que_no"><%= e.question_id %></span> of <%=
-                no_of_question %></span
+                category[0].no_of_question %></span
               >
             </div>
           </div>
@@ -87,7 +93,7 @@
                 <input
                   type="button"
                   value="PREV"
-                  onclick="previous_btn(`<%=e.question_id%>`)"
+                  onclick="previous_btn('<%=e.question_id%>')"
                   class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
                   id="prev"
                 />
@@ -103,26 +109,27 @@
             </div>
           </form>
         </div>
-        <div class="page d-flex justify-content-center align-items-center pt-3">
-          <%for(var i=1;i<=no_of_question;i++){ %> <% if(i === question_no){ %>
+        
+        <div
+          class="page d-flex justify-content-center align-items-center pt-3"
+          id="page"
+        >
+          <%for(var i=1;i<=category[0].no_of_question;i++){ %> <% if(i === question_no){ %>
           <span
             class="selectlink m-1 btn"
-            onclick="fetcher('paging/?question_no=<%=i%>&category_id=<%=category%>')"
+            onclick="fetcher('paging/?question_no=<%=i%>&category_id=<%=category[0].category_id%>')"
             ><%=i%></span
           >
           <% continue; %> <% } %>
           <span
             class="student m-1 btn"
-            onclick="fetcher('/paging/?question_no=<%=i%>&category_id=<%=category%>')"
+            onclick="fetcher('/paging/?question_no=<%=i%>&category_id=<%=category[0].category_id%>')"
             ><%=i%></span
           >
           <% } %>
         </div>
       </div>
-      <!-- <a href="/exam?category_id=1">Category 1</a>
-        <a href="/exam?category_id=2">Category 2</a> -->
     </div>
-    <!-- </div> -->
   </body>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
