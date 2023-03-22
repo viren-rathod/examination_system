@@ -1,63 +1,23 @@
+
 const express = require("express");
 const app = express();
-
-var sessionstorage = require("sessionstorage");
-const body_parser = require("body-parser");
-const path = require("path");
-const mysql = require("mysql2");
-const port = process.env.PORT || 8000;
-
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "exam_system",
-});
-
-app.use(express.static(path.join(__dirname + "/public")));
-app.use(express.static(path.join(__dirname + "/public/images")));
-app.use(express.static(path.join(__dirname + "/public/css_files")));
-
-app.use(body_parser.json());
-app.use(body_parser.urlencoded({ extended: false }));
-
+let bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+const ejs = require('ejs');
 app.set("view engine", "ejs");
+app.use(express.static('public'));
+app.use(express.static(__dirname + "/public"));
+const cors = require("cors");
+app.use(cors());
 
-//examlist
-app.get("/", (req, res) => {
-  try {
-    connection.query("select exam_id, exam_name,exam_time, exam_status from exam", (err,result) => {
-      res.render("examlist", {
-        result: result,
-      });
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
-        
-      
+const router = require('./routes/router');
 
-//student data
-app.get("/studentdata", (req, res) => {
-  let studentdata = "select email from user_login  WHERE user_id = 1";
-  connection.query(studentdata, (err, result) => {
-    if (err) throw err;
+//router routes
+app.use('/', router);
 
-    res.send(result);
-  });
-});
-
-//exam data
-app.get("/examdata", (req, res) => {
-  const id = req.query.id;
-  console.log("id", id);
-  let examdata = `select exam_access_code exam WHERE exam_id = ${id}`;
-  connection.query(examdata, (err, examresult) => {
-    if (err) throw err;
-    res.send(examresult);
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Server is up on ${port}`);
-});
+const PORT = 4322 ;
+app.listen(PORT,(err)=>{
+    if(err) console.log(err);
+    console.log(`Server running on port ${PORT}`);
+})
