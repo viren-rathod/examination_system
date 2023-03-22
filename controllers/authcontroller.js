@@ -31,7 +31,14 @@ const studentdataGet = async (req, res) => {
   }
 };
 
+
+
+const setintervalGet = async (req,res) => {
+res.render("setinterval");
+};
+
 module.exports = {
   examlistGet,
   studentdataGet,
+  setintervalGet
 };
