@@ -78,7 +78,6 @@
                 </div>
     </body>
 
-
     <script>
 
         var name = document.getElementById('name').value;
@@ -107,7 +106,7 @@
 
         async function checkEmail(ele) {
             var id = document.getElementById('id').value;
-            var student = await (await fetch("/studentdata")).json();
+            var student = await (await fetch(`/studentdata?id=${id}`)).json();
             const inputtxt = ele.value;
             const email_id = document.getElementById('email_id');
             const regExEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -127,13 +126,13 @@
 
         async function checkAccesscode(ele) {
             var id = document.getElementById('id').value;
-            fetch(`/examdata?id=${id}`).then((response) => {
+            fetch(`/studentdata?id=${id}`).then((response) => {
                 return response.json()
             }).then((resdata) => {
                 // console.log("resdata", resdata);
             })
 
-            var examdata = await (await fetch(`/examdata?id=${id}`)).json();
+            var examdata = await (await fetch(`/studentdata?id=${id}`)).json();
             let input_val = ele.value;
             let err_mes = document.getElementById('accesscodeError');
 

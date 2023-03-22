@@ -4,6 +4,5 @@ const router = express.Router();
 
 router.get('/examlistGet', controller.examlistGet);
 router.get('/studentdata',controller.studentdataGet);
-router.get('/examdata', controller.accesscodeGet);
 
 module.exports=router;

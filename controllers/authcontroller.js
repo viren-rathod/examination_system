@@ -4,7 +4,7 @@ const examlistGet = async (req, res) => {
   try {
 
     let [result] = await con.execute(
-      `SELECT * FROM exam`
+      `SELECT exam_id,exam_name,exam_time,exam_status  FROM exam`
     );
     if (result.length) {
       res.render("examlist", {
@@ -19,9 +19,9 @@ const examlistGet = async (req, res) => {
 
 const studentdataGet = async (req, res) => {
   try {
-    
+    let id = req.query.id;
     let [result] = await con.execute(
-    `select email from user_login  WHERE user_id = 1`
+    `select user_login.email, exam.exam_access_code from exam INNER join user_login ON user_login.user_id=exam.user_id where exam_id = ${id} AND exam.user_id = 1; `
     );
 
     res.send(result);
@@ -31,25 +31,7 @@ const studentdataGet = async (req, res) => {
   }
 };
 
-
-const accesscodeGet = async (req,res) => {
- try{
-  const id = req.query.id;
-  console.log("id", id);
-  let [examresult] = await con.execute(
-    `select exam_access_code from exam WHERE exam_id = ${id}`
-    );
-
-    res.send(examresult);
-
- }catch(err){
-  console.log(err);
- }
-};
-
-
 module.exports = {
   examlistGet,
   studentdataGet,
-  accesscodeGet
 };
