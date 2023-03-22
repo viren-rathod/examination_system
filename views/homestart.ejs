@@ -64,14 +64,14 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-primary">Yes</button>
+                            <a class="btn btn-danger" data-bs-dismiss="modal">No</a>
+                            <a class="btn btn-primary" href="/logout">Yes</a>
                         </div>
 
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="modalCart">
+            <div class="modal fade" tabindex="-1" id="modalCart">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <!-- Modal Header -->
@@ -79,16 +79,17 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <!-- Modal body -->
-                        <div>
+                        <div class="model-body">
                             <div class="card1">
                                 <div class="info"> <span>Edit form</span> <button id="savebutton"
                                         class="btn btn-warning">edit</button>
                                 </div>
-                                <div class="forms">
+                                <div class="forms" style="height: 300px;
+                                overflow-y: auto;">
                                     <div class="inputs">
                                         <p class="t-14px">First Name</p>
                                         <input type="hidden" value="<%=editdata[0].student_id %>" id="id_data">
-                                        <input type="text" readonly id="first_name" name="first_name"
+                                        <input type="text" id="first_name" name="first_name"
                                             value="<%=editdata[0].name %>" oninput="checkNameValid1(this)">
                                         <span class="text-danger" id="err_name">
 
@@ -96,15 +97,51 @@
                                     </div>
 
                                     <div class="inputs">
-                                        <p class="t-14px">Email</p> <input type="text" name="email" readonly id="email"
+                                        <p class="t-14px">Email</p> <input type="text" name="email" id="email"
                                             value="<%=editdata[0].email %>" oninput="checkEmail(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="email_id">
                                         </span>
                                     </div>
 
                                     <div class="inputs">
-                                        <p class="t-14px">Contact</p> <input type="text" name="contact" readonly
-                                            id="email" value="<%=editdata[0].contact %>">
+                                        <p class="t-14px">Contact</p> <input type="number" name="contact" id="contact"
+                                            value="<%=editdata[0].contact %>" oninput="checkContact(this)">
+                                        <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
+                                        </span>
+                                    </div>
+                                    <div class="inputs">
+                                        <div class="genders">
+                                            <label>Gender : </label>
+                                            <%if(editdata[0].gender=='Male') { %>
+                                                <label for="gender_male"> Male </label> <input type="radio"
+                                                    name="gender" value="male" checked id="gender_male">
+                                                <label for="gender_female" class="form-check-label">Female
+                                                </label><input type="radio" name="gender" value="female"
+                                                    id="gender_female">
+                                                <label for="gender_other">other </label><input type="radio"
+                                                    name="gender" value="other" id="gender_other">
+                                                <% } else if (editdata[0].gender=='Female' ) {%>
+                                                    <label for="gender_male"> Male </label> <input type="radio"
+                                                        name="gender" value="male" id="gende_male">
+                                                    <label for="gender_female">Female </label><input type="radio"
+                                                        name="gender" checked value="female" id="gender_female">
+                                                    <label for="gender_other">other </label><input type="radio"
+                                                        name="gender" value="other" id="gender_other">
+
+                                                    <% } else if(editdata[0].gender=='Other' ) {%>
+                                                        <label for="gender_male"> Male </label> <input type="radio"
+                                                            name="gender" value="male" id="gende_male">
+                                                        <label for="gender_female">Female </label><input type="radio"
+                                                            name="gender" value="female" id="gender_female">
+                                                        <label for="gender_other">other </label><input type="radio"
+                                                            name="gender" value="other" checked id="gender_other">
+                                                        <%}%>
+                                        </div>
+                                    </div>
+
+                                    <div class="inputs">
+                                        <p class="t-14px">Address</p> <input type="text" name="contact" id="contact"
+                                            value="<%=editdata[0].address%>" oninput="checkContact(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
                                         </span>
                                     </div>

@@ -125,3 +125,16 @@ body {
     height: 40px;
     width: 40px;
 }
+
+.modal1 {
+    display: block !important;
+}
+
+.modal1-dialog {
+    overflow-y: initial !important
+}
+
+.modal1-body {
+    height: 250px;
+    overflow-y: auto;
+}
