@@ -6,71 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>categories</title>
+  <link rel="stylesheet" href="/css/categories.css">
 
-  <style>
-    .container {
-      margin: 0 auto;
-      max-width: 1170px;
-    }
-
-    body {
-      margin: 0px;
-      margin-top: 100px;
-      background-color: aliceblue;
-    }
-
-    .exam {
-      border: 1px solid black;
-      padding: 25px;
-      background-color: white;
-    }
-
-    .time_left {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    .catg {
-      display: flex;
-      flex-wrap: wrap;
-      /* justify-content: space-between; */
-      /* margin-top: 10px; */
-    }
-
-    .catg span {
-      font-size: large;
-      font-weight: bold;
-    }
-
-    .cat {
-      border: 1px solid black;
-      width: 100px;
-      text-align: center;
-      cursor: pointer;
-      padding: 10px;
-      margin: 10px;
-      background-color: rgb(233, 210, 214);
-    }
-
-    .que {
-      margin-top: 30px;
-    }
-
-    .option {
-      margin-top: 10px;
-    }
-
-    .next {
-      margin-top: 10px;
-    }
-
-    .next input {
-      background-color: rgb(232, 200, 205);
-      width: 100px;
-      height: 30px;
-    }
-  </style>
 </head>
 <body  >
   <div class="container">
@@ -90,9 +27,9 @@
       </div>
 
       <div class="catg">
-        <% for(let i=0;i<exam_cat.length;i++){ %>
+        <% for(let i=0;i<cat.length;i++){ %>
           <div class="cat" onclick="gen_qz(this.id);" id="<%= i+1%>">
-            <%=exam_cat[i].category_name%>
+            <%=cat[i].category_name%>
           </div>
           <% } %>
       </div>
@@ -101,20 +38,27 @@
 
       <div id="quiz" class="quiz">
         <div class="que">
-          Que:
-          <p>
-            <%= cat_1_que[0].question_text%>
-          </p>
+          <h3>Q:</h3>
+          <h5>
+            <%= e.question_text%>
+          </h5>
         </div>
 
         <div class="option">
-          <div>A.<%= cat_1_que[0].option_a %>
+          <div> <input type="radio" name="q">
+           <%= e.option_a %>
           </div>
-          <div>B.<%= cat_1_que[0].option_b %>
+          <div>
+            <input type="radio" name="q">
+           <%= e.option_b %>
           </div>
-          <div>C.<%= cat_1_que[0].option_c %>
+          <div>
+            <input type="radio" name="q">
+           <%= e.option_c %>
           </div>
-          <div>D.<%= cat_1_que[0].option_d %>
+          <div>
+            <input type="radio" name="q">
+            <%= e.option_d %>
           </div>
         </div>
 
@@ -126,72 +70,7 @@
     </div>
   </div>
 
-  <script>
-    
-    function gen_qz(id) {
-      let g_id = id;
-
-      if (g_id == '1') {
-        let quiz = document.getElementById("quiz");
-        quiz.innerHTML = `    <div class="que"> 
-                     Que: <p><%= cat_1_que[0].question_text%></p>
-                      </div>
-
-                <div class="option">
-                    <div>A.<%= cat_1_que[0].option_a%></div>
-                    <div>B.<%= cat_1_que[0].option_b%></div>
-                    <div>C.<%= cat_1_que[0].option_c%></div>
-                    <div>D.<%= cat_1_que[0].option_d%></div>
-                </div>
-
-                <div class="next">
-                    <input type="submit"  value="next">
-                </div>
-               
-                `;
-
-      }
-
-      else if (g_id == "2") {
-        let quiz = document.getElementById("quiz");
-        quiz.innerHTML = `      <div class="que"> 
-                     Que: <p><%= cat_2_que[0].question_text%></p>
-                      </div>
-
-
-                <div class="option">
-                    <div>A.<%= cat_2_que[0].option_a%></div>
-                    <div>B.<%= cat_2_que[0].option_b%></div>
-                    <div>C.<%= cat_2_que[0].option_c%></div>
-                    <div>D.<%= cat_2_que[0].option_d%></div>
-                </div>
-
-                <div class="next">
-                    <input type="submit"  value="next">
-                </div>`;
-
-      }
-
-      else if (g_id == '3') {
-        let quiz = document.getElementById("quiz");
-        quiz.innerHTML = `      <div class="que"> 
-                      Que: <p><%= cat_3_que[0].question_text%></p>
-                        </div>
-
-                <div class="option">
-                    <div>A.<%= cat_3_que[0].option_a%></div>
-                    <div>B.<%= cat_3_que[0].option_b%></div>
-                    <div>C.<%= cat_3_que[0].option_c%></div>
-                    <div>D.<%= cat_3_que[0].option_d%></div>
-                </div>
-
-                <div class="next">
-                    <input type="submit" value="next">
-                </div>`;
-      }
-    }
-
-  </script>
+  <script src="/js/exam_categories.js"></script>
 </body>
 
 </html>

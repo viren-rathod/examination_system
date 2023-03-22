@@ -1,0 +1,62 @@
+.container {
+    margin: 0 auto;
+    max-width: 1170px;
+  }
+
+  body {
+    margin: 0px;
+    margin-top: 100px;
+    background-color: aliceblue;
+  }
+
+  .exam {
+    border: 1px solid black;
+    padding: 25px;
+    background-color: white;
+  }
+
+  .time_left {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .catg {
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
+    /* margin-top: 10px; */
+  }
+
+  .catg span {
+    font-size: large;
+    font-weight: bold;
+  }
+
+  .cat {
+    border: 1px solid black;
+    width: 100px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    margin: 10px;
+    background-color: rgb(233, 210, 214);
+  }
+
+  .que {
+    margin-top: 30px;
+  }
+
+  .option {
+    margin-top: 10px;
+  }
+
+  .next {
+    margin-top: 10px;
+  }
+
+  .next input {
+    background-color: rgb(232, 200, 205);
+    width: 100px;
+    height: 30px;
+  }
