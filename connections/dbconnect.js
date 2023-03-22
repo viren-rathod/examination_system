@@ -3,6 +3,6 @@ const dbconnection = mysql2.createPool({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "job_new"
+    database: "exam_system"
 })
 module.exports = dbconnection;

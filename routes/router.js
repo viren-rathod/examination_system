@@ -3,11 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 
-const controller = require('../controller/authcontroller');
+const controllers = require('../controllers/authcontroller');
 
-router.get('/home', controller.homepageGet);
-router.get('/exam_home', controller.exam_homepageGet);
-router.get('/result', controller.resultpageGet);
-router.post('/profile_update', controller.profile_updatepagePOST);
+router.get('/home', controllers.homepageGet);
+router.get('/exam_home', controllers.exam_homepageGet);
+router.get('/result', controllers.resultpageGet);
+router.post('/profile_update', controllers.profile_updatepagePOST);
+
 
 module.exports = router;

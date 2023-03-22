@@ -130,7 +130,8 @@
                             <div class="d-flex flex-column justify-content-center mt-2">
                                 <h1 class="heading1">WELCOME TO ONLINE EXAMINATION SYSTEM</h1>
                                 <p class="para1  mt-4">Are You Ready to Take the Challenge ?</p>
-                                <button class="btn btn-exm bg-warning ">Enter Into Exam</button>
+                                <a class="btn btn-exm bg-warning" href="/examlistGet">Enter Into
+                                    Exam</a>
                             </div>
                         </div>
                         <div class="col">
@@ -143,75 +144,7 @@
         </section>
     </div>
 
-    <script>
-        let ischeckemail = true;
-        let ischeckname1 = true, ischeckname2 = true;
-        var savebutton = document.getElementById('savebutton');
-        var saveall = document.getElementById('totalSave');
-        var readonly = true;
-        var inputs = document.querySelectorAll('input[type="text"]');
-        var firstname = document.getElementById('first_name').value;
-        var id = document.getElementById('id_data').value;
-        var email = document.getElementById('email').value;
-
-        async function checkNameValid1(ele) {
-            let input_val = ele.value;
-            let err_mes = document.getElementById('err_name');
-            var regex = /^[a-zA-Z ]*$/;
-            if (input_val == "" || !regex.test(input_val)) {
-                err_mes.innerHTML = "Not a Valid Name";
-                ischeckname1 = false;
-            }
-            else {
-                firstname = input_val;
-                err_mes.innerHTML = "";
-                ischeckname1 = true;
-            }
-            checksubmit();
-        }
-
-        async function checkEmail(ele) {
-            const inputtxt = ele.value;
-            console.log(inputtxt);
-            const email_id = document.getElementById('email_id');
-            const regExEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            if (regExEmail.test(inputtxt.trim())) {
-                email = inputtxt;
-                email_id.innerHTML = '';
-                ischeckemail = true;
-            } else {
-                email_id.innerHTML = 'Not a Valid Email';
-                ischeckemail = false;
-            }
-            await checksubmit();
-        }
-
-
-        savebutton.addEventListener('click', function () {
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].toggleAttribute('readonly');
-            };
-        });
-
-        async function checksubmit() {
-            if (ischeckemail && ischeckname1) {
-                saveall.disabled = false;
-                saveall.style.cursor = 'pointer';
-                console.log(firstname, email)
-                const ans = await fetch('/profile_update', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id, firstname, email
-                    })
-                });
-                // const data = await ans.json();
-                // console.log(data);
-
-            }
-            else {
-                saveall.disabled = true;
-            }
-        }
+    <script src="/js/home.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
