@@ -57,4 +57,10 @@ const exam=require("./routes/router")
 
 app.use("/",exam)
 
-app.listen(8005)
+// app.get("/form",(req,res)=>{
+//     res.render("form")
+// })
+
+
+
+app.listen(8010)

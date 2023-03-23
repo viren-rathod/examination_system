@@ -48,14 +48,6 @@
 
 
 
-                    <div class="d-flex" id="navbarNav">
-                        <ul class="navbar-nav">
-
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#">Profile</a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </nav>
         </header>
@@ -66,27 +58,36 @@
                         <div class="exam_form">
 
                             <form action="/" method="post">
-                                <div class="form-input"><input type="text" name="fname" class="form-control" id="fname"
-                                        placeholder="First Name"></div>
-                                <div class="form-input"><input type="text" name="lname" class="form-control" id="lname"
-                                        placeholder="Last Name"></div>
-                                <div class="form-input"> <input type="text" name="email" class="form-control" id="email"
-                                        placeholder="Email"></div>
+                                
+                                <div class="form-input"><input type="text" name="fname" class="form-control" id="fname" placeholder="First Name" value="<%=result.name%>" readonly >
+                                    <p id="err_name"></p>
+                                    </div>
+                                <div class="form-input"><input type="text" name="city" class="form-control" id="city"
+                                        placeholder="City" value="<%=result.city%>" readonly >
+                                    <p id="err_name1"></p>
+                                    </div>
+                                <div class="form-input"> <input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<%=result.email%>" readonly>
+                                <p id="emal_id"></p></div>
                                 <div class="form-input"><input type="text" name="contact" class="form-control"
-                                        id="contact" placeholder="Contact"></div>
+                                        id="contact" placeholder="Contact" value="<%=result.contact%>" readonly>
+                                        <p id="err_contact"></p></div>
                                 <div class="form-input">
-                                    <input type="text" name="birthdate" class="form-control" id="birthdate"
-                                        placeholder="Birth Date">
+                                    <input type="text" name="gender" class="form-control" id="gender"
+                                        placeholder="Gender" value="<%=result.gender%>" readonly>
+                                        <p id="err_gender"></p>
                                 </div>
                                 <div class="form-input"><input type="text" name="college" class="form-control"
-                                        id="college" placeholder="College"></div>
-                                <div class="form-input"><input type="text" name="access" class="form-control"
-                                        id="access" placeholder="Access Code"></div>
+                                        id="college" placeholder="College" value="<%=result.college_name%>" readonly>
+                                        <p id="err_college"></p></div>
+                                <div class="form-input"><input type="text" name="access" class="form-control" id="access" placeholder="Access Code" onchange="validateCode()">
+
+                                    <p id="err1_access" > </p>
+                                </div>
 
 
 
-                                <div><input type="button" class="btn btn-primary mb-2" value="Click On Exam"
-                                        onclick="show_rules()"></div>
+                                <div><input type="button" id="submit1" class="btn btn-primary mb-2" value="Click On Exam"
+                                        onclick="show_rules()" disabled></div>
 
 
                               
@@ -104,7 +105,7 @@
                                         <ul>
                                             <li>The exam consisits of multiple choice questions.</li>
                                             <li>Each question is of 1 marks each.</li>
-                                            <li>Time limit : 10 minutes</li>
+                                            <li>Time limit : <%=sql[0].exam_time%> minutes</li>
                                             <li>You cannot access the exam once the time is over.</li>
                                             <li>There will be questions from different categories.</li>
                                         </ul>
@@ -112,17 +113,15 @@
                                     
                                     <div>
                                         <form action="/start_exam" method="post">
-                                            <div class="form-check"> <input type="checkbox" class="form-check-input"
-                                                    name="check"><label for="check">I have read all above rules
+                                            <div class="form-check"> <input type="checkbox" id="check1" class="form-check-input"
+                                                    name="check" ><label for="check">I have read all above rules
                                                 </label></div>
-                                            <div class="form-check"> <input type="checkbox" class="form-check-input"
-                                                    name="check"><label for="check">I have ready to start the exam
+                                            <div class="form-check"> <input type="checkbox" id="check2" class="form-check-input" name="check" onchange="foo()"><label for="check">I have ready to start the exam
                                                 </label></div>
 
                                             <div> <input type="reset" class="btn btn-primary mb-2" value="Cancel"
                                                     onclick="close_dialog()">
-                                                <input type="submit" class="btn btn-primary mb-2"
-                                                    value="START EXAM">
+                                                <input type="submit" id="submit" class="btn btn-primary mb-2" value="START EXAM" disabled>
                                             </div>
 
 
@@ -145,6 +144,8 @@
         </div>
 
     </div>
+    
+    <script src="/exam_list.js"></script>
 
 </body>
 

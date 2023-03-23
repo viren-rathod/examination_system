@@ -59,6 +59,8 @@
                         <th>Exam ID</th>
                         <th>Exam Name</th>
                         <th>Time Duration</th>
+                        <th>Total Question</th>
+
                         <th>Exam Status</th>
                         <th>Action</th>
                     </tr>
@@ -72,23 +74,26 @@
                             <%=sql[i].exam_name%>
                         </td>
                         <td  class="table-info">
-                            <%=sql[i].time%>
-                        </td>
-                        <%if(sql[i].exam_status==="active"){%>
-                        <td class=" table-info text-success ">
-                            <%=sql[i].exam_status%>
+                            <%=sql[i].exam_time%>
                         </td>
                         <td  class="table-info">
-                            <a  href="javascript:popupdata('')" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Start</a>
+                            <%=sql[i].total_questions%>
+                        </td>
+                        <%if(sql[i].exam_status==="0"){%>
+                        <td class=" table-info text-success ">
+                            Unattempted
+                        </td>
+                        <td  class="table-info">
+                            <a  href="javascript:popupdata('')" id="  <%=sql[i].exam_id%>" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Start</a>
             
                         </td>
                         <%}%>
-                        <%if(sql[i].exam_status==="unactive"){%>
+                        <%if(sql[i].exam_status==="1"){%>
                             <td  class="table-info text-danger">
-                                <%=sql[i].exam_status%>
+                                Attempted
                             </td>
                             <td  class="table-info">
-                                <a  href="javascript:popupdata('')" class="btn btn-success disabled" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Start</a>
+                                <a  href="javascript:popupdata('')"id="<%=sql[i].exam_id%>" class="btn btn-success disabled" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Start</a>
                 
                             </td>
                             <%}%>
@@ -106,7 +111,7 @@
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                      <h5 class="modal-title" id="staticBackdropLabel">Welcome <%=result.name%></h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
