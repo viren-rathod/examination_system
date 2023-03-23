@@ -44,7 +44,8 @@ const profile_updatepagePOST = async(req, res) => {
 
     try {
         const { firstname, email } = req.body
-            // console.log(id, firstname, email);
+
+        // console.log(id, firstname, email);
         req.session.email = email;
         // console.log('email update to email', req.session.email);
         let sql = `update student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `
