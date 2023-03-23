@@ -18,7 +18,8 @@
             <nav class="navbar navbar-expand-lg bg-warning">
                 <div class="container-fluid">
                     <img src="/img/exam_logo.jpg" class="img-circle" alt="logo">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="d-flex" id="navbarNav">
@@ -28,7 +29,8 @@
                                 <a class="nav-link active" href="/home">Home</a>
                             </li>
                             <li class="nav-item">
-                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalCart">Profile
+                                <button type="button" class="btn" data-bs-toggle="modal"
+                                    data-bs-target="#modalCart">Profile
                                 </button>
                             </li>
                             <li class="nav-item">
@@ -79,27 +81,31 @@
                         <!-- Modal body -->
                         <div class="model-body">
                             <div class="card1">
-                                <div class="info"> <span>Edit form</span> <button id="savebutton" class="btn btn-warning">edit</button>
+                                <div class="info"> <span>Edit form</span> <button id="savebutton"
+                                        class="btn btn-warning">edit</button>
                                 </div>
                                 <div class="forms" style="height: 300px;
                                 overflow-y: auto;">
                                     <div class="inputs">
                                         <p class="t-14px">First Name</p>
-                                        <input type="hidden" value="<%=editdata[0].student_id %>" id="id_data">
-                                        <input type="text" id="first_name" name="first_name" value="<%=editdata[0].name %>" oninput="checkNameValid1(this)">
+
+                                        <input type="text" id="first_name" name="first_name"
+                                            value="<%=editdata[0].name %>" oninput="checkNameValid1(this)">
                                         <span class="text-danger" id="err_name">
 
                                         </span>
                                     </div>
 
                                     <div class="inputs">
-                                        <p class="t-14px">Email</p> <input type="text" name="email" id="email" value="<%=editdata[0].email %>" oninput="checkEmail(this)">
+                                        <p class="t-14px">Email</p> <input type="text" name="email" id="email"
+                                            value="<%=editdata[0].email %>" oninput="checkEmail(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="email_id">
                                         </span>
                                     </div>
 
                                     <div class="inputs">
-                                        <p class="t-14px">Contact</p> <input type="number" name="contact" id="contact" value="<%=editdata[0].contact %>" oninput="checkContact(this)">
+                                        <p class="t-14px">Contact</p> <input type="number" name="contact" id="contact"
+                                            value="<%=editdata[0].contact %>" oninput="checkContact(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
                                         </span>
                                     </div>
@@ -107,26 +113,36 @@
                                         <div class="genders">
                                             <label>Gender : </label>
                                             <%if(editdata[0].gender=='Male') { %>
-                                                <label for="gender_male"> Male </label> <input type="radio" name="gender" value="male" checked id="gender_male">
+                                                <label for="gender_male"> Male </label> <input type="radio"
+                                                    name="gender" value="male" checked id="gender_male">
                                                 <label for="gender_female" class="form-check-label">Female
-                                                </label><input type="radio" name="gender" value="female" id="gender_female">
-                                                <label for="gender_other">other </label><input type="radio" name="gender" value="other" id="gender_other">
+                                                </label><input type="radio" name="gender" value="female"
+                                                    id="gender_female">
+                                                <label for="gender_other">other </label><input type="radio"
+                                                    name="gender" value="other" id="gender_other">
                                                 <% } else if (editdata[0].gender=='Female' ) {%>
-                                                    <label for="gender_male"> Male </label> <input type="radio" name="gender" value="male" id="gende_male">
-                                                    <label for="gender_female">Female </label><input type="radio" name="gender" checked value="female" id="gender_female">
-                                                    <label for="gender_other">other </label><input type="radio" name="gender" value="other" id="gender_other">
+                                                    <label for="gender_male"> Male </label> <input type="radio"
+                                                        name="gender" value="male" id="gende_male">
+                                                    <label for="gender_female">Female </label><input type="radio"
+                                                        name="gender" checked value="female" id="gender_female">
+                                                    <label for="gender_other">other </label><input type="radio"
+                                                        name="gender" value="other" id="gender_other">
 
                                                     <% } else if(editdata[0].gender=='Other' ) {%>
-                                                        <label for="gender_male"> Male </label> <input type="radio" name="gender" value="male" id="gende_male">
-                                                        <label for="gender_female">Female </label><input type="radio" name="gender" value="female" id="gender_female">
-                                                        <label for="gender_other">other </label><input type="radio" name="gender" value="other" checked id="gender_other">
+                                                        <label for="gender_male"> Male </label> <input type="radio"
+                                                            name="gender" value="male" id="gende_male">
+                                                        <label for="gender_female">Female </label><input type="radio"
+                                                            name="gender" value="female" id="gender_female">
+                                                        <label for="gender_other">other </label><input type="radio"
+                                                            name="gender" value="other" checked id="gender_other">
                                                         <%}%>
                                         </div>
                                     </div>
 
                                     <div class="inputs">
-                                        <p class="t-14px">Address</p> <input type="text" name="contact" id="contact" value="<%=editdata[0].address%>" oninput="checkContact(this)">
-                                        <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
+                                        <p class="t-14px">Address</p> <input type="text" name="address" id="address"
+                                            value="<%=editdata[0].address%>" oninput="checkAddress(this)">
+                                        <span class="text-danger fs-16 m-point5 iblock " id="addre_err">
                                         </span>
                                     </div>
                                 </div>
@@ -136,7 +152,8 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button id="totalSave" class="btn btn-warning" data-bs-dismiss="modal" oninput="checksubmit()">Save</button>
+                            <button id="totalSave" class="btn btn-warning" data-bs-dismiss="modal"
+                                oninput="checksubmit()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -166,7 +183,9 @@
 
     <script src="/js/home.js">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+        crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
 </body>
