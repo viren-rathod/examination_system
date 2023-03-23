@@ -65,6 +65,7 @@
     </div>
 </body>
 <script>
+ 
     function basicpopup() {
         popupWindow = window.open(
             "/examlistGet",
@@ -74,7 +75,7 @@
 
         document.onkeydown = function (e) {
             alert("hellogdbndgb");
-            // console.log("hello");
+
             e = e || window.event; //Get event
 
             if (!e.ctrlKey) return;
@@ -82,13 +83,11 @@
             var code = e.which || e.keyCode; //Get key code
 
             switch (code) {
-                case 18: //Block Ctrl+S
-                case 87: //Block Ctrl+W -- Not work in Chrome and new Firefox
+                case 18:
                     e.preventDefault();
                     e.stopPropagation();
                     break;
             }
-            // console.log("jaydip");
         };
     }
 
