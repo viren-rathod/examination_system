@@ -1,7 +1,4 @@
-const express = require("express");
-const app = express();
-
-
+const express = require('express');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const sessions = require('express-session');
@@ -12,19 +9,27 @@ let bodyParser = require('body-parser')
 const mysql = require('mysql2');
 const flash = require('connect-flash');
 var nodemailer = require('nodemailer');
-
-const path = require('path');
-
-app.use(express.static('public'));
+const app = express();
 const ejs = require('ejs');
 const { signedCookie } = require('cookie-parser');
 const { Console } = require('console');
-
-app.set("view engine", "ejs");
-app.use(express.static(__dirname + "/public"));
+const path = require('path');
 
 
-const router = require('./routes/router');
+
+
+
+
+
+//set engines
+app.set("views", "./views");
+app.set('view engine', 'ejs');
+
+
+
+
+app.use(express.static('public'));
+const exam=require("./routes/router")
 
 //kevin
 app.use(cookie());
@@ -52,7 +57,7 @@ app.use(express.static(path.join(__dirname + '/public/js')));
 app.set('view engine', 'ejs');
 app.set("views", "./views");
 
-const exam=require("./routes/router")
+
 
 
 app.use("/",exam)
@@ -60,7 +65,7 @@ app.use("/",exam)
 // app.get("/form",(req,res)=>{
 //     res.render("form")
 // })
+app.listen(4321,()=>{
+    console.log("listening on 4321");
+});
 
-
-
-app.listen(8010)
