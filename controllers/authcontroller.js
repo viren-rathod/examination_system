@@ -10,6 +10,7 @@ const examlistGet = async (req, res) => {
       res.render("examlist", {
         result: result,
       });
+      // res.send(result);
     } else res.send("Data not found");
   } catch (err) {
     console.log(err);
