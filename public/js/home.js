@@ -93,16 +93,29 @@ async function checkAddress(ele) {
     checksubmit();
 }
 
+let isCheckgender = true;
+let ansgen;
+const gender1 = document.getElementsByName("gender");
+gender1.forEach(ele => {
+    if (ele.checked) {
+        ansgen = ele.value;
+    }
+})
+function checkgender(ele) {
+    ansgen = ele.value
+    checksubmit();
+}
 async function checksubmit() {
-    if (ischeckemail && ischeckname1 && isContact && isaddress) {
+    if (ischeckemail && ischeckname1 && isContact && isaddress && isCheckgender) {
 
         saveall.disabled = false;
         saveall.style.cursor = 'pointer';
-        console.log(firstname, email, contact.value, address)
+
+        console.log(firstname, email, contact.value, address, ansgen)
         const ans = await fetch('/profile_update', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                firstname, email, contact: contact.value, address
+                firstname, email, contact: contact.value, address, gender: ansgen
             })
         });
 
