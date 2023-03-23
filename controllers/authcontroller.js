@@ -1,6 +1,3 @@
-// const con = require('../connections/dbconnect');
-//database connection
-
 async function queryExecuter(query) {
     return new Promise((resolve, rejects) => {
         con.query(query, (err, result) => {
@@ -25,9 +22,9 @@ const homepageGet = async(req, res) => {
     if (!req.session.email) {
         res.render('login', { msg: "" })
     } else {
-        console.log("Sesion :- ", req.session.email);
-        console.log(`select student_id,name,address,email,contact,city,gender from  exam_system.student where email='${req.session.email}'`);
-        const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  exam_system.student where email='${req.session.email}'`);
+        // console.log("Sesion :- ", req.session.email);
+        // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+        const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
         res.render('homestart', { editdata: result })
 
     }
@@ -35,7 +32,7 @@ const homepageGet = async(req, res) => {
 
 
 const exam_homepageGet = async(req, res) => {
-    const [result] = await con.execute(`select * from exam_system.questions;`)
+    const [result] = await con.execute(`select * from questions;`)
 
     res.render('exam_start', { exam_que: result })
 }
@@ -49,8 +46,8 @@ const profile_updatepagePOST = async(req, res) => {
         const { firstname, email } = req.body
             // console.log(id, firstname, email);
         req.session.email = email;
-        console.log('email update to email', req.session.email);
-        let sql = `update exam_system.student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `
+        // console.log('email update to email', req.session.email);
+        let sql = `update student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `
         await con.execute(sql);
         let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
         await con.execute(updateUser);
@@ -128,10 +125,10 @@ const registerpost = async(req, res) => {
         var [roleResult] = await con.execute(insrertRole);
 
 
-        req.session.email = email;
-        req.session.stdId = insertResult.insertId;
-        req.session.userId = roleResult.insertId;
-        console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
+        // req.session.email = email;
+        // req.session.stdId = insertResult.insertId;
+        // req.session.userId = roleResult.insertId;
+        // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
         res.render("login", { msg: "" });
     }
@@ -177,7 +174,7 @@ const loginpostpage = async(req, res) => {
                 req.session.email = email;
                 req.session.stdId = emailResult[0].student_id;
                 req.session.userId = userData[0].user_id;
-                console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
+                // console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
 
 
                 res.redirect("/home");
@@ -228,42 +225,42 @@ const city = async(req, res) => {
 
 const sendOtp = async(req, res, next) => {
     var email = req.body.email;
-    console.log("Send email in post method", email);
+    // console.log("Send email in post method", email);
     let testAccount = nodemailer.createTestAccount();
     var otp = generateOTP();
-    // console.log("otp", otp);
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 587,
-        auth: {
-            type: "OAUTH2",
-            user: "patelnokano000@gmail.com",
-            clientId: "67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com",
-            clientSecret: "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",
-            refreshToken: "1//04us9E3b_ARjICgYIARAAGAQSNwF-L9IrPSpdH05Mzzl8BuxFOyRDE0lsDzRRfMdEg2jQA_uFDp7G4que8m713t_5q1CjRlSK8qY",
-            accessToken: "ya29.a0AVvZVspJqb2vWNPWa55TrdhaULzKmGSJOEsiZF-ctCG4GxpqNzI7cHKiG1CAJr1CkWbpm-EytloslaQfHQLpoZJJyR0wFJYzqwD4F65wZwaYVHvNx3SIznPvddsuorAivrditj4xvnxLip4KYy_-14DYlANRaCgYKARYSARISFQGbdwaIV0_DBqtSOLdypveodSvlrA0163",
-        },
-    });
+    console.log("otp", otp);
+    // const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 587,
+    //     auth: {
+    //         type: "OAUTH2",
+    //         user: "patelnokano000@gmail.com",
+    //         clientId: "67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com",
+    //         clientSecret: "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",
+    //         refreshToken: "1//04oac0FBgtZGQCgYIARAAGAQSNwF-L9IrHtSvQprIc940QAOf1pNmUjqI1RGFCYyiWaFH5ts-SBoA1oh8qx1nxmoOLHn-NcOZXXA",
+    //         accessToken: "ya29.a0AVvZVspDugRUTOshF-mDbB6vnkpfnXXOa7n_uAwwW3p4u_EnjAFPu5_9TZgALMgNTsr5BvnLnXls5GJfn3jNZqSLSu7YW8pQ4I6-7p-J6yarbU3ZOQEPqhWyRQ8DlWUtLX9Mv5qqLAyhdjjf-Wr6lEdbckzbaCgYKAVcSARISFQGbdwaIMMORs1Fa8eebj7H0QLjANg0163",
+    //     },
+    // });
 
-    let info = transporter.sendMail({
-        from: "hello <patelnokano000@gmail.com>", // sender address
-        to: email, // list of receivers
-        subject: "OTP Validation ✔", // Subject line
-        text: "OTP", // plain text body
-        html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-        <div style="margin:50px auto;width:70%;padding:20px 0">
-          <div style="border-bottom:1px solid #eee">
-            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Brand</a>
-          </div>
-          <p style="font-size:1.1em">Hi,</p>
-          <p>Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
-          <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
-          <p style="font-size:0.9em;">Regards,<br />EsparkBiz</p>
-          <hr style="border:none;border-top:1px solid #eee" />
-        </div>
-      </div>`,
-    });
+    // let info = transporter.sendMail({
+    //     from: "hello <patelnokano000@gmail.com>", // sender address
+    //     to: email, // list of receivers
+    //     subject: "OTP Validation ✔", // Subject line
+    //     text: "OTP", // plain text body
+    //     html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+    //     <div style="margin:50px auto;width:70%;padding:20px 0">
+    //       <div style="border-bottom:1px solid #eee">
+    //         <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Brand</a>
+    //       </div>
+    //       <p style="font-size:1.1em">Hi,</p>
+    //       <p>Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+    //       <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+    //       <p style="font-size:0.9em;">Regards,<br />EsparkBiz</p>
+    //       <hr style="border:none;border-top:1px solid #eee" />
+    //     </div>
+    //   </div>`,
+    // });
     req.session.email = email;
     res.json({
         otp,

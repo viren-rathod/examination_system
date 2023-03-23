@@ -165,7 +165,7 @@
     function validateForm() {
         var password = document.getElementById("password").value;
         var confirm = document.getElementById('confirm').value;
-        console.log(password, confirm);
+        // console.log(password, confirm);
 
 
         if (password != confirm) {
@@ -225,7 +225,7 @@
 
     function validePhone(phone) {
         var phone_length = phone.length;
-        console.log(phone_length)
+        // console.log(phone_length)
         var err_arr = [];
 
         if (phone_length > 10) {
@@ -328,7 +328,7 @@
             }).then(res => res.json())
             .then(data => {
                 select_city.innerHTML = "";
-                console.log(data);
+                // console.log(data);
 
                 for (let i = 0; i < data.result9.length; i++) {
                     const option = document.createElement('option');
