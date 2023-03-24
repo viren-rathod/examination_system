@@ -10,6 +10,7 @@ router.get('/prevGet', controller.prevGet);
 router.post('/answerPost', controller.answerPost);
 router.post('/getAns', controller.getAns);
 router.get('/endExam', controller.endExam);
+router.get('/getCategoryName', controller.getCategoryName);
 // router.get('/exam_homepageGet', controller.exam_homepageGet);
 
 module.exports=router;

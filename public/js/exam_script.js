@@ -4,6 +4,7 @@ function getAnswers(temp) {
 }
 console.log("script is already working....");
 let chk = ["", "", "", "", ""];
+
 async function fetcher(str) {
   let temp = await fetch(str);
   let ans = await temp.json();
@@ -19,7 +20,7 @@ async function fetcher(str) {
     ans[0].option_c,
     ans[0].option_d,
   ];
-  console.log("check :- ", chk);
+  // console.log("check :- ", chk);
   if (user_ans_json.length != 0)
     for (let i = 0; i < opts.length; i++) {
       if (opts[i] == user_ans_json[0].user_answers) chk[i] = "checked";
@@ -79,7 +80,7 @@ async function fetcher(str) {
   
       <input
         type="button"
-        value="SAVE"
+        value="SAVE & NEXT"
         onclick="next_btn('${ans[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
@@ -89,18 +90,26 @@ async function fetcher(str) {
 }
 
 async function next_btn(id) {
+  // console.log(id);
   let temp1 = await fetch(`/nextGet?id=${id}`);
   let tmp = await temp1.json();
-  // console.log('length',tmp[0].question_id == total_questions);
+
+  //  .log('length',tmp[0].question_id == total_questions);
   if (tmp[0]) {
     await fetcher(
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
-    if (tmp[0].question_id == total_questions) {
-      let next = document.querySelector("#next");
-      next.setAttribute("value", "SUBMIT");
-    }
+    // if (tmp[0].question_id == total_questions) {
+    //   let next = document.querySelector("#next");
+    //   next.setAttribute("value", "SUBMIT");
+    // }
+    let cat_name = await fetch(`/getCategoryName?id=${id}&btn=next`);
+    let cat_name_json = await cat_name.json();
+    document.querySelector(
+      ".category-title"
+    ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
   }
+
   // }
   let a1 = await fetch(`/answerPost?ans=${ans}&id=${id}`, {
     method: "POST",
@@ -122,26 +131,29 @@ async function next_btn(id) {
   
       <input
         type="button"
-        value="SAVE"
+        value="SAVE & NEXT"
         onclick="next_btn('${tmp[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
       />
     </div>`;
-  if (total_questions != 7) btns.innerHTML = s;
+  if (total_questions != tmp[0].question_id) {
+    btns.innerHTML = s;
+  }
 }
 
 async function previous_btn(id) {
+  let cat_name = await fetch(`/getCategoryName?id=${id}&btn=prev`);
+  let cat_name_json = await cat_name.json();
+  document.querySelector(
+    ".category-title"
+  ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
   let temp = await fetch(`/prevGet?id=${id}`);
   let tmp = await temp.json();
   if (tmp[0]) {
     await fetcher(
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
-    if (tmp[0].question_id == total_questions) {
-      let next = document.querySelector("#next");
-      next.setAttribute("value", "SUBMIT");
-    }
   }
   let s = `<div
       class="row justify-content-around align-items-center"
@@ -158,7 +170,7 @@ async function previous_btn(id) {
   
       <input
         type="button"
-        value="SAVE"
+        value="SAVE & NEXT"
         onclick="next_btn('${tmp[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
@@ -168,6 +180,11 @@ async function previous_btn(id) {
 }
 
 async function category_changer(e) {
+  // console.log(e.textContent);
+  let c_name = e.textContent;
+  document.querySelector(
+    ".category-title"
+  ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
   let temp = await fetch(`/categoryGet?id=${e.id}`);
   let ans = await temp.json();
   // console.log('Data : -',ans);
@@ -217,7 +234,7 @@ async function category_changer(e) {
   
       <input
         type="button"
-        value="SAVE"
+        value="SAVE & NEXT"
         onclick="next_btn('${ans.data[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
@@ -249,16 +266,39 @@ async function category_changer(e) {
   }
   document.getElementById("page").innerHTML = page;
 }
+if (document.getElementById("submit")) {
+  submit.addEventListener("click", async () => {
+    // console.log("submitted");
+    // console.log("ANSWER", ans);
+    if (!ans) {
+      await fetch(`/answerPost?ans=${ans}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ans }),
+      });
+      window.location.href = "/endExam";
+    }
+    window.location.href = "/endExam";
+  });
+}
+// function timer(x) {
+//   console.log(x);
+//   let y = parseInt(x);
+//   console.log(typeof y);
 
-submit.addEventListener('click',async () => {
-  // console.log("submitted");
-  console.log(ans); 
-  if(!ans) {
-    await fetch(`/answerPost?ans=${ans}&id=${id}`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ans, id }),
-    });
-  }
-  window.location.href = '/endExam';
-});
+//   var minit = y;
+//   var second = 0;
+//   var nareshInterval = setInterval(() => {
+//     document.getElementById("time1").innerHTML = `${minit}:${second}`;
+
+//     if (second == 0) {
+//       minit--;
+//       second = 60;
+//     }
+//     second--;
+//     if (minit == -1) {
+//       clearInterval(nareshInterval);
+//       // submit();
+//     }
+//   }, 1000);
+// }

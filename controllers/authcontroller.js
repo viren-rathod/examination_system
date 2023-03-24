@@ -1,3 +1,4 @@
+const { query } = require("../connections/dbconnect");
 const con = require("../connections/dbconnect");
 
 const examGet = async (req, res) => {
@@ -10,12 +11,10 @@ const examGet = async (req, res) => {
     let [exam] = await con.execute(
       `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
     );
-    // console.log(exam[0].total_questions);
     let [category] = await con.execute(
-      `SELECT category_name,a.category_id,count(a.category_id) as no_of_question FROM category a, questions b WHERE a.category_id=b.category_id and a.category_id = '${category_id}'`
+      `select category_name,b.category_id from exam a, exam_category b,category c where a.exam_id=b.exam_id and b.category_id=c.category_id and a.exam_id=${exam_id}`
     );
-
-    // console.log(answer);
+    // console.log('Exam :- ',category[0]);
 
     let [data] = await con.execute(
       `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} LIMIT ${question_per_page} OFFSET ${offset}`
@@ -89,23 +88,25 @@ const prevGet = async (req, res) => {
 };
 const answerPost = async (req, res) => {
   let b = req.body;
-  // console.log('body',b);
+  // console.log("ID :- ",b);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${b.id}`
-    );
-    if (check.length == 0) {
-      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (1,1,${b.id},'${b.ans}',1)`;
-      let [data] = await con.execute(query);
+      );
+      if (check.length == 0) {
+        let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (1,1,${b.id},'${b.ans}',1)`;
+        let [data] = await con.execute(query);
+      } else {
+        let query = `UPDATE user_answers SET user_answers='${b.ans}' WHERE question_id=${b.id}`;
+        let [data] = await con.execute(query);
+        res.json(data);
+      }
     } else {
-      let query = `UPDATE user_answers SET user_answers='${b.ans}' WHERE question_id=${b.id}`;
-      let [data] = await con.execute(query);
-    }
+    res.json("");
   }
 };
 const getAns = async (req, res) => {
   let id = req.body;
-  // console.log(id);
   let [q] = await con.execute(
     `SELECT user_answers FROM user_answers WHERE question_id = ${id[0].question_id}`
   );
@@ -116,11 +117,18 @@ const getAns = async (req, res) => {
 const endExam = async (req, res) => {
   res.render("dummy");
 };
-// const exam_homepageGet = async (req, res) => {
-//   const [result] = await con.execute(`select * from exam_system.questions;`)
 
-//   res.render('dummy', { exam_que: result })
-// }
+const getCategoryName = async (req,res) => {
+  // console.log("hhgghfghkjhk",req.query.btn=="next"? parseInt(req.query.id) + 1 : parseInt(req.query.id) - 1 );
+  let [c_name] = await con.execute(
+    `select b.category_name from questions a,category b where a.category_id=b.category_id and a.question_id= ${req.query.btn=="next"? parseInt(req.query.id) + 1 : parseInt(req.query.id) - 1 }`
+  );
+  // console.log("dhsfhifghij");
+  // let qid = req.query.qid;
+  // console.log('qid :- ',qid);
+  res.json(c_name)
+};
+
 module.exports = {
   examGet,
   answerPost,
@@ -130,4 +138,5 @@ module.exports = {
   categoryGet,
   getAns,
   endExam,
+  getCategoryName
 };
