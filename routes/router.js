@@ -30,6 +30,7 @@ router.post('/active/:resultRandom', controllers.activePost);
 router.post('/valid1', controllers.validPost);
 router.post('/changePassword', controllers.changePasswordPost);
 router.post('/validPassword', controllers.validPassword);
+router.post('/profilePassword', controllers.updateProfilePassword);
 
 
 

@@ -10,6 +10,73 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/home.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Popup container - can be anything you want */
+        
+        .popup {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        /* The actual popup */
+        
+        .popup .popuptext {
+            visibility: hidden;
+            width: 392px;
+            background-color: #198754;
+            color: #fff;
+            text-align: center;
+            border-radius: 25px;
+            padding: 19px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 58%;
+            left: 50%;
+            margin-left: 23px;
+        }
+        /* Popup arrow */
+        
+        .popup .popuptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        /* Toggle this class - hide and show the popup */
+        
+        .popup .show {
+            visibility: visible;
+            -webkit-animation: fadeIn 1s;
+            animation: fadeIn 1s;
+        }
+        /* Add animation (fade in the popup) */
+        
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -17,7 +84,7 @@
         <header>
             <nav class="navbar navbar-expand-lg bg-warning">
                 <div class="container-fluid">
-                    <img src="/img/exam_logo.jpg" class="img-circle" alt="logo">
+                    <img src="/img/exam_logo.png" class="img-circle" alt="logo">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -27,10 +94,15 @@
                             <li class="nav-item">
                                 <a class="nav-link active" href="/home">Home</a>
                             </li>
+                            <li>
+                                <a class="nav-link active" href="/examlistGet">
+                                    Exam</a>
+                            </li>
                             <li class="nav-item">
                                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalCart">Profile
                                 </button>
                             </li>
+
                             <li class="nav-item">
                                 <!-- <a class="nav-link active" href="#">Logout</a> -->
                                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#myModal">
@@ -74,59 +146,64 @@
                     <div class="modal-content">
                         <!-- Modal Header -->
                         <div class="modal-header">
+                            <div class="info">
+                                <span class="text-center">Edit form</span>
+                            </div>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
+
                         <!-- Modal body -->
+
                         <div class="model-body">
                             <div class="card1">
-                                <div class="info"> <span>Edit form</span> <button id="savebutton" class="btn btn-warning">edit</button>
-                                </div>
-                                <div class="forms" style="height: 300px;
+
+                                <div class="forms" style="height: 400px;
                                 overflow-y: auto;">
-                                    <div class="inputs">
-                                        <p class="t-14px">First Name</p>
-                                        <input type="hidden" value="<%=editdata[0].student_id %>" id="id_data">
-                                        <input type="text" id="first_name" name="first_name" value="<%=editdata[0].name %>" oninput="checkNameValid1(this)">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example8">First Name </label>
+
+                                        <input type="text" id="first_name" name="first_name" class="form-control form-control-lg" value="<%=editdata[0].name %>" oninput="checkNameValid1(this)">
                                         <span class="text-danger" id="err_name">
 
                                         </span>
                                     </div>
 
-                                    <div class="inputs">
-                                        <p class="t-14px">Email</p> <input type="text" name="email" id="email" value="<%=editdata[0].email %>" oninput="checkEmail(this)">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example8">Email Name </label><input type="text" name="email" id="email" class="form-control form-control-lg" value="<%=editdata[0].email %>" oninput="checkEmail(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="email_id">
                                         </span>
                                     </div>
 
-                                    <div class="inputs">
-                                        <p class="t-14px">Contact</p> <input type="number" name="contact" id="contact" value="<%=editdata[0].contact %>" oninput="checkContact(this)">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example8">Contact Number </label><input type="number" class="form-control form-control-lg" name="contact" id="contact" value="<%=editdata[0].contact %>" oninput="checkContact(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
                                         </span>
                                     </div>
-                                    <div class="inputs">
+                                    <div class="form-outline">
                                         <div class="genders">
                                             <label>Gender : </label>
                                             <%if(editdata[0].gender=='Male') { %>
-                                                <label for="gender_male"> Male </label> <input type="radio" name="gender" value="male" checked id="gender_male">
+                                                <label for="gender_male"> Male </label> <input type="radio" name="gender" value="Male" checked id="gender_male" onchange="checkgender(this)">
                                                 <label for="gender_female" class="form-check-label">Female
-                                                </label><input type="radio" name="gender" value="female" id="gender_female">
-                                                <label for="gender_other">other </label><input type="radio" name="gender" value="other" id="gender_other">
+                                                </label>
+                                                <input type="radio" name="gender" value="Female" id="gender_female" onchange="checkgender(this)">
+                                                <label for="gender_other">Other </label><input type="radio" name="gender" value="Other" id="gender_other" onchange="checkgender(this)">
                                                 <% } else if (editdata[0].gender=='Female' ) {%>
-                                                    <label for="gender_male"> Male </label> <input type="radio" name="gender" value="male" id="gende_male">
-                                                    <label for="gender_female">Female </label><input type="radio" name="gender" checked value="female" id="gender_female">
-                                                    <label for="gender_other">other </label><input type="radio" name="gender" value="other" id="gender_other">
+                                                    <label for="gender_male"> Male </label> <input type="radio" name="gender" value="Male" id="gende_male" onchange="checkgender(this)">
+                                                    <label for="gender_female">Female </label><input type="radio" name="gender" checked value="Female" id="gender_female" onchange="checkgender(this)">
+                                                    <label for="gender_other">Other </label><input type="radio" name="gender" value="Other" id="gender_other" onchange="checkgender(this)">
 
                                                     <% } else if(editdata[0].gender=='Other' ) {%>
-                                                        <label for="gender_male"> Male </label> <input type="radio" name="gender" value="male" id="gende_male">
-                                                        <label for="gender_female">Female </label><input type="radio" name="gender" value="female" id="gender_female">
-                                                        <label for="gender_other">other </label><input type="radio" name="gender" value="other" checked id="gender_other">
+                                                        <label for="gender_male"> Male </label> <input type="radio" name="gender" value="Male" id="gende_male" onchange="checkgender(this)">
+                                                        <label for="gender_female">Female </label><input type="radio" name="gender" value="Female" id="gender_female" onchange="checkgender(this)">
+                                                        <label for="gender_other">Other </label><input type="radio" name="gender" value="Other" checked id="gender_other" onchange="checkgender(this)">
                                                         <%}%>
                                         </div>
                                     </div>
 
-                                    <div class="inputs">
-                                        <p class="t-14px">Address</p> <input type="text" name="contact" id="contact" value="<%=editdata[0].address%>" oninput="checkContact(this)">
-                                        <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
+                                    <div class="form-outline">
+                                        <label class="form-label" for="form3Example8">Address </label> <input type="text" name="address" class="form-control form-control-lg" id="address" value="<%=editdata[0].address%>" oninput="checkAddress(this)">
+                                        <span class="text-danger fs-16 m-point5 iblock " id="addre_err">
                                         </span>
                                     </div>
                                 </div>
@@ -136,12 +213,93 @@
 
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <button id="totalSave" class="btn btn-warning" data-bs-dismiss="modal" oninput="checksubmit()">Save</button>
+                            <div data-bs-dismiss="modal">
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#changePassword">Change Password
+                                </button>
+                            </div>
+
+                            <button id="totalSave" class="btn btn-warning" onclick="popupClick()" data-bs-dismiss="modal" oninput="checksubmit()">Save</button>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="modal fade" tabindex="-1" id="changePassword">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <form>
+                            <div class="modal-header">
+                                <div class="info">
+                                    <span class="text-center">ChangePassword</span>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="popup">
+                                <span class="popuptext" id="myPopup">Password is Successfully Update!</span>
+                            </div>
+
+                            <div class="model-body">
+                                <div class="card1">
+
+                                    <div class="forms" style="height: 400px;
+                                    overflow-y: auto;">
+
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form3Example8">Email Name
+                                        </label><input type="text" name="email" id="email" class="form-control form-control-lg" value="<%=editdata[0].email %>" oninput="checkEmail(this)" readonly>
+                                            <span class="text-danger fs-16 m-point5 iblock " id="email_id">
+                                        </span>
+                                        </div>
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form3Example8">Old Password
+                                        </label>
+
+                                            <input type="text" id="old_pass" name="old_pass" class="form-control form-control-lg">
+                                            <span class="text-danger" id="err_old">
+
+                                        </span>
+                                        </div>
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form3Example8"> New Password
+                                        </label>
+
+                                            <input type="text" id="save_pass" name="save_pass" class="form-control form-control-lg">
+                                            <span class="text-danger" id="err_new">
+
+                                        </span>
+                                        </div>
+
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form3Example8">Confirm Password
+                                        </label>
+
+                                            <input type="text" id="save_confirm" name="save_confirm" class="form-control form-control-lg">
+                                            <span class="text-danger" id="err_confirm">
+
+                                        </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <input type="button" onclick="validateProfilePaw()" id="passSave" class="btn btn-warning" value="Save">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </header>
+        <div class="popup" id="addPop">
+            <!-- <span class="popuptext" id="profilePopup">Porfile is Successfully Update!</span> -->
+        </div>
         <div class="body">
             <section class="section1">
                 <div class="container mt-5">
@@ -151,7 +309,7 @@
                                 <h1 class="heading1">WELCOME TO ONLINE EXAMINATION SYSTEM</h1>
                                 <p class="para1  mt-4">Are You Ready to Take the Challenge ?</p>
                                 <a class="btn btn-exm bg-warning" href="/examlistGet">Enter Into
-                                    Exam</a>
+                                        Exam</a>
                             </div>
                         </div>
                         <div class="col">
@@ -164,11 +322,91 @@
         </section>
     </div>
 
+
     <script src="/js/home.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
 </body>
+
+<script>
+    function popupClick() {
+        var divParent = document.getElementById("addPop");
+        // var popupProfile = document.getElementById("profilePopup");
+        var spanC = document.createElement("span");
+        spanC.classList.add("popuptext")
+        spanC.classList.toggle("show");
+        spanC.innerHTML = "Profile Update Complete!"
+
+        document.getElementById("addPop").appendChild(spanC)
+        const myTimeout = setTimeout(callLogin, 2000);
+
+        function callLogin() {
+            divParent.remove(spanC)
+        }
+
+    }
+
+    async function validateProfilePaw() {
+
+        var old_pass = document.getElementById("old_pass").value;
+        var save_pass = document.getElementById("save_pass").value;
+        var save_confirm = document.getElementById("save_confirm").value;
+        var err_old = document.getElementById("err_old");
+        var err_new = document.getElementById("err_new");
+        var err_confirm = document.getElementById("err_confirm");
+
+
+        var profileFetch = await fetch('/profilePassword', {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    old_pass,
+                    save_pass,
+                    save_confirm
+                })
+            }).then(res => res.json())
+            .then(data => {
+                if (data.text == "wrong") {
+                    err_old.innerHTML = 'Password Does Not Match'
+                    err_new.innerHTML = ""
+                    err_confirm.innerHTML = ""
+                }
+                if (data.text == "blank") {
+                    err_new.innerHTML = "Plese Fill the data"
+                    err_old.innerHTML = ''
+                    err_confirm.innerHTML = ""
+
+                }
+                if (data.text == "empty") {
+                    err_confirm.innerHTML = "Plese Fill the data"
+                    err_old.innerHTML = ''
+                    err_new.innerHTML = ""
+
+                }
+                if (data.text == "notMatch") {
+                    err_confirm.innerHTML = "Enter Same Password"
+                    err_old.innerHTML = ''
+                    err_new.innerHTML = ""
+                }
+                if (data.text == "success") {
+                    // location.assign("/login")
+                    // alert("password changed successfully")
+                    var popup = document.getElementById("myPopup");
+                    popup.classList.toggle("show");
+                    const myTimeout = setTimeout(callLogin, 2000);
+
+                    function callLogin() {
+                        location.assign("/login")
+                    }
+                }
+
+            })
+    }
+</script>
 
 </html>

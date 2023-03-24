@@ -22,9 +22,7 @@ const homepageGet = async(req, res) => {
     if (!req.session.email) {
         res.render('login', { msg: "" })
     } else {
-        // console.log("Sesion :- ", req.session.email);
-        // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
-        const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+        const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  exam_system.student where email='${req.session.email}'`);
         res.render('homestart', { editdata: result })
 
     }
@@ -32,7 +30,7 @@ const homepageGet = async(req, res) => {
 
 
 const exam_homepageGet = async(req, res) => {
-    const [result] = await con.execute(`select * from questions;`)
+    const [result] = await con.execute(`select * from exam_system.questions;`)
 
     res.render('exam_start', { exam_que: result })
 }
@@ -43,13 +41,12 @@ const resultpageGet = async(req, res) => {
 const profile_updatepagePOST = async(req, res) => {
 
     try {
-        const { firstname, email } = req.body
+        const { firstname, email, contact, address, gender } = req.body
 
-        // console.log(id, firstname, email);
-        req.session.email = email;
-        // console.log('email update to email', req.session.email);
-        let sql = `update student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `
+        let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+        console.log(sql);
         await con.execute(sql);
+        req.session.email = email;
         let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
         await con.execute(updateUser);
 
@@ -175,7 +172,7 @@ const loginpostpage = async(req, res) => {
                 req.session.email = email;
                 req.session.stdId = emailResult[0].student_id;
                 req.session.userId = userData[0].user_id;
-                // console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
+                console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
 
 
                 res.redirect("/home");
@@ -226,10 +223,10 @@ const city = async(req, res) => {
 
 const sendOtp = async(req, res, next) => {
     var email = req.body.email;
-    // console.log("Send email in post method", email);
-    let testAccount = nodemailer.createTestAccount();
+    console.log("Send email in post method", email);
     var otp = generateOTP();
     console.log("otp", otp);
+    // let testAccount = nodemailer.createTestAccount();
     // const transporter = nodemailer.createTransport({
     //     service: "gmail",
     //     host: "smtp.gmail.com",
@@ -239,8 +236,8 @@ const sendOtp = async(req, res, next) => {
     //         user: "patelnokano000@gmail.com",
     //         clientId: "67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com",
     //         clientSecret: "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",
-    //         refreshToken: "1//04oac0FBgtZGQCgYIARAAGAQSNwF-L9IrHtSvQprIc940QAOf1pNmUjqI1RGFCYyiWaFH5ts-SBoA1oh8qx1nxmoOLHn-NcOZXXA",
-    //         accessToken: "ya29.a0AVvZVspDugRUTOshF-mDbB6vnkpfnXXOa7n_uAwwW3p4u_EnjAFPu5_9TZgALMgNTsr5BvnLnXls5GJfn3jNZqSLSu7YW8pQ4I6-7p-J6yarbU3ZOQEPqhWyRQ8DlWUtLX9Mv5qqLAyhdjjf-Wr6lEdbckzbaCgYKAVcSARISFQGbdwaIMMORs1Fa8eebj7H0QLjANg0163",
+    //         refreshToken: "1//04us9E3b_ARjICgYIARAAGAQSNwF-L9IrPSpdH05Mzzl8BuxFOyRDE0lsDzRRfMdEg2jQA_uFDp7G4que8m713t_5q1CjRlSK8qY",
+    //         accessToken: "ya29.a0AVvZVspJqb2vWNPWa55TrdhaULzKmGSJOEsiZF-ctCG4GxpqNzI7cHKiG1CAJr1CkWbpm-EytloslaQfHQLpoZJJyR0wFJYzqwD4F65wZwaYVHvNx3SIznPvddsuorAivrditj4xvnxLip4KYy_-14DYlANRaCgYKARYSARISFQGbdwaIV0_DBqtSOLdypveodSvlrA0163",
     //     },
     // });
 
@@ -262,7 +259,7 @@ const sendOtp = async(req, res, next) => {
     //     </div>
     //   </div>`,
     // });
-    req.session.email = email;
+    // req.session.email = email;
     res.json({
         otp,
     });
@@ -359,7 +356,51 @@ const validPassword = async(req, res) => {
     }
 };
 
+// update profile update password 
+var updateProfilePassword = async(req, res) => {
 
+    var old_pass = req.body.old_pass;
+    var save_pass = req.body.save_pass;
+    var confirm_pass = req.body.save_confirm;
+    console.log("adity", old_pass, save_pass, confirm_pass);
+
+
+    var selectAllUserData = `select user_id , password from user_login where email = '${req.session.email}'`
+    var [userData] = await con.execute(selectAllUserData);
+    console.log(userData);
+    var selectAllStudentData = `select student_id from student where email = '${req.session.email}'`;
+    var [studentData] = await con.execute(selectAllStudentData);
+    console.log(studentData);
+
+    var compare = await bcrypt.compare(old_pass, userData[0].password);
+    console.log(compare);
+
+    if (!compare) {
+        res.json({ text: 'wrong' })
+    } else {
+
+        if (save_pass == "") {
+            res.json({ text: 'blank' })
+        } else if (confirm_pass == "") {
+            res.json({ text: 'empty' })
+        } else if (save_pass != confirm_pass) {
+            res.json({ text: 'notMatch' })
+        } else {
+            console.log("eneter the else loop")
+            var snum = await bcrypt.genSalt(10);
+            var passwordStrong = await bcrypt.hash(save_pass, snum);
+
+            var updateQuery = `update user_login set password = '${passwordStrong}' where user_id = '${userData[0].user_id}'`;
+            var updateQuery1 = `update student set  password = '${passwordStrong}' where student_id = '${studentData[0].student_id}'`
+
+            var [resultUpdate] = await con.execute(updateQuery);
+            var [resultUpdate1] = await con.execute(updateQuery1);
+            // res.render('login', { msg: "" })
+            res.json({ text: 'success' });
+        }
+    }
+
+}
 
 module.exports = {
     registerpage,
@@ -381,5 +422,6 @@ module.exports = {
     exam_homepageGet,
     resultpageGet,
     profile_updatepagePOST,
-    logoutpageGet
+    logoutpageGet,
+    updateProfilePassword
 }
