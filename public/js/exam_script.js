@@ -1,3 +1,4 @@
+
 let name = document.getElementById("name").value;
 let email = document.getElementById("email").value;
 let accesscode = document.getElementById("accesscode").value;
@@ -71,10 +72,32 @@ async function checksubmit() {
 }
 
 async function popupdata(id) {
+    
+    var elem = document.documentElement;
+
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+       
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+   
+        elem.msRequestFullscreen();
+      }
+      
   document.querySelector(".overlay").classList.add("showoverlay");
   document.querySelector(".loginform").classList.add("showloginform");
   document.getElementById("id").value = id;
+  document.addEventListener("keydown", function(e) {
+    if (e.altKey && e.keyCode === 9) {
+        e.preventDefault(); 
+    }
+}, false)
+
+ 
 }
+
+
 function closeModel() {
   document.querySelector(".overlay").classList.remove("showoverlay");
   document.querySelector(".loginform").classList.remove("showloginform");

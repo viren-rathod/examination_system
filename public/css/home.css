@@ -138,3 +138,20 @@ body {
     height: 250px;
     overflow-y: auto;
 }
+
+
+.genders {
+    display: flex;
+    padding-top: 20px;
+}
+
+.genders label {
+    padding-top: 0px;
+    padding-left: 32px;
+    padding-right: 5px;
+}
+
+.form-label {
+    font-weight: 900;
+    padding-top: 15px;
+}

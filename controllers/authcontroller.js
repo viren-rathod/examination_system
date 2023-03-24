@@ -21,13 +21,11 @@ const logoutpageGet = async (req, res) => {
 
 const homepageGet = async (req, res) => {
   // req.session.email = email;
-  // console.log("Sesion :- ", req.session.email);
+
   if (!req.session.email) {
     res.render('login', { msg: "" })
-  }
-  else {
+  } else {
     const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  exam_system.student where email='${req.session.email}'`);
-    // console.log(result);
     res.render('homestart', { editdata: result })
 
   }
@@ -44,15 +42,20 @@ const resultpageGet = async (req, res) => {
   res.render('result');
 }
 const profile_updatepagePOST = async (req, res) => {
+
   try {
-    const { id, firstname, email } = req.body
-    // console.log(id, firstname, email);
-    let sql = `update exam_system.student set name='${firstname}',email='${email}' where student_id=${id} `
+    const { firstname, email, contact, address, gender } = req.body
+
+    let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+    console.log(sql);
     await con.execute(sql);
+    req.session.email = email;
+    let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
+    await con.execute(updateUser);
+
     res.json("ok")
 
-  }
-  catch (exception) {
+  } catch (exception) {
     // console.log(exception)
   }
 }
@@ -118,10 +121,15 @@ const registerpost = async (req, res) => {
     var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${sid[0].state_id}', '${city}' , '${cid[0].college_id}' , '0',NOW() )`;
     var [insertResult] = await con.execute(insertQuery);
 
+
     var insrertRole = `Insert into user_login (email , password , role , user_login_status,created_date) values ('${email}' , '${passwordStrong}' , '0' , '0',NOW())`;
     var [roleResult] = await con.execute(insrertRole);
 
-    req.session.email = email;
+
+    // req.session.email = email;
+    // req.session.stdId = insertResult.insertId;
+    // req.session.userId = roleResult.insertId;
+    // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
     res.render("login", { msg: "" });
   }
@@ -137,11 +145,13 @@ const loginpostpage = async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
 
-  var selectEmail = `SELECT email, password FROM student where email = '${email}' `;
+  var selectEmail = `SELECT * FROM student where email = '${email}' `;
   var [emailResult] = await con.execute(selectEmail);
 
-  var selectUser = `SELECT email, password , user_login_status  , role from user_login where email = '${email}'`;
+
+  var selectUser = `SELECT * from user_login where email = '${email}'`;
   var [userData] = await con.execute(selectUser);
+
 
   if (userData.length == 0) {
     // res.send("email is not match");
@@ -163,6 +173,10 @@ const loginpostpage = async (req, res) => {
         });
       } else {
         req.session.email = email;
+        req.session.stdId = emailResult[0].student_id;
+        req.session.userId = userData[0].user_id;
+        console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
+
 
         res.redirect("/home");
       }
