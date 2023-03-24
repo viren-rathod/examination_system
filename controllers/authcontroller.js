@@ -115,7 +115,7 @@ const getAns = async (req, res) => {
 };
 
 const endExam = async (req, res) => {
-  res.render("dummy");
+  res.render("end");
 };
 
 const getCategoryName = async (req,res) => {
