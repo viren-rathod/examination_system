@@ -50,8 +50,10 @@ const profile_updatepagePOST = async (req, res) => {
     console.log(sql);
     await con.execute(sql);
     req.session.email = email;
+
     let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
     await con.execute(updateUser);
+
 
     res.json("ok")
 

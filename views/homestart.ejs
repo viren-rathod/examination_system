@@ -243,27 +243,59 @@
                 </div>
             </div>
 
-        </header>
-        <div class="body">
-            <section class="section1">
-                <div class="container mt-5">
-                    <div class="d-flex">
-                        <div class="col d-flex gap-1">
-                            <div class="d-flex flex-column justify-content-center mt-2">
-                                <h1 class="heading1">WELCOME TO ONLINE EXAMINATION SYSTEM</h1>
-                                <p class="para1  mt-4">Are You Ready to Take the Challenge ?</p>
-                                <a class="btn btn-exm bg-warning" href="/examlistGet">Enter Into
-                                    Exam</a>
-                            </div>
+
+            <button type="button" class="btn btn-primary top-0 " id="toastbtn">Show
+                Toast</button>
+
+            <!-- <div class="toast  translate-middle-x">
+                <div class="toast-header">
+                    <strong class="me-auto">Toast Header</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    <p>Some text inside the toast body</p>
+                </div>
+            </div> -->
+
+            <div aria-live="polite" aria-atomic="true" class="bg-dark position-relative bd-example-toasts">
+                <div class="toast-container p-3" id="toastPlacement">
+                    <div class="toast">
+                        <div class="toast-header">
+                            <strong class="me-auto">Bootstrap</strong>
+                            <small>11 mins ago</small>
                         </div>
-                        <div class="col">
-                            <div class="img-thumbnail"><img src="/img/Home.jpg" alt="test" style="height: 500px;"></div>
+                        <div class="toast-body">
+                            Hello, world! This is a toast message.
                         </div>
                     </div>
                 </div>
-        </div>
+            </div>
+    </div>
+    </header>
 
-        </section>
+
+
+
+    <div class="body">
+        <section class="section1">
+            <div class="container mt-5">
+                <div class="d-flex">
+                    <div class="col d-flex gap-1">
+                        <div class="d-flex flex-column justify-content-center mt-2">
+                            <h1 class="heading1">WELCOME TO ONLINE EXAMINATION SYSTEM</h1>
+                            <p class="para1  mt-4">Are You Ready to Take the Challenge ?</p>
+                            <a class="btn btn-exm bg-warning" href="/examlistGet">Enter Into
+                                Exam</a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="img-thumbnail"><img src="/img/Home.jpg" alt="test" style="height: 500px;"></div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    </section>
     </div>
 
     <script src="/js/home.js">
