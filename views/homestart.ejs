@@ -12,70 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         /* Popup container - can be anything you want */
-        
-        .popup {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        /* The actual popup */
-        
-        .popup .popuptext {
-            visibility: hidden;
-            width: 392px;
-            background-color: #198754;
-            color: #fff;
-            text-align: center;
-            border-radius: 25px;
-            padding: 19px 0;
-            position: absolute;
-            z-index: 1;
-            bottom: 58%;
-            left: 50%;
-            margin-left: 23px;
-        }
-        /* Popup arrow */
-        
-        .popup .popuptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }
-        /* Toggle this class - hide and show the popup */
-        
-        .popup .show {
-            visibility: visible;
-            -webkit-animation: fadeIn 1s;
-            animation: fadeIn 1s;
-        }
-        /* Add animation (fade in the popup) */
-        
-        @-webkit-keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 
@@ -297,9 +233,14 @@
             </div>
 
         </header>
+
+
         <div class="popup" id="addPop">
             <!-- <span class="popuptext" id="profilePopup">Porfile is Successfully Update!</span> -->
         </div>
+
+
+
         <div class="body">
             <section class="section1">
                 <div class="container mt-5">
@@ -343,7 +284,7 @@
         const myTimeout = setTimeout(callLogin, 2000);
 
         function callLogin() {
-            divParent.remove(spanC)
+            spanC.remove()
         }
 
     }

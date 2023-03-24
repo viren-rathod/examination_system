@@ -259,7 +259,7 @@ const sendOtp = async(req, res, next) => {
     //     </div>
     //   </div>`,
     // });
-    // req.session.email = email;
+    req.session.email = email;
     res.json({
         otp,
     });
