@@ -10,16 +10,26 @@ const mysql = require('mysql2');
 const flash = require('connect-flash');
 var nodemailer = require('nodemailer');
 const app = express();
-app.use(express.static('public'));
 const ejs = require('ejs');
 const { signedCookie } = require('cookie-parser');
 const { Console } = require('console');
-
-app.set("view engine", "ejs");
-app.use(express.static(__dirname + "/public"));
+const path = require('path');
 
 
-const router = require('./routes/router');
+
+
+
+
+
+//set engines
+app.set("views", "./views");
+app.set('view engine', 'ejs');
+
+
+
+
+app.use(express.static('public'));
+const exam=require("./routes/router")
 
 //kevin
 app.use(cookie());
@@ -37,11 +47,25 @@ app.use(sessions({
     resave: false
 }));
 
-//router routes
-app.use('/', router);
 
-const PORT = 8000 ;
-app.listen(PORT,(err)=>{
-    if(err) console.log(err);
-    console.log(`Server running on port ${PORT}`);
-})
+app.use(express.static(path.join(__dirname + '../public')));
+app.use(express.static(path.join(__dirname + '/public/images')));
+app.use(express.static(path.join(__dirname + '/public/css')));
+app.use(express.static(path.join(__dirname + '/public/js')));
+
+
+app.set('view engine', 'ejs');
+app.set("views", "./views");
+
+
+
+
+app.use("/",exam)
+
+// app.get("/form",(req,res)=>{
+//     res.render("form")
+// })
+app.listen(4321,()=>{
+    console.log("listening on 4321");
+});
+

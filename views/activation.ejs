@@ -77,9 +77,9 @@
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.UpdateStatus);
-          if(data.UpdateStatus ==1){
-            location.assign('/login')
+          // console.log(data.UpdateStatus);
+          if (data.UpdateStatus == 1) {
+            location.assign("/login");
           }
         });
     }

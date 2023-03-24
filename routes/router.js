@@ -4,6 +4,10 @@ const router = express.Router();
 const verifyToken = require("../middlaware/AuthMiddleware");
 
 
+const bod = require('body-parser');
+const path = require('path')
+
+
 
 router.get('/examlistGet', verifyToken,controllers.examlistGet);
 router.get('/studentdata',verifyToken,controllers.studentdataGet);
@@ -34,4 +38,19 @@ router.post('/changePassword', controllers.changePasswordPost);
 router.post('/validPassword', controllers.validPassword);
 
 
+
+
+
+
+
+
+
+// router.get('/examlist', controller.examlist);
+router.get("/form1",controllers.form1);
+router.get("/checkCode",controllers.validate_code);
+
 module.exports=router;
+
+
+
+module.exports = router;

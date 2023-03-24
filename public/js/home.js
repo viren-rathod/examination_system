@@ -1,5 +1,6 @@
 let ischeckemail = true;
-let ischeckname1 = true, ischeckname2 = true;
+let ischeckname1 = true,
+    ischeckname2 = true;
 let isContact = true;
 let isaddress = true;
 var savebutton = document.getElementById('savebutton');
@@ -17,8 +18,7 @@ async function checkNameValid1(ele) {
     if (input_val == "" || !regex.test(input_val)) {
         err_mes.innerHTML = "Not a Valid Name";
         ischeckname1 = false;
-    }
-    else {
+    } else {
         firstname = input_val;
         err_mes.innerHTML = "";
         ischeckname1 = true;
@@ -50,6 +50,24 @@ async function checkEmail(ele) {
 //         
 //     };
 // });
+
+async function checksubmit() {
+    if (ischeckemail && ischeckname1 && isContact) {
+        saveall.disabled = false;
+        saveall.style.cursor = 'pointer';
+        console.log(firstname, email)
+        const ans = await fetch('/profile_update', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id, firstname, email, contact
+            })
+        });
+
+    }
+    else {
+        saveall.disabled = true;
+    }
+}
 
 
 async function checkContact(ele) {

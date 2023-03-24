@@ -1,5 +1,4 @@
-// const con = require('../connections/dbconnect');
-//database connection
+const con = require("../connections/dbconnect");
 
 async function queryExecuter(query) {
   return new Promise((resolve, rejects) => {
@@ -22,18 +21,20 @@ const logoutpageGet = async (req, res) => {
 const homepageGet = async (req, res) => {
   // req.session.email = email;
 
-  if (!req.session.email) {
-    res.render('login', { msg: "" })
-  } else {
-    const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  exam_system.student where email='${req.session.email}'`);
-    res.render('homestart', { editdata: result })
+    if (!req.session.email) {
+        res.render('login', { msg: "" })
+    } else {
+        // console.log("Sesion :- ", req.session.email);
+        // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+        const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+        res.render('homestart', { editdata: result })
 
   }
 }
 
 
-const exam_homepageGet = async (req, res) => {
-  const [result] = await con.execute(`select * from exam_system.questions;`)
+const exam_homepageGet = async(req, res) => {
+    const [result] = await con.execute(`select * from questions;`)
 
   res.render('exam_start', { exam_que: result })
 }
@@ -43,15 +44,22 @@ const resultpageGet = async (req, res) => {
 }
 const profile_updatepagePOST = async (req, res) => {
 
-  try {
-    const { firstname, email, contact, address, gender } = req.body
+    try {
+        const { firstname, email } = req.body
+            // console.log(id, firstname, email);
+        req.session.email = email;
+        // console.log('email update to email', req.session.email);
+        let sql = `update student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `
+        await con.execute(sql);
+        let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
+        await con.execute(updateUser);
 
-    let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
-    console.log(sql);
-    await con.execute(sql);
-    req.session.email = email;
-    let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
-    await con.execute(updateUser);
+    // let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+    // console.log(sql);
+    // await con.execute(sql);
+    // req.session.email = email;
+    // let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
+    // await con.execute(updateUser);
 
     res.json("ok")
 
@@ -61,7 +69,7 @@ const profile_updatepagePOST = async (req, res) => {
 }
 
 
-const con = require("../connections/dbconnect");
+
 var utils = require("util");
 const { decode } = require("punycode");
 const flash = require("connect-flash");
@@ -109,11 +117,16 @@ const registerpost = async (req, res) => {
   var selectQuery = `SELECT * FROM student where email = '${email}' `;
   var [selectResult] = await con.execute(selectQuery);
 
+  var [cid]=await con.execute(`select * from colleges where college_name='${college}'`)
+  console.log(cid)
+
   var stateId = `select state_id from state where state_name ='${state}'`;
   var [sid] = await con.execute(stateId);
 
-  var collegeId = `select college_id from colleges where college_name = '${college}'`;
-  var [cid] = await con.execute(collegeId);
+        // req.session.email = email;
+        // req.session.stdId = insertResult.insertId;
+        // req.session.userId = roleResult.insertId;
+        // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
   if (selectResult.length != 0) {
     return res.send("This Email is already Exectute");
@@ -166,20 +179,30 @@ const loginpostpage = async (req, res) => {
       // res.send("Password is not match");
       res.render("login", { msg: "email or pasword does not match" });
     } else {
-      if (userData[0].user_login_status == 0) {
-        res.render("activation.ejs", {
-          email: email,
-          resultRandom: resultRandom,
-        });
-      } else {
-        req.session.email = email;
-        req.session.stdId = emailResult[0].student_id;
-        req.session.userId = userData[0].user_id;
-        console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
+        var comparePassword = userData[0].password;
+
+        var compare = await bcrypt.compare(password, comparePassword);
+        var resultRandom = Math.random().toString(36).substring(2, 7);
+        // console.log("Viren@123 :- ", compare);
+        if (!compare) {
+            // res.send("Password is not match");
+            res.render("login", { msg: "email or pasword does not match" });
+        } else {
+            if (userData[0].user_login_status == 0) {
+                res.render("activation.ejs", {
+                    email: email,
+                    resultRandom: resultRandom,
+                });
+            } else {
+                req.session.email = email;
+                req.session.stdId = emailResult[0].student_id;
+                req.session.userId = userData[0].user_id;
+                // console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
 
 
-        res.redirect("/home");
-      }
+                res.redirect("/home");
+            }
+        }
     }
   }
 };
@@ -224,48 +247,48 @@ const city = async (req, res) => {
 
 //!-----------sendopt function---------------------
 
-const sendOtp = async (req, res, next) => {
-  var email = req.body.email;
-  console.log("Send email in post method", email);
-  let testAccount = nodemailer.createTestAccount();
-  var otp = generateOTP();
-  // console.log("otp", otp);
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 587,
-    auth: {
-      type: "OAUTH2",
-      user: "patelnokano000@gmail.com",
-      clientId: "67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com",
-      clientSecret: "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",
-      refreshToken: "1//04us9E3b_ARjICgYIARAAGAQSNwF-L9IrPSpdH05Mzzl8BuxFOyRDE0lsDzRRfMdEg2jQA_uFDp7G4que8m713t_5q1CjRlSK8qY",
-      accessToken: "ya29.a0AVvZVspJqb2vWNPWa55TrdhaULzKmGSJOEsiZF-ctCG4GxpqNzI7cHKiG1CAJr1CkWbpm-EytloslaQfHQLpoZJJyR0wFJYzqwD4F65wZwaYVHvNx3SIznPvddsuorAivrditj4xvnxLip4KYy_-14DYlANRaCgYKARYSARISFQGbdwaIV0_DBqtSOLdypveodSvlrA0163",
-    },
-  });
+const sendOtp = async(req, res, next) => {
+    var email = req.body.email;
+    // console.log("Send email in post method", email);
+    let testAccount = nodemailer.createTestAccount();
+    var otp = generateOTP();
+    console.log("otp", otp);
+    // const transporter = nodemailer.createTransport({
+    //     service: "gmail",
+    //     host: "smtp.gmail.com",
+    //     port: 587,
+    //     auth: {
+    //         type: "OAUTH2",
+    //         user: "patelnokano000@gmail.com",
+    //         clientId: "67052588834-mk4nh286olopiqjo696603gb0pfkpicm.apps.googleusercontent.com",
+    //         clientSecret: "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",
+    //         refreshToken: "1//04oac0FBgtZGQCgYIARAAGAQSNwF-L9IrHtSvQprIc940QAOf1pNmUjqI1RGFCYyiWaFH5ts-SBoA1oh8qx1nxmoOLHn-NcOZXXA",
+    //         accessToken: "ya29.a0AVvZVspDugRUTOshF-mDbB6vnkpfnXXOa7n_uAwwW3p4u_EnjAFPu5_9TZgALMgNTsr5BvnLnXls5GJfn3jNZqSLSu7YW8pQ4I6-7p-J6yarbU3ZOQEPqhWyRQ8DlWUtLX9Mv5qqLAyhdjjf-Wr6lEdbckzbaCgYKAVcSARISFQGbdwaIMMORs1Fa8eebj7H0QLjANg0163",
+    //     },
+    // });
 
-  let info = transporter.sendMail({
-    from: "hello <patelnokano000@gmail.com>", // sender address
-    to: email, // list of receivers
-    subject: "OTP Validation ✔", // Subject line
-    text: "OTP", // plain text body
-    html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-        <div style="margin:50px auto;width:70%;padding:20px 0">
-          <div style="border-bottom:1px solid #eee">
-            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Brand</a>
-          </div>
-          <p style="font-size:1.1em">Hi,</p>
-          <p>Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
-          <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
-          <p style="font-size:0.9em;">Regards,<br />EsparkBiz</p>
-          <hr style="border:none;border-top:1px solid #eee" />
-        </div>
-      </div>`,
-  });
-  req.session.email = email;
-  res.json({
-    otp,
-  });
+    // let info = transporter.sendMail({
+    //     from: "hello <patelnokano000@gmail.com>", // sender address
+    //     to: email, // list of receivers
+    //     subject: "OTP Validation ✔", // Subject line
+    //     text: "OTP", // plain text body
+    //     html: `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+    //     <div style="margin:50px auto;width:70%;padding:20px 0">
+    //       <div style="border-bottom:1px solid #eee">
+    //         <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Brand</a>
+    //       </div>
+    //       <p style="font-size:1.1em">Hi,</p>
+    //       <p>Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+    //       <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+    //       <p style="font-size:0.9em;">Regards,<br />EsparkBiz</p>
+    //       <hr style="border:none;border-top:1px solid #eee" />
+    //     </div>
+    //   </div>`,
+    // });
+    req.session.email = email;
+    res.json({
+        otp,
+    });
 };
 
 // UPDATE PASSWORD GET request
@@ -403,6 +426,94 @@ const setintervalGet = async (req,res) => {
     console.log(err);
   }
 }
+const form1= async (req, res) => {
+  try{
+
+    if (!req.session.email) {
+      res.render('login', { msg: "" })
+  } 
+  else {
+    let flag;
+    console.log(req.session.userId);
+      // console.log("Sesion :- ", req.session.email);
+      // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+
+      let user_email=req.session.email
+      const [result12] = await con.execute(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+    
+
+      let [sql1]=await con.execute(`select exam_id,exam_name,exam_access_code,total_questions,exam_time,user_id,exam_status from exam where exam_status=0`)
+      // console.log("hello nareshjbffh",sql1[0].exam_id)
+
+      let [sql2]=await con.execute(`select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=0 and user_answers.user_id=${req.session.userId}`)
+      console.log(sql2[0].user_id);
+      console.log(req.session);
+       let flag1=0;
+       let attempted;
+
+       let data1 = sql1;
+      //  console.log('-------------------------------------')
+      //  console.log(data1)
+      //  console.log(typeof(data1));
+      // //  data1[0].attempted = true;
+      //  console.log(data1);
+      //  console.log('-------------------------------------')
+
+    for (let i=0;i<sql1.length;i++){
+      flag1 =0 
+      for(let j=0;j<sql2.length;j++)
+      {
+         if(sql1[i].exam_id==sql2[j].exam_id)
+         {
+          // attempted = true;'
+          data1[i].attempted = true;
+         
+          flag1=1;
+        }
+    }
+    if(flag1==0)
+    {
+      // attempted = false;
+      data1[i].attempted  =  false
+    }
+    }
+
+    console.log('-------------------------------------')
+       console.log(data1)
+      console.log('-------------------------------------')
+    
+     
+    let userEmail=req.session.email;
+     console.log("email -: ",req.session.email);
+     
+      let sql=`select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${ user_email}'`;
+      let [data]=await con.execute(sql)
+      console.log(data[0])
+      let result=data[0]
+ console.log("ye falg hai",flag);
+//  console.log(data1)
+  res.render("examlist",{sql:data1,result ,  editdata: result12})
+  // res.render("form",{result})
+  }
+}
+  catch(exception){
+      console.log("Error: ",exception)
+  }
+}
+
+const validate_code=async(req,res)=>{
+  let email=req.query.email;
+  let examId=req.query.exam_id;
+  console.log("ye code hai tera ",examId)
+  console.log("Email: ",email);
+  let sql11=`select exam_access_code from exam where exam_id=${examId};`;
+  console.log(sql11);
+  let verify=await con.execute(sql11)
+  console.log("cod hai");
+  console.log(verify);
+  res.json(verify)
+
+}
 
 module.exports = {
   registerpage,
@@ -427,6 +538,7 @@ module.exports = {
   logoutpageGet,
   examlistGet,
   studentdataGet,
-  setintervalGet
+  setintervalGet,
 
+  form1,validate_code
 }
