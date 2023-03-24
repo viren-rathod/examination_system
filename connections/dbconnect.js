@@ -5,5 +5,4 @@ const con = mysql2.createPool({
   password: "root",
   database: "exam_system",
 });
-
 module.exports = con;

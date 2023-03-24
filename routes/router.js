@@ -1,16 +1,67 @@
-const controller = require('../controllers/authcontroller');
-const express = require("express");
+const express = require('express');
+//router object
 const router = express.Router();
+const controllers = require('../controllers/authcontroller');
 
-router.get('/examGet', controller.examGet);
-router.get('/categoryGet', controller.categoryGet);
-router.get('/pagingGet', controller.pagingGet);
-router.get('/nextGet', controller.nextGet);
-router.get('/prevGet', controller.prevGet);
-router.post('/answerPost', controller.answerPost);
-router.post('/getAns', controller.getAns);
-router.get('/endExam', controller.endExam);
-router.get('/getCategoryName', controller.getCategoryName);
+
+
+router.get('/home', controllers.homepageGet);
+router.get('/exam_home', controllers.exam_homepageGet);
+router.get('/result', controllers.resultpageGet);
+router.get('/logout', controllers.logoutpageGet);
+
+router.post('/profile_update', controllers.profile_updatepagePOST);
+
+
+
+router.get('/', controllers.logingetpage);
+router.get('/register', controllers.registerpage);
+router.post('/register', controllers.registerpost);
+router.get('/login', controllers.logingetpage);
+router.post('/login', controllers.loginpostpage);
+router.get('/city', controllers.city);
+router.get('/forget', controllers.forgetGet);
+router.get('/setPassword', controllers.setPasswordGet);
+router.post('/setPassword', controllers.setPasswordPost);
+router.post('/fetch_api', controllers.sendOtp);
+router.get('/updatePassword', controllers.updatePasswordGet);
+router.post('/updatePassword', controllers.updatePasswordPost);
+router.post('/active/:resultRandom', controllers.activePost);
+router.post('/valid1', controllers.validPost);
+router.post('/changePassword', controllers.changePasswordPost);
+router.post('/validPassword', controllers.validPassword);
+
+
+
+
+const bod = require('body-parser');
+const path = require('path')
+
+// const controller=require("../controllers/authcontroller.js");
+// router.use(express.static(path.join(__dirname + '../public')));
+// router.use(express.static(path.join(__dirname + '../public/images')));
+// router.use(express.static(path.join(__dirname + '../public/css')));
+// router.use(express.static(path.join(__dirname + '/public/js')));
+// router.use(bod.json());
+// router.use(bod.urlencoded({ extended: false }))
+
+
+
+
+
+// router.get('/examlist', controller.examlist);
+router.get("/form1",controllers.form1);
+router.get("/checkCode",controllers.validate_code);
+
+router.get('/examGet', controllers.examGet);
+router.get('/categoryGet', controllers.categoryGet);
+router.get('/pagingGet', controllers.pagingGet);
+router.get('/nextGet', controllers.nextGet);
+router.get('/prevGet', controllers.prevGet);
+router.post('/answerPost', controllers.answerPost);
+router.post('/getAns', controllers.getAns);
+router.get('/endExam', controllers.endExam);
+router.get('/getCategoryName', controllers.getCategoryName);
 // router.get('/exam_homepageGet', controller.exam_homepageGet);
 
-module.exports=router;
+module.exports = router;
