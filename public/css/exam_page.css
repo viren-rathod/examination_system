@@ -1,7 +1,19 @@
 .question > div {
-    transition: all 1s;
-  }
-  .buttons {
-    width: 1076px;
-  }
-  
+  transition: all 1s;
+}
+.buttons {
+  width: 1076px;
+}
+.pagination-number {
+  font-size: 1.1rem;
+  margin: 0.25rem 0.25rem;
+  background-color: transparent;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 3px;
+  color: black;
+}
+.pagination-number:hover {
+  color: black;
+  background-color: #a7cddd;
+}
