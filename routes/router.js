@@ -1,19 +1,14 @@
 const express = require('express');
-//router object
 const router = express.Router();
 const controllers = require('../controllers/authcontroller');
-
-
+const bod = require('body-parser');
+const path = require('path')
 
 router.get('/home', controllers.homepageGet);
 router.get('/exam_home', controllers.exam_homepageGet);
 router.get('/result', controllers.resultpageGet);
 router.get('/logout', controllers.logoutpageGet);
-
 router.post('/profile_update', controllers.profile_updatepagePOST);
-
-
-
 router.get('/', controllers.logingetpage);
 router.get('/register', controllers.registerpage);
 router.post('/register', controllers.registerpost);
@@ -31,12 +26,6 @@ router.post('/valid1', controllers.validPost);
 router.post('/changePassword', controllers.changePasswordPost);
 router.post('/validPassword', controllers.validPassword);
 
-
-
-
-const bod = require('body-parser');
-const path = require('path')
-
 // const controller=require("../controllers/authcontroller.js");
 // router.use(express.static(path.join(__dirname + '../public')));
 // router.use(express.static(path.join(__dirname + '../public/images')));
@@ -45,15 +34,12 @@ const path = require('path')
 // router.use(bod.json());
 // router.use(bod.urlencoded({ extended: false }))
 
-
-
-
-
 // router.get('/examlist', controller.examlist);
+
 router.get("/form1",controllers.form1);
 router.get("/checkCode",controllers.validate_code);
-
 router.get('/examGet', controllers.examGet);
+router.post('/examPost', controllers.examPost);
 router.get('/categoryGet', controllers.categoryGet);
 router.get('/pagingGet', controllers.pagingGet);
 router.get('/nextGet', controllers.nextGet);

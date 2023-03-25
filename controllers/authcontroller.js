@@ -1,18 +1,13 @@
-// ! Naresh
 const con = require("../connections/dbconnect");
+var utils = require("util");
+const { decode } = require("punycode");
+const flash = require("connect-flash");
+var nodemailer = require("nodemailer");
+const { signedCookie } = require("cookie-parser");
+const { Console } = require("console");
+const bcrypt = require("bcryptjs");
 
-async function queryExecuter(query) {
-  return new Promise((resolve, rejects) => {
-    con.query(query, (err, result) => {
-      if (err) {
-        rejects(err);
-      }
-      resolve(result);
-    });
-  });
-}
-
-//dhruv
+//!-------------------Dhruv-----------------------------
 const logoutpageGet = async (req, res) => {
   req.session.destroy();
   res.redirect("/login");
@@ -42,6 +37,7 @@ const exam_homepageGet = async (req, res) => {
 const resultpageGet = async (req, res) => {
   res.render("result");
 };
+
 const profile_updatepagePOST = async (req, res) => {
   try {
     const { firstname, email } = req.body;
@@ -66,17 +62,7 @@ const profile_updatepagePOST = async (req, res) => {
   }
 };
 
-var utils = require("util");
-const { decode } = require("punycode");
-const flash = require("connect-flash");
-var nodemailer = require("nodemailer");
-const { signedCookie } = require("cookie-parser");
-const { Console } = require("console");
-const bcrypt = require("bcryptjs");
-
-// var con.execute = utils.promisify(con.query).bind(con);
-
-//register get function
+//?register get function
 const registerpage = async (req, res) => {
   var selectState = `select state_name from state `;
   var [stateResult] = await con.execute(selectState); //
@@ -94,7 +80,7 @@ const registerpage = async (req, res) => {
   });
 };
 
-//register post function
+//?register post function
 const registerpost = async (req, res) => {
   var fname = req.body.fname,
     lname = req.body.lname,
@@ -116,7 +102,7 @@ const registerpost = async (req, res) => {
   var [cid] = await con.execute(
     `select * from colleges where college_name='${college}'`
   );
-  console.log(cid);
+  // console.log(cid);
 
   var stateId = `select state_id from state where state_name ='${state}'`;
   var [sid] = await con.execute(stateId);
@@ -144,12 +130,12 @@ const registerpost = async (req, res) => {
   }
 };
 
-//login get user
+//?login get user
 const logingetpage = async (req, res) => {
   res.render("login", { msg: "" });
 };
 
-//login post user
+//?login post user
 const loginpostpage = async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
@@ -204,17 +190,17 @@ const forgetGet = async (req, res, next) => {
   res.render("validEmail");
 };
 
-// page of set password get
+// ?page of set password get
 const setPasswordGet = async (req, res, next) => {
   res.redirect("/login");
 };
 
-// page of set password post
+// ?page of set password post
 const setPasswordPost = async (req, res, next) => {
   res.render("setPassword");
 };
 
-// generate otp function random function
+//? generate otp function random function
 function generateOTP() {
   var digits = "0123456789";
   let OTP = "";
@@ -224,7 +210,7 @@ function generateOTP() {
   return OTP;
 }
 
-// city function
+//? city function
 const city = async (req, res) => {
   var state = req.query.state;
 
@@ -238,14 +224,14 @@ const city = async (req, res) => {
   res.json({ result9 });
 };
 
-//!-----------sendopt function---------------------
+//?-----------sendopt function---------------------
 
 const sendOtp = async (req, res, next) => {
   var email = req.body.email;
   // console.log("Send email in post method", email);
   let testAccount = nodemailer.createTestAccount();
   var otp = generateOTP();
-  console.log("otp", otp);
+  console.log("OTP :- ", otp);
   // const transporter = nodemailer.createTransport({
   //     service: "gmail",
   //     host: "smtp.gmail.com",
@@ -284,13 +270,13 @@ const sendOtp = async (req, res, next) => {
   });
 };
 
-// UPDATE PASSWORD GET request
+//? UPDATE PASSWORD GET request
 const updatePasswordGet = async (req, res) => {
   // res.redirect("/login");
   res.render("login", { msg: "" });
 };
 
-// update password post request
+//? update password post request
 const updatePasswordPost = async (req, res) => {
   var email = req.session.email;
   var password = req.body.password;
@@ -302,7 +288,7 @@ const updatePasswordPost = async (req, res) => {
   res.redirect("/login");
 };
 
-// activetion link method (update status)
+//? activetion link method (update status)
 const activePost = async (req, res) => {
   var email = req.body.email;
   // console.log("JFIDHFIHDFOHDOHJ");
@@ -324,7 +310,7 @@ const activePost = async (req, res) => {
   }
 };
 
-// email validation in ragistger page
+//? email validation in ragistger page
 const validPost = async (req, res) => {
   var email = req.body.email1;
   var nameSelect1 = `select email from student where email = '${email}'`;
@@ -350,7 +336,7 @@ const changePasswordPost = async (req, res) => {
     res.json({ msg1: "right" });
   }
 };
-//  Login page pasword validation
+//?  Login page pasword validation
 const validPassword = async (req, res) => {
   var email = req.body.useremail;
   var password = req.body.userPassword;
@@ -397,8 +383,8 @@ const form1 = async (req, res) => {
       let [sql2] = await con.execute(
         `select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=0 and user_answers.user_id=${req.session.userId}`
       );
-      console.log(sql2[0].user_id);
-      console.log(req.session);
+      // console.log(sql2[0].user_id);
+      // console.log(req.session);
       let flag1 = 0;
       let attempted;
 
@@ -426,18 +412,18 @@ const form1 = async (req, res) => {
         }
       }
 
-      console.log("-------------------------------------");
-      console.log(data1);
-      console.log("-------------------------------------");
+      // console.log("-------------------------------------");
+      // console.log(data1);
+      // console.log("-------------------------------------");
 
       let userEmail = req.session.email;
-      console.log("email -: ", req.session.email);
+      console.log("Session E - mail -: ", req.session.email);
 
       let sql = `select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${user_email}'`;
       let [data] = await con.execute(sql);
-      console.log(data[0]);
+      // console.log(data[0]);
       let result = data[0];
-      console.log("ye falg hai", flag);
+      // console.log("ye falg hai", flag);
       //  console.log(data1)
       res.render("examlist", { sql: data1, result, editdata: result12 });
       // res.render("form",{result})
@@ -450,10 +436,10 @@ const form1 = async (req, res) => {
 const validate_code = async (req, res) => {
   let email = req.query.email;
   let examId = req.query.exam_id;
-  console.log("ye code hai tera ", examId);
-  console.log("Email: ", email);
+  console.log("ye code hai tera ", examId,"Thank you!");
+  // console.log("Email: ", email);
   let sql11 = `select exam_access_code from exam where exam_id=${examId};`;
-  console.log(sql11);
+  // console.log(sql11);
   let verify = await con.execute(sql11);
   console.log("cod hai");
   console.log(verify);
@@ -492,6 +478,9 @@ const examGet = async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+};
+const examPost = async (req, res) => {
+    res.redirect('examGet');
 };
 const categoryGet = async (req, res) => {
   let category_id = req.query.id;
@@ -625,4 +614,5 @@ module.exports = {
   getAns,
   endExam,
   getCategoryName,
+  examPost
 };
