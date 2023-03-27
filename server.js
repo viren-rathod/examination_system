@@ -8,6 +8,8 @@ const ejs = require('ejs');
 app.set("view engine", "ejs");
 app.use(express.static('public'));
 app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/css"));
+app.use(express.static(__dirname + "/images"));
 const cors = require("cors");
 app.use(cors());
 

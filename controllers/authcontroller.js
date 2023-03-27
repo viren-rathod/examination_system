@@ -56,7 +56,14 @@ const examGet = async (req, res) => {
     res.json({ data, category, question_no });
   };
 
+  const errorPage = async (req,res) =>{
+      
+     res.render('errorpage');
+     
+  }
+
   module.exports = {
     examGet,
     categoryGet,
+    errorPage
   };
