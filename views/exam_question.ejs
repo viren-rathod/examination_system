@@ -76,7 +76,7 @@
                   <label class="radio">
                     <input
                       type="radio"
-                      name="q-<%= e.question_id %>"
+                      name="option"
                       value="<%= e.option_a%>"
                       onclick="getAnswers(this)"
                     />
@@ -87,7 +87,7 @@
                   <label class="radio">
                     <input
                       type="radio"
-                      name="q-<%= e.question_id %>"
+                      name="option"
                       value="<%= e.option_b%>"
                       onclick="getAnswers(this)"
                     />
@@ -98,7 +98,7 @@
                   <label class="radio">
                     <input
                       type="radio"
-                      name="q-<%= e.question_id %>"
+                      name="option"
                       value="<%= e.option_c%>"
                       onclick="getAnswers(this)"
                     />
@@ -109,7 +109,7 @@
                   <label class="radio">
                     <input
                       type="radio"
-                      name="q-<%= e.question_id %>"
+                      name="option"
                       value="<%= e.option_d%>"
                       onclick="getAnswers(this)"
                     />
@@ -119,7 +119,7 @@
               </div>
             </div>
           </div>
-          <div class="buttons p-3 bg-white" id="btns">
+          <div class="buttons w-100 p-3 bg-white" id="btns">
             <div class="row justify-content-around align-items-center" id="row">
               <input 
                   type="button" 
@@ -132,7 +132,7 @@
                   <% } %> />
               <input 
                   type="button" 
-                  value="SAVE & NEXT"
+                  value="NEXT"
                   onclick="next_btn('<%=e.question_id%>')" 
                   class="btn btn-primary btn-success col-2 font-weight-bold" 
                   id="next"

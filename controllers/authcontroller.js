@@ -537,16 +537,16 @@ const prevGet = async (req, res) => {
 };
 const answerPost = async (req, res) => {
   let b = req.body;
-  // console.log("ID :- ",b);
+  console.log("ID :- ",b);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${b.id}`
     );
     if (check.length == 0) {
-      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (1,1,${b.id},'${b.ans}',1)`;
+      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (1,1,${b.id},'${b.selectedAns}',1)`;
       let [data] = await con.execute(query);
     } else {
-      let query = `UPDATE user_answers SET user_answers='${b.ans}' WHERE question_id=${b.id}`;
+      let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id}`;
       let [data] = await con.execute(query);
       res.json(data);
     }
@@ -558,6 +558,13 @@ const getAns = async (req, res) => {
   let id = req.body;
   let [q] = await con.execute(
     `SELECT user_answers FROM user_answers WHERE question_id = ${id[0].question_id}`
+  );
+  // console.log("Ans :- ",q);
+  res.json(q);
+};
+const getAllAns = async (req, res) => {
+  let [q] = await con.execute(
+    `SELECT user_answers FROM user_answers`
   );
   // console.log("Ans :- ",q);
   res.json(q);
@@ -614,5 +621,6 @@ module.exports = {
   getAns,
   endExam,
   getCategoryName,
-  examPost
+  examPost,
+  getAllAns
 };

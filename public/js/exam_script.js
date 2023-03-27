@@ -1,61 +1,101 @@
-let ans = null;
-function getAnswers(temp) {
-  ans = temp.value;
-}
 console.log("script is already working....");
-let chk = ["", "", "", "", ""];
+let allOptions = document.getElementsByName("option");
+// console.log(allOptions.length);
+let selectedAns = "";
+
+async function getAnswers(temp) {
+  // console.log("called");
+  allOptions.forEach((e) => {
+    // console.log(e.value);
+    if (e.checked) selectedAns = e.value;
+  });
+
+  console.log("selectedAns", selectedAns);
+  // ans_user = temp.value;
+}
+// let chk = ["", "", "", "", ""];
 
 async function fetcher(str) {
   let temp = await fetch(str);
   let ans = await temp.json();
+  // let ans_from_db = await fetch(`/getAllAns`);
+  // let ans_from_db_json = await ans_from_db.json();
+  // // ans_arr = [...ans_from_db_json];
+  // for (let i = 0; i < total_questions; i++) {
+  //   ans_arr[i] = ans_from_db_json[i];
+  // }
+  // console.log("USER ANS ", ans_arr);
+
   let user_ans = await fetch("/getAns", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(ans),
   });
   let user_ans_json = await user_ans.json();
-  let opts = [
-    ans[0].option_a,
-    ans[0].option_b,
-    ans[0].option_c,
-    ans[0].option_d,
-  ];
-  // console.log("check :- ", chk);
-  if (user_ans_json.length != 0)
-    for (let i = 0; i < opts.length; i++) {
-      if (opts[i] == user_ans_json[0].user_answers) chk[i] = "checked";
-      else chk[i] = "";
-    }
-  // console.log("ans 0 :- ", user_ans_json);
+  // console.log("check :- ", user_ans_json[0].user_answers);
+  // ans_arr[ans[0].question_id] = user_ans_json[0].user_answers
+  // let opts = [
+  //   ans[0].option_a,
+  //   ans[0].option_b,
+  //   ans[0].option_c,
+  //   ans[0].option_d,
+  // ];
+
+  // if (user_ans_json.length != 0)
+  //   for (let i = 0; i < opts.length; i++) {
+  //     if (opts[i] == user_ans_json[0].user_answers) chk[i] = "checked";
+  //     else chk[i] = "";
+  //   }
+
   let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans[0].question_text}</h5>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_a}"
-                    onclick="getAnswers(this)" ${chk[0]} >
+                    <input type="radio" name="option" value="${ans[0].option_a}"
+                    onclick="getAnswers(this)" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans[0].option_a
+                        ? "checked"
+                        : ""
+                    }>
                     <span>${ans[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_b}"
-                    onclick="getAnswers(this)" ${chk[1]}>
+                    <input type="radio" name="option" value="${ans[0].option_b}"
+                    onclick="getAnswers(this)" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans[0].option_b
+                        ? "checked"
+                        : ""
+                    } >
                     <span>${ans[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_c}"
-                    onclick="getAnswers(this)" ${chk[2]} >
+                    <input type="radio" name="option" value="${ans[0].option_c}"
+                    onclick="getAnswers(this)" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans[0].option_c
+                        ? "checked"
+                        : ""
+                    } >
                     <span>${ans[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans[0].question_id}" value="${ans[0].option_d}"
-                    onclick="getAnswers(this)" ${chk[3]}>
+                    <input type="radio" name="option" value="${ans[0].option_d}"
+                    onclick="getAnswers(this)" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans[0].option_d
+                        ? "checked"
+                        : ""
+                    } >
                     <span>${ans[0].option_d}</span>
                   </label>
                 </div>`;
@@ -63,6 +103,7 @@ async function fetcher(str) {
   else {
     // console.log("bnhjhjbdbtbjnjnytn");
   }
+
   let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
   que_no.innerHTML = qn;
   let btn = `<div
@@ -80,7 +121,7 @@ async function fetcher(str) {
   
       <input
         type="button"
-        value="SAVE & NEXT"
+        value=${ans[0].question_id == total_questions ? "SAVE" : "NEXT"}
         onclick="next_btn('${ans[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
@@ -91,32 +132,32 @@ async function fetcher(str) {
 
 async function next_btn(id) {
   // console.log(id);
+  allOptions.forEach((e) => {
+    console.log(e.value);
+    if (e.checked) selectedAns = e.value;
+  });
   let temp1 = await fetch(`/nextGet?id=${id}`);
   let tmp = await temp1.json();
-
-  //  .log('length',tmp[0].question_id == total_questions);
   if (tmp[0]) {
     await fetcher(
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
-    // if (tmp[0].question_id == total_questions) {
-    //   let next = document.querySelector("#next");
-    //   next.setAttribute("value", "SUBMIT");
-    // }
+    // getAnswers("null");
     let cat_name = await fetch(`/getCategoryName?id=${id}&btn=next`);
     let cat_name_json = await cat_name.json();
     document.querySelector(
       ".category-title"
     ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
   }
-
-  // }
-  let a1 = await fetch(`/answerPost?ans=${ans}&id=${id}`, {
+  let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ ans, id }),
+    body: JSON.stringify({ selectedAns, id }),
   });
-  let s = `<div
+  selectedAns = '';
+  // ans_user = "";
+  if (tmp[0]) {
+    let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
     >
@@ -131,23 +172,19 @@ async function next_btn(id) {
   
       <input
         type="button"
-        value="SAVE & NEXT"
+        value=${tmp[0].question_id == total_questions ? "SAVE" : "NEXT"}
         onclick="next_btn('${tmp[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
       />
     </div>`;
-  if (total_questions != tmp[0].question_id) {
-    btns.innerHTML = s;
+    if (total_questions != tmp[0].question_id) {
+      btns.innerHTML = s;
+    }
   }
 }
 
 async function previous_btn(id) {
-  let cat_name = await fetch(`/getCategoryName?id=${id}&btn=prev`);
-  let cat_name_json = await cat_name.json();
-  document.querySelector(
-    ".category-title"
-  ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
   let temp = await fetch(`/prevGet?id=${id}`);
   let tmp = await temp.json();
   if (tmp[0]) {
@@ -155,6 +192,19 @@ async function previous_btn(id) {
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
   }
+  // getAnswers("null");
+  let cat_name = await fetch(`/getCategoryName?id=${id}&btn=prev`);
+  let cat_name_json = await cat_name.json();
+  document.querySelector(
+    ".category-title"
+  ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
+  // selectedAns = user_ans_json[0].user_answers;
+  // getAnswers("null")
+  // let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
+  //   method: "POST",
+  //   headers: { "content-type": "application/json" },
+  //   body: JSON.stringify({ selectedAns, id }),
+  // });      // ans_user = "";
   let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
@@ -170,7 +220,7 @@ async function previous_btn(id) {
   
       <input
         type="button"
-        value="SAVE & NEXT"
+        value=${tmp[0].question_id == total_questions ? "SAVE" : "NEXT"}
         onclick="next_btn('${tmp[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
@@ -181,6 +231,7 @@ async function previous_btn(id) {
 
 async function category_changer(e) {
   // console.log(e.textContent);
+  // console.log("ANS :- ", ans_user);
   let c_name = e.textContent;
   document.querySelector(
     ".category-title"
@@ -234,7 +285,7 @@ async function category_changer(e) {
   
       <input
         type="button"
-        value="SAVE & NEXT"
+        value=${ans.data[0].question_id == total_questions ? "SAVE" : "NEXT"}
         onclick="next_btn('${ans.data[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
@@ -271,10 +322,10 @@ if (document.getElementById("submit")) {
     // console.log("submitted");
     // console.log("ANSWER", ans);
     if (!ans) {
-      await fetch(`/answerPost?ans=${ans}`, {
+      await fetch(`/answerPost?ans=${ans_user}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ans }),
+        body: JSON.stringify({ ans_user }),
       });
       window.location.href = "/endExam";
     }

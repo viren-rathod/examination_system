@@ -48,6 +48,7 @@ router.post('/answerPost', controllers.answerPost);
 router.post('/getAns', controllers.getAns);
 router.get('/endExam', controllers.endExam);
 router.get('/getCategoryName', controllers.getCategoryName);
+router.get('/getAllAns', controllers.getAllAns);
 // router.get('/exam_homepageGet', controller.exam_homepageGet);
 
 module.exports = router;
