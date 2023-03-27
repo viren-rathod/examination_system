@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<title>Exam List</title>
 
 <head>
     <meta charset="UTF-8" />
@@ -332,6 +333,39 @@
             </section>
         </div>
         <footer></footer>
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Welcome
+                        <%=result.name%>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="clearf()"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="<%=sql[0].exam_id%>" id="id_access">
+                    <%- include('form') -%>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="clearf()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+    </div>
+    </section>
+    </div>
+    <footer></footer>
     </div>
 
 
