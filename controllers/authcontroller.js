@@ -21,15 +21,15 @@ const logoutpageGet = async (req, res) => {
 const homepageGet = async (req, res) => {
   // req.session.email = email;
 
-    if (!req.session.email) {
-        res.render('login', { msg: "" })
-    } else {
+    // if (!req.session.email) {
+    //     res.render('login', { msg: "" })
+    // } else {
         // console.log("Sesion :- ", req.session.email);
         // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
         const [result] = await con.execute(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
         res.render('homestart', { editdata: result })
 
-  }
+  // }
 }
 
 
@@ -446,7 +446,7 @@ const form1= async (req, res) => {
       // console.log("hello nareshjbffh",sql1[0].exam_id)
 
       let [sql2]=await con.execute(`select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=0 and user_answers.user_id=${req.session.userId}`)
-      console.log(sql2[0].user_id);
+      // console.log(sql2[0].user_id);
       console.log(req.session);
        let flag1=0;
        let attempted;
@@ -486,7 +486,7 @@ const form1= async (req, res) => {
     let userEmail=req.session.email;
      console.log("email -: ",req.session.email);
      
-      let sql=`select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${ user_email}'`;
+      let sql=`select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${user_email}'`;
       let [data]=await con.execute(sql)
       console.log(data[0])
       let result=data[0]
@@ -504,12 +504,9 @@ const form1= async (req, res) => {
 const validate_code=async(req,res)=>{
   let email=req.query.email;
   let examId=req.query.exam_id;
-  console.log("ye code hai tera ",examId)
   console.log("Email: ",email);
   let sql11=`select exam_access_code from exam where exam_id=${examId};`;
-  console.log(sql11);
   let verify=await con.execute(sql11)
-  console.log("cod hai");
   console.log(verify);
   res.json(verify)
 
