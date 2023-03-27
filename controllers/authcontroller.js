@@ -1,3 +1,12 @@
+const con = require("../connections/dbconnect");
+var utils = require("util");
+const { decode } = require("punycode");
+const flash = require("connect-flash");
+var nodemailer = require("nodemailer");
+const { signedCookie } = require("cookie-parser");
+const { Console } = require("console");
+const bcrypt = require("bcryptjs");
+
 async function queryExecuter(query) {
     return new Promise((resolve, rejects) => {
         con.query(query, (err, result) => {
@@ -30,7 +39,7 @@ const homepageGet = async(req, res) => {
 
 
 const exam_homepageGet = async(req, res) => {
-    const [result] = await con.execute(`select * from exam_system.questions;`)
+    const [result] = await con.execute(`select * from questions;`)
 
     res.render('exam_start', { exam_que: result })
 }
@@ -41,14 +50,21 @@ const resultpageGet = async(req, res) => {
 const profile_updatepagePOST = async(req, res) => {
 
     try {
-        const { firstname, email, contact, address, gender } = req.body
-
-        let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
-        console.log(sql);
-        await con.execute(sql);
+        const { firstname, email } = req.body
+            // console.log(id, firstname, email);
         req.session.email = email;
+        // console.log('email update to email', req.session.email);
+        let sql = `update student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `
+        await con.execute(sql);
         let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
         await con.execute(updateUser);
+
+        // let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+        // console.log(sql);
+        // await con.execute(sql);
+        // req.session.email = email;
+        // let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
+        // await con.execute(updateUser);
 
         res.json("ok")
 
@@ -57,15 +73,6 @@ const profile_updatepagePOST = async(req, res) => {
     }
 }
 
-
-const con = require("../connections/dbconnect");
-var utils = require("util");
-const { decode } = require("punycode");
-const flash = require("connect-flash");
-var nodemailer = require("nodemailer");
-const { signedCookie } = require("cookie-parser");
-const { Console } = require("console");
-const bcrypt = require("bcryptjs");
 
 // var con.execute = utils.promisify(con.query).bind(con);
 
@@ -106,11 +113,16 @@ const registerpost = async(req, res) => {
     var selectQuery = `SELECT * FROM student where email = '${email}' `;
     var [selectResult] = await con.execute(selectQuery);
 
+    var [cid] = await con.execute(`select * from colleges where college_name='${college}'`)
+    console.log(cid)
+
     var stateId = `select state_id from state where state_name ='${state}'`;
     var [sid] = await con.execute(stateId);
 
-    var collegeId = `select college_id from colleges where college_name = '${college}'`;
-    var [cid] = await con.execute(collegeId);
+    // req.session.email = email;
+    // req.session.stdId = insertResult.insertId;
+    // req.session.userId = roleResult.insertId;
+    // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
     if (selectResult.length != 0) {
         return res.send("This Email is already Exectute");
@@ -163,23 +175,33 @@ const loginpostpage = async(req, res) => {
             // res.send("Password is not match");
             res.render("login", { msg: "email or pasword does not match" });
         } else {
-            if (userData[0].user_login_status == 0) {
-                res.render("activation.ejs", {
-                    email: email,
-                    resultRandom: resultRandom,
-                });
+            var comparePassword = userData[0].password;
+
+            var compare = await bcrypt.compare(password, comparePassword);
+            var resultRandom = Math.random().toString(36).substring(2, 7);
+            // console.log("Viren@123 :- ", compare);
+            if (!compare) {
+                // res.send("Password is not match");
+                res.render("login", { msg: "email or pasword does not match" });
             } else {
-                req.session.email = email;
-                req.session.stdId = emailResult[0].student_id;
-                req.session.userId = userData[0].user_id;
-                console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
+                if (userData[0].user_login_status == 0) {
+                    res.render("activation.ejs", {
+                        email: email,
+                        resultRandom: resultRandom,
+                    });
+                } else {
+                    req.session.email = email;
+                    req.session.stdId = emailResult[0].student_id;
+                    req.session.userId = userData[0].user_id;
+                    console.log("l l l l l  session s u e", req.session.stdId, req.session.userId, req.session.email)
 
 
-                res.redirect("/home");
+                    res.redirect("/home");
+                }
             }
         }
-    }
-};
+    };
+}
 
 const forgetGet = async(req, res, next) => {
     res.render("validEmail");
@@ -402,6 +424,91 @@ var updateProfilePassword = async(req, res) => {
 
 }
 
+const form1 = async(req, res) => {
+    try {
+
+        if (!req.session.email) {
+            res.render('login', { msg: "" })
+        } else {
+            let flag;
+            // console.log("Sesion :- ", req.session.email);
+            // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+
+            let user_email = req.session.email
+            const [result12] = await con.execute(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+
+
+            let [sql1] = await con.execute(`select exam_id,exam_name,exam_access_code,total_questions,exam_time,user_id,exam_status from exam where exam_status=0`)
+                // console.log("hello nareshjbffh",sql1[0].exam_id)
+
+            let [sql2] = await con.execute(`select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=0 and user_answers.user_id=${req.session.userId}`)
+                // console.log(sql2[0].user_id);
+            console.log(req.session);
+            let flag1 = 0;
+            let attempted;
+
+            let data1 = sql1;
+            //  console.log('-------------------------------------')
+            //  console.log(data1)
+            //  console.log(typeof(data1));
+            // //  data1[0].attempted = true;
+            //  console.log(data1);
+            //  console.log('-------------------------------------')
+
+            for (let i = 0; i < sql1.length; i++) {
+                flag1 = 0
+                for (let j = 0; j < sql2.length; j++) {
+                    if (sql1[i].exam_id == sql2[j].exam_id) {
+                        // attempted = true;'
+                        data1[i].attempted = true;
+
+                        flag1 = 1;
+                    }
+                }
+                if (flag1 == 0) {
+                    // attempted = false;
+                    data1[i].attempted = false
+                }
+            }
+
+            console.log('-------------------------------------')
+            console.log(data1)
+            console.log('-------------------------------------')
+
+
+            let userEmail = req.session.email;
+            console.log("email -: ", req.session.email);
+
+            let sql = `select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${ user_email}'`;
+            let [data] = await con.execute(sql)
+            console.log(data[0])
+            let result = data[0]
+            console.log("ye falg hai", flag);
+            //  console.log(data1)
+            res.render("examlist", { sql: data1, result, editdata: result12 })
+                // res.render("form",{result})
+        }
+    } catch (exception) {
+        console.log("Error: ", exception)
+    }
+}
+
+
+
+const validate_code = async(req, res) => {
+    let email = req.query.email;
+    let examId = req.query.exam_id;
+    console.log("ye code hai tera ", examId)
+    console.log("Email: ", email);
+    let sql11 = `select exam_access_code from exam where exam_id=${examId};`;
+    console.log(sql11);
+    let verify = await con.execute(sql11)
+    console.log("cod hai");
+    console.log(verify);
+    res.json(verify)
+
+}
+
 module.exports = {
     registerpage,
     registerpost,
@@ -417,11 +524,13 @@ module.exports = {
     activePost,
     validPost,
     changePasswordPost,
+    updateProfilePassword,
     validPassword,
     homepageGet,
     exam_homepageGet,
     resultpageGet,
     profile_updatepagePOST,
     logoutpageGet,
-    updateProfilePassword
+    form1,
+    validate_code
 }

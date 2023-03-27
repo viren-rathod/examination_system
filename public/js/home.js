@@ -55,19 +55,16 @@ async function checksubmit() {
     if (ischeckemail && ischeckname1 && isContact) {
         saveall.disabled = false;
         saveall.style.cursor = 'pointer';
-        // console.log(firstname, email)
+        console.log(firstname, email)
         const ans = await fetch('/profile_update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                id,
-                firstname,
-                email,
-                contact
+                id, firstname, email, contact
             })
         });
 
-    } else {
+    }
+    else {
         saveall.disabled = true;
     }
 }
