@@ -10,7 +10,7 @@ async function getAnswers(temp) {
     if (e.checked) selectedAns = e.value;
   });
 
-  console.log("selectedAns", selectedAns);
+  // console.log("selectedAns", selectedAns);
   // ans_user = temp.value;
 }
 // let chk = ["", "", "", "", ""];
@@ -24,7 +24,6 @@ async function fetcher(str) {
   // for (let i = 0; i < total_questions; i++) {
   //   ans_arr[i] = ans_from_db_json[i];
   // }
-  // console.log("USER ANS ", ans_arr);
 
   let user_ans = await fetch("/getAns", {
     method: "POST",
@@ -32,6 +31,7 @@ async function fetcher(str) {
     body: JSON.stringify(ans),
   });
   let user_ans_json = await user_ans.json();
+  // console.log("USER ANS ", str);
   // console.log("check :- ", user_ans_json[0].user_answers);
   // ans_arr[ans[0].question_id] = user_ans_json[0].user_answers
   // let opts = [
@@ -133,7 +133,7 @@ async function fetcher(str) {
 async function next_btn(id) {
   // console.log(id);
   allOptions.forEach((e) => {
-    console.log(e.value);
+    // console.log(e.value);
     if (e.checked) selectedAns = e.value;
   });
   let temp1 = await fetch(`/nextGet?id=${id}`);
@@ -154,7 +154,7 @@ async function next_btn(id) {
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ selectedAns, id }),
   });
-  selectedAns = '';
+  selectedAns = "";
   // ans_user = "";
   if (tmp[0]) {
     let s = `<div
@@ -230,40 +230,71 @@ async function previous_btn(id) {
 }
 
 async function category_changer(e) {
-  // console.log(e.textContent);
-  // console.log("ANS :- ", ans_user);
+  
+  let temp = await fetch(`/categoryGet?id=${e.id}`);
+  let ans = await temp.json();
+  
+  /*  /pagingGet/?question_no=2&category_id=1  */
+  
+  let user_ans = await fetch("/getAns", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(ans.data),
+  });
+  let user_ans_json = await user_ans.json();
+  
+  // console.log("ANS2 :- ", user_ans_json);
+
   let c_name = e.textContent;
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
-  let temp = await fetch(`/categoryGet?id=${e.id}`);
-  let ans = await temp.json();
-  // console.log('Data : -',ans);
+  // console.log("Data : -", ans);
   let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans.data[0].question_text}</h5>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans.data[0].question_id}" value="${ans.data[0].option_a}">
+                    <input type="radio" name="option" value="${ans.data[0].option_a}" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans.data[0].option_a
+                        ? "checked"
+                        : ""
+                    }>
                     <span>${ans.data[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans.data[0].question_id}" value="${ans.data[0].option_b}">
+                    <input type="radio" name="option" value="${ans.data[0].option_b}" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans.data[0].option_b
+                        ? "checked"
+                        : ""
+                    }>
                     <span>${ans.data[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans.data[0].question_id}" value="${ans.data[0].option_c}">
+                    <input type="radio" name="option" value="${ans.data[0].option_c}" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans.data[0].option_c
+                        ? "checked"
+                        : ""
+                    }>
                     <span>${ans.data[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="q-${ans.data[0].question_id}" value="${ans.data[0].option_d}">
+                    <input type="radio" name="option" value="${ans.data[0].option_d}" ${
+                      user_ans_json.length &&
+                      user_ans_json[0].user_answers == ans.data[0].option_d
+                        ? "checked"
+                        : ""
+                    }>
                     <span>${ans.data[0].option_d}</span>
                   </label>
                 </div>`;
@@ -317,6 +348,7 @@ async function category_changer(e) {
   }
   document.getElementById("page").innerHTML = page;
 }
+
 if (document.getElementById("submit")) {
   submit.addEventListener("click", async () => {
     // console.log("submitted");

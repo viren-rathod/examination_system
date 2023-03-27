@@ -14,33 +14,38 @@
   <body>
     <header>
       <nav class="navbar navbar-expand-lg bg-warning">
-          <div class="container-fluid">
-              <!-- <img src="/exam_logo.jpg" class="img-circle" alt="logo"> -->
-              <h2 class="h2">Online Exam System</h2>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="d-flex justify-content-between " id="navbarNav">
-                  <ul class="navbar-nav d-flex justify-content-between ">
-
-                      <li class="nav-item">
-                          <!-- <h2 class="h2"><%#= %></h2> -->
-                          <h2 class="h2">User name</h2>
-                      </li>
-                  </ul>
-              </div>
+        <div class="container-fluid">
+          <!-- <img src="/exam_logo.jpg" class="img-circle" alt="logo"> -->
+          <h2 class="h2">Online Exam System</h2>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="d-flex justify-content-between" id="navbarNav">
+            <ul class="navbar-nav d-flex justify-content-between">
+              <li class="nav-item">
+                <!-- <h2 class="h2"><%#= %></h2> -->
+                <h2 class="h2">User name</h2>
+              </li>
+            </ul>
           </div>
+        </div>
       </nav>
-      
-  </header>  
+    </header>
 
-    <div class="container mt-5">     
-    <div class="d-flex justify-content-center row">
+    <div class="container mt-5">
+      <div class="d-flex justify-content-center row">
       <div class="overflow-hidden col-md-10 col-lg-10 border">
         <h1 class="m-1"><%= exam[0].exam_name %></h1>
-        <!-- <h2 id="category-title"></h2> -->
-        <div class="text-end">        
+      <!-- <h2 id="category-title"></h2> -->
+      <div class="text-end">        
           <span   onclick="timer('10')">Time Left :</span>          
           <p id="time1"  class="badge rounded-pill text-bg-primary " >time</p>         
       </div>
@@ -156,24 +161,24 @@
         class="page d-flex justify-content-center align-items-center pt-3"
         id="page"
       >
-        <%for(var i=1;i<=category[0].no_of_question;i++){ %> <% if(i ===
+        <%#for(var i=1;i<=category[0].no_of_question;i++){ %> <%# if(i ===
         question_no){ %>
         <span
-          id="i<%=i%>"
+          id="i<%#=i%>"
           class="selected m-1 btn pagination-number"
-          onclick="fetcher('pagingGet/?question_no=<%=i%>&category_id=<%=category[0].category_id%>')"
-          ><%=i%></span
+          onclick="fetcher('pagingGet/?question_no=<%#=i%>&category_id=<%#=category[0].category_id%>')"
+          ><%#=i%></span
         >
-        <% continue; %> <% } %>
+        <%# continue; %> <%# } %>
         <span
-          id="i<%=i%>"
+          id="i<%#=i%>"
           class="m-1 btn pagination-number"
-          onclick="fetcher('/pagingGet/?question_no=<%=i%>&category_id=<%=category[0].category_id%>')"
-          ><%=i%></span
+          onclick="fetcher('/pagingGet/?question_no=<%#=i%>&category_id=<%#=category[0].category_id%>')"
+          ><%#=i%></span
         >
-        <% } %>
+        <%# } %>
       </div>
-    </div>
+      </div>
     </div>
   </body>
   <script>

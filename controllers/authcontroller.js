@@ -446,7 +446,7 @@ const validate_code = async (req, res) => {
   res.json(verify);
 };
 
-// !--------------------VIREN--------------------------------------
+// !----------------------------VIREN--------------------------------------
 const examGet = async (req, res) => {
   try {
     const question_no = 1,
@@ -454,6 +454,7 @@ const examGet = async (req, res) => {
     const question_per_page = 1; //* Limit || Number of questions to display per page
     const offset = (question_no - 1) * question_per_page;
     let exam_id = 1;
+    console.log("Session :- ",req.session.email);
     let [exam] = await con.execute(
       `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
     );
