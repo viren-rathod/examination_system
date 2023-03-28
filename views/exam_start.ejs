@@ -18,15 +18,14 @@
                 <div class="container-fluid">
                     <!-- <img src="/exam_logo.jpg" class="img-circle" alt="logo"> -->
                     <h2 class="h2">Online Exam System</h2>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="d-flex justify-content-between " id="navbarNav">
                         <ul class="navbar-nav d-flex justify-content-between ">
 
                             <li class="nav-item">
-                                <!-- <h2 class="h2"><%= %></h2> -->
+
                                 <h2 class="h2">User name</h2>
 
                             </li>
@@ -60,9 +59,7 @@
                             <div class="grid border d-flex flex-wrap gap-50 ">
                                 <% if(exam_que.length){ %>
                                     <%for(let i=0;i<exam_que.length;i++){ %>
-                                        <a href="#"
-                                            class="t-30px padd-4 d-flex justify-content-center align-items-center border m-2 btn bg-aqva"
-                                            id="<%=exam_que[i].question_id %>">
+                                        <a href="#" class="t-30px padd-4 d-flex justify-content-center align-items-center border m-2 btn bg-aqva" id="<%=exam_que[i].question_id %>">
                                             <%=exam_que[i].question_id %>
                                         </a>
                                         <%}}%>
@@ -98,7 +95,7 @@
         for (let i = 0; i < inputs.length; i++) {
             arr.push(parseInt(inputs[i].id))
 
-            inputs[i].addEventListener('click', async (ele) => {
+            inputs[i].addEventListener('click', async(ele) => {
 
                 const id = ele.target.id;
                 arr.forEach(element => {
