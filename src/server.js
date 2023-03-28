@@ -14,14 +14,17 @@ const ejs = require("ejs");
 const { signedCookie } = require("cookie-parser");
 const { Console } = require("console");
 const path = require("path");
-const PORT = 4321;
+require('dotenv').config({ path: '../.env' });
+const PORT = process.env.PORT;
 
 //set engines
 app.set("views", "./views");
 app.set("view engine", "ejs");
 
-app.use(express.static("public"));
-const exam = require("./routes/router");
+app.use(express.static("../public"));
+
+const exam = require("./routes/examRoute");
+const user = require("./routes/userRoute");
 
 //kevin
 app.use(cookie());
@@ -40,12 +43,11 @@ app.use(
     })
 );
 
-app.use(express.static(path.join(__dirname + "../public")));
-app.use(express.static(path.join(__dirname + "/public/images")));
-app.use(express.static(path.join(__dirname + "/public/css")));
-app.use(express.static(path.join(__dirname + "/public/js")));
-
 app.use("/", exam);
+app.use("/", user);
+
+
+
 app.listen(PORT, () => {
     console.log("Server running on port", PORT, "http://127.0.0.1:" + PORT);
 });
