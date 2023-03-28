@@ -6,4 +6,4 @@ router.get('/examGet', controller.examGet);
 router.get('/categoryGet', controller.categoryGet);
 router.get('/errorPage', controller.errorPage);
 
-module.exports=router;
+module.exports=router; 
