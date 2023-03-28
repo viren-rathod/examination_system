@@ -50,23 +50,18 @@ const resultpageGet = async(req, res) => {
 };
 const profile_updatepagePOST = async(req, res) => {
     try {
-        const { firstname, email } = req.body;
-        // console.log(id, firstname, email);
-        req.session.email = email;
-        // console.log('email update to email', req.session.email);
-        let sql = `update student set name='${firstname}',email='${email}' where student_id=${req.session.stdId} `;
+        const { firstname, email, contact, address, gender } = req.body
+
+        let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+            // console.log(sql);
         await con.execute(sql);
-        let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `;
+        req.session.email = email;
+
+        let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
         await con.execute(updateUser);
 
-        // let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
-        // console.log(sql);
-        // await con.execute(sql);
-        // req.session.email = email;
-        // let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `
-        // await con.execute(updateUser);
+        res.json("ok")
 
-        res.json("ok");
     } catch (exception) {
         // console.log(exception)
     }
@@ -189,12 +184,7 @@ const loginpostpage = async(req, res) => {
                     req.session.email = email;
                     req.session.stdId = emailResult[0].student_id;
                     req.session.userId = userData[0].user_id;
-                    console.log(
-                        "l l l l l  session s u e",
-                        req.session.stdId,
-                        req.session.userId,
-                        req.session.email
-                    );
+
 
                     res.redirect("/home");
                 }
@@ -245,9 +235,9 @@ const city = async(req, res) => {
 
 const sendOtp = async(req, res, next) => {
     var email = req.body.email;
-    console.log("Send email in post method", email);
+    // console.log("Send email in post method", email);
     var otp = generateOTP();
-    console.log("otp", otp);
+    // console.log("otp", otp);
     // let testAccount = nodemailer.createTestAccount();
     // const transporter = nodemailer.createTransport({
     //     service: "gmail",
@@ -383,17 +373,16 @@ var updateProfilePassword = async(req, res) => {
     var old_pass = req.body.old_pass;
     var save_pass = req.body.save_pass;
     var confirm_pass = req.body.save_confirm;
-    console.log("adity", old_pass, save_pass, confirm_pass);
+    // console.log("adity", old_pass, save_pass, confirm_pass);
 
     var selectAllUserData = `select user_id , password from user_login where email = '${req.session.email}'`;
     var [userData] = await con.execute(selectAllUserData);
-    console.log(userData);
+
     var selectAllStudentData = `select student_id from student where email = '${req.session.email}'`;
     var [studentData] = await con.execute(selectAllStudentData);
-    console.log(studentData);
 
     var compare = await bcrypt.compare(old_pass, userData[0].password);
-    console.log(compare);
+
 
     if (!compare) {
         res.json({ text: "wrong" });
@@ -405,7 +394,6 @@ var updateProfilePassword = async(req, res) => {
         } else if (save_pass != confirm_pass) {
             res.json({ text: "notMatch" });
         } else {
-            console.log("eneter the else loop");
             var snum = await bcrypt.genSalt(10);
             var passwordStrong = await bcrypt.hash(save_pass, snum);
 
@@ -418,264 +406,6 @@ var updateProfilePassword = async(req, res) => {
             res.json({ text: "success" });
         }
     }
-};
-
-const form1 = async(req, res) => {
-    try {
-        if (!req.session.email) {
-            res.render("login", { msg: "" });
-        } else {
-            let flag;
-            // console.log("Sesion :- ", req.session.email);
-            // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
-
-            let user_email = req.session.email;
-            const [result12] = await con.execute(
-                `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
-            );
-
-            let [sql1] = await con.execute(
-                `select exam_id,exam_name,exam_access_code,total_questions,exam_time,user_id,exam_status from exam where exam_status=0`
-            );
-            // console.log("hello nareshjbffh",sql1[0].exam_id)
-
-            let [sql2] = await con.execute(
-                `select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=0 and user_answers.user_id=${req.session.userId}`
-            );
-            // console.log(sql2[0].user_id);
-            // console.log(req.session);
-            let flag1 = 0;
-            let attempted;
-
-            let data1 = sql1;
-            //  console.log('-------------------------------------')
-            //  console.log(data1)
-            //  console.log(typeof(data1));
-            // //  data1[0].attempted = true;
-            //  console.log(data1);
-            //  console.log('-------------------------------------')
-
-            for (let i = 0; i < sql1.length; i++) {
-                flag1 = 0;
-                for (let j = 0; j < sql2.length; j++) {
-                    if (sql1[i].exam_id == sql2[j].exam_id) {
-                        // attempted = true;'
-                        data1[i].attempted = true;
-
-                        flag1 = 1;
-                    }
-                }
-                if (flag1 == 0) {
-                    // attempted = false;
-                    data1[i].attempted = false;
-                }
-            }
-
-            // console.log("-------------------------------------");
-            // console.log(data1);
-            // console.log("-------------------------------------");
-
-            let userEmail = req.session.email;
-            console.log("Session E - mail -: ", req.session.email);
-
-            let sql = `select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${user_email}'`;
-            let [data] = await con.execute(sql);
-            // console.log(data[0]);
-            let result = data[0];
-            // console.log("ye falg hai", flag);
-            //  console.log(data1)
-            res.render("examlist", { sql: data1, result, editdata: result12 });
-            // res.render("form",{result})
-        }
-    } catch (exception) {
-        console.log("Error: ", exception);
-    }
-};
-
-const validate_code = async(req, res) => {
-    let email = req.query.email;
-    let examId = req.query.exam_id;
-    console.log("ye code hai tera ", examId, "Thank you!");
-    // console.log("Email: ", email);
-    let sql11 = `select exam_access_code from exam where exam_id=${examId};`;
-    // console.log(sql11);
-    let verify = await con.execute(sql11);
-    console.log("cod hai");
-    console.log(verify);
-    res.json(verify);
-};
-
-// !--------------------VIREN--------------------------------------
-// const examGet = async(req, res) => {
-//         try {
-//             const question_no = 1,
-//                 category_id = req.query.category_id || 1; // Get the requested page number, default to 1 if not provided
-//             const question_per_page = 1; //* Limit || Number of questions to display per page
-//             const offset = (question_no - 1) * question_per_page;
-//             let exam_id = 1;
-//             let [exam] = await con.execute(
-//                 `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
-//             );
-//             let [category] = await con.execute(
-//                 `select category_name,b.category_id from exam a, exam_category b,category c where a.exam_id=b.exam_id and b.category_id=c.category_id and a.exam_id=${exam_id}`
-//             );
-// console.log('Exam :- ',category[0]);
-// !----------------------------VIREN--------------------------------------
-const examGet = async(req, res) => {
-    try {
-        const question_no = 1,
-            category_id = req.query.category_id || 1; // Get the requested page number, default to 1 if not provided
-        const question_per_page = 1; //* Limit || Number of questions to display per page
-        const offset = (question_no - 1) * question_per_page;
-        let exam_id = 1;
-        // console.log("Session :- ", req.session.email);
-
-        let [exam] = await con.execute(
-            `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
-        );
-        let [category] = await con.execute(
-            `select category_name,b.category_id from exam a, exam_category b,category c where a.exam_id=b.exam_id and b.category_id=c.category_id and a.exam_id=${exam_id}`
-        );
-        // console.log('Exam :- ',category[0]);
-
-        let [data] = await con.execute(
-            `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} LIMIT ${question_per_page} OFFSET ${offset}`
-        );
-        let [total_questions_of_category] = await con.execute(
-            `select count(*) as total from questions where category_id = ${category_id} `
-        );
-        // console.log('tqoc',total_questions_of_category);
-        if (data.length) {
-            res.render("exam_question", {
-                e: data[0],
-                exam: exam,
-                category: category,
-                question_no,
-                question_per_page,
-                total_questions_of_category,
-            });
-        } else res.send("Data not found");
-    } catch (err) {
-        console.log(err);
-    }
-};
-const examPost = async(req, res) => {
-    res.redirect("examGet");
-};
-const categoryGet = async(req, res) => {
-    let category_id = req.query.id;
-    let question_no = 1;
-    const question_per_page = 1; //* Limit || Number of questions to display per page
-    let offset = (question_no - 1) * question_per_page;
-    let exam_id = 1;
-
-    let [category] = await con.execute(
-        `SELECT category_name,a.category_id,count(a.category_id) as no_of_question FROM category a, questions b WHERE a.category_id=b.category_id and a.category_id = '${category_id}'`
-    );
-
-    let [data] = await con.execute(
-        `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} LIMIT ${question_per_page} OFFSET ${offset}`
-    );
-    // console.log("category :- ", category);
-    res.json({ data, category, question_no });
-};
-const pagingGet = async(req, res) => {
-    const category_id = req.query.category_id || 1,
-        question_no = req.query.question_no + 1;
-    const question_per_page = 1; //* Limit || Number of questions to display per page
-    const offset = (question_no - 1) * question_per_page;
-    let no_of_question;
-    let exam_id = 1;
-    let [exam] = await con.execute(
-        `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
-    );
-
-    let [category] = await con.execute(
-        `SELECT category_name,a.category_id,count(a.category_id) as no_of_question FROM category a, questions b WHERE a.category_id=b.category_id and a.category_id = '${category_id}'`
-    );
-
-    let [data] = await con.execute(
-        `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} AND a.question_id=${req.query.question_no}`
-    );
-    // console.log('Data :- ',data);
-    res.json(data, category[0].no_of_question, question_no);
-};
-const nextGet = async(req, res) => {
-    let id = parseInt(req.query.id) + 1;
-    let [question] = await con.execute(
-        `SELECT * FROM questions WHERE question_id = ${id}`
-    );
-    // console.log(question);
-    res.json(question);
-};
-const prevGet = async(req, res) => {
-    let id = parseInt(req.query.id) - 1;
-    let [question] = await con.execute(
-        `SELECT * FROM questions WHERE question_id = ${id}`
-    );
-    res.json(question);
-};
-const answerPost = async(req, res) => {
-    let b = req.body;
-    // console.log("ID :- ", b);
-    if (b.id) {
-        let [check] = await con.execute(
-            `SELECT user_answers FROM user_answers WHERE question_id=${b.id}`
-        );
-        if (check.length == 0) {
-            let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (1,1,${b.id},'${b.selectedAns}',1)`;
-            let [data] = await con.execute(query);
-        } else {
-            let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id}`;
-            let [data] = await con.execute(query);
-            res.json(data);
-        }
-    } else {
-        res.json("");
-    }
-};
-const getAns = async(req, res) => {
-    let id = req.body;
-    let [q] = await con.execute(
-        `SELECT user_answers FROM user_answers WHERE question_id = ${id[0].question_id}`
-    );
-    // console.log("Ans :- ",q);
-    res.json(q);
-};
-const getAllAns = async(req, res) => {
-    let [q] = await con.execute(`SELECT user_answers FROM user_answers`);
-    // console.log("Ans :- ",q);
-    res.json(q);
-};
-
-const endExam = async(req, res) => {
-    res.render("end");
-};
-
-const getCategoryName = async(req, res) => {
-    // console.log("hhgghfghkjhk",req.query.btn=="next"? parseInt(req.query.id) + 1 : parseInt(req.query.id) - 1 );
-    if (req.query.btn == "next" || req.query.btn == "prev") {
-        let [c_name] = await con.execute(
-            `select b.category_name, b.category_id from questions a,category b where a.category_id=b.category_id and a.question_id= ${
-        req.query.btn == "next"
-          ? parseInt(req.query.id) + 1
-          : parseInt(req.query.id) - 1
-      }`
-        );
-        // console.log("in if :- ", c_name);
-        res.json(c_name);
-    } else {
-        let [c_name] = await con.execute(
-            `select b.category_name, b.category_id from questions a,category b where a.category_id=b.category_id and a.question_id= ${parseInt(
-        req.query.id
-      )}`
-        );
-        res.json(c_name);
-    }
-    // console.log("dhsfhifghij");
-    // let qid = req.query.qid;
-    // console.log('qid :- ',c_name);
-    // res.json(c_name);
 };
 
 module.exports = {
@@ -693,25 +423,11 @@ module.exports = {
     activePost,
     validPost,
     changePasswordPost,
-    updateProfilePassword,
     validPassword,
     homepageGet,
     exam_homepageGet,
     resultpageGet,
     profile_updatepagePOST,
     logoutpageGet,
-    form1,
-    validate_code,
-    examGet,
-    answerPost,
-    prevGet,
-    nextGet,
-    pagingGet,
-    categoryGet,
-    getAns,
-    endExam,
-    getCategoryName,
-    examPost,
-    getAllAns,
-
-};
+    updateProfilePassword
+}
