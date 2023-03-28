@@ -53,7 +53,7 @@ const profile_updatepagePOST = async (req, res) => {
     const { firstname, email, contact, address, gender } = req.body
 
     let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
-    console.log(sql);
+    // console.log(sql);
     await con.execute(sql);
     req.session.email = email;
 
@@ -184,12 +184,7 @@ const loginpostpage = async (req, res) => {
           req.session.email = email;
           req.session.stdId = emailResult[0].student_id;
           req.session.userId = userData[0].user_id;
-          console.log(
-            "l l l l l  session s u e",
-            req.session.stdId,
-            req.session.userId,
-            req.session.email
-          );
+
 
           res.redirect("/home");
         }
@@ -240,9 +235,9 @@ const city = async (req, res) => {
 
 const sendOtp = async (req, res, next) => {
   var email = req.body.email;
-  console.log("Send email in post method", email);
+  // console.log("Send email in post method", email);
   var otp = generateOTP();
-  console.log("otp", otp);
+  // console.log("otp", otp);
   // let testAccount = nodemailer.createTestAccount();
   // const transporter = nodemailer.createTransport({
   //     service: "gmail",
@@ -378,17 +373,16 @@ var updateProfilePassword = async (req, res) => {
   var old_pass = req.body.old_pass;
   var save_pass = req.body.save_pass;
   var confirm_pass = req.body.save_confirm;
-  console.log("adity", old_pass, save_pass, confirm_pass);
+  // console.log("adity", old_pass, save_pass, confirm_pass);
 
   var selectAllUserData = `select user_id , password from user_login where email = '${req.session.email}'`;
   var [userData] = await con.execute(selectAllUserData);
-  console.log(userData);
+
   var selectAllStudentData = `select student_id from student where email = '${req.session.email}'`;
   var [studentData] = await con.execute(selectAllStudentData);
-  console.log(studentData);
 
   var compare = await bcrypt.compare(old_pass, userData[0].password);
-  console.log(compare);
+
 
   if (!compare) {
     res.json({ text: "wrong" });
@@ -400,7 +394,6 @@ var updateProfilePassword = async (req, res) => {
     } else if (save_pass != confirm_pass) {
       res.json({ text: "notMatch" });
     } else {
-      console.log("eneter the else loop");
       var snum = await bcrypt.genSalt(10);
       var passwordStrong = await bcrypt.hash(save_pass, snum);
 
@@ -443,12 +436,7 @@ const form1 = async (req, res) => {
       let attempted;
 
       let data1 = sql1;
-      //  console.log('-------------------------------------')
-      //  console.log(data1)
-      //  console.log(typeof(data1));
-      // //  data1[0].attempted = true;
-      //  console.log(data1);
-      //  console.log('-------------------------------------')
+
 
       for (let i = 0; i < sql1.length; i++) {
         flag1 = 0;
@@ -490,13 +478,10 @@ const form1 = async (req, res) => {
 const validate_code = async (req, res) => {
   let email = req.query.email;
   let examId = req.query.exam_id;
-  console.log("ye code hai tera ", examId, "Thank you!");
-  // console.log("Email: ", email);
+
   let sql11 = `select exam_access_code from exam where exam_id=${examId};`;
   // console.log(sql11);
   let verify = await con.execute(sql11);
-  console.log("cod hai");
-  console.log(verify);
   res.json(verify);
 };
 
@@ -591,7 +576,7 @@ const prevGet = async (req, res) => {
 };
 const answerPost = async (req, res) => {
   let b = req.body;
-  console.log("ID :- ", b);
+
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${b.id}`

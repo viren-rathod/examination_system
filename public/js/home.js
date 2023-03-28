@@ -1,15 +1,15 @@
-let ischeckemail = true;
-let ischeckname1 = true, ischeckname2 = true;
-let isContact = true;
-let isaddress = true;
+var ischeckemail = true;
+var ischeckname1 = true, ischeckname2 = true;
+var isContact = true;
+var isaddress = true;
 var savebutton = document.getElementById('savebutton');
 var saveall = document.getElementById('totalSave');
 var readonly = true;
 var inputs = document.querySelectorAll('input');
 var firstname = document.getElementById('first_name').value;
 var email = document.getElementById('email').value;
-let contact = document.getElementById('contact');
-let address = document.getElementById('address').value;
+var contact = document.getElementById('contact');
+var address = document.getElementById('address').value;
 async function checkNameValid1(ele) {
     let input_val = ele.value;
     let err_mes = document.getElementById('err_name');
@@ -84,9 +84,9 @@ async function checkAddress(ele) {
     checksubmit();
 }
 
-let isCheckgender = true;
-let ansgen;
-const gender1 = document.getElementsByName("gender");
+var isCheckgender = true;
+var ansgen;
+var gender1 = document.getElementsByName("gender");
 gender1.forEach(ele => {
     if (ele.checked) {
         ansgen = ele.value;
@@ -101,15 +101,12 @@ async function checksubmit() {
 
         saveall.disabled = false;
         saveall.style.cursor = 'pointer';
-
-        console.log(firstname, email, contact.value, address, ansgen)
         const ans = await fetch('/profile_update', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 firstname, email, contact: contact.value, address, gender: ansgen
             })
         });
-
     }
     else {
         saveall.disabled = true;
@@ -129,7 +126,7 @@ function popupClick() {
     spanC.classList.toggle("show");
     spanC.innerHTML = "Profile Update Complete!"
     document.getElementById("addPop").appendChild(spanC)
-    const myTimeout = setTimeout(callLogin, 2000);
+    const myTimeout = setTimeout(callLogin, 1000);
     function callLogin() {
         spanC.remove()
     }
@@ -178,7 +175,7 @@ async function validateProfilePaw() {
                 // alert("password changed successfully")
                 var popup = document.getElementById("myPopup");
                 popup.classList.toggle("show");
-                const myTimeout = setTimeout(callLogin, 2000);
+                const myTimeout = setTimeout(callLogin, 1000);
                 function callLogin() {
                     location.assign("/login")
                 }
