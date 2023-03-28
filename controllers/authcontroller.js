@@ -432,14 +432,14 @@ const form1 = async (req, res) => {
 const validate_code = async (req, res) => {
   let email = req.query.email;
   let examId = req.query.exam_id;
-  console.log("ye code hai tera ", examId, "Thank you!");
+  // console.log("ye code hai tera ", examId, "Thank you!");
   // console.log("Email: ", email);
   req.session.exam_id = examId;
   let sql11 = `select exam_access_code from exam where exam_id=${examId};`;
   // console.log(sql11);
   let verify = await con.execute(sql11);
-  console.log("cod hai");
-  console.log(verify);
+  // console.log("cod hai");
+  // console.log(verify);
   res.json(verify);
 };
 
@@ -450,7 +450,7 @@ const examGet = async (req, res) => {
       category_id = req.query.category_id || 1; // Get the requested page number, default to 1 if not provided
     const question_per_page = 1; //* Limit || Number of questions to display per page
     const offset = (question_no - 1) * question_per_page;
-    console.log('req.session.examId',req.session.exam_id);
+    // console.log("req.session.examId", req.session.exam_id);
     let exam_id = req.session.exam_id || 1;
     // console.log("Session :- ", req.session.email);
     let [exam] = await con.execute(
@@ -540,7 +540,7 @@ const prevGet = async (req, res) => {
 };
 const answerPost = async (req, res) => {
   let b = req.body;
-  // console.log("ID :- ", b);
+  console.log("ID :- ", b);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${b.id}`
@@ -571,7 +571,16 @@ const getAllAns = async (req, res) => {
   res.json(q);
 };
 const endExam = async (req, res) => {
-  res.render("end");
+  let b = req.body;
+  res.render("result");
+};
+const allAnswerGet = async (req, res) => {
+  let b = req.query;
+  let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (1,1,${parseInt(
+    b.id
+  )},'',1)`;
+  let [data] = await con.execute(query);
+  res.json(data);
 };
 
 const getCategoryName = async (req, res) => {
@@ -628,4 +637,5 @@ module.exports = {
   getCategoryName,
   examPost,
   getAllAns,
+  allAnswerGet,
 };

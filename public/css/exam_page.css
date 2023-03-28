@@ -25,6 +25,9 @@
 .selected {
   background-color: lightblue;
 }
+a{
+  text-decoration: none;
+}
 
 .overlay {
   width: 100%;
@@ -111,4 +114,16 @@
 
 .border {
   background-color: 3px solid black;
+}
+#btnTitle {
+  padding-right: 50px;
+}
+
+#examtab a {
+  margin-left: 20px;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 11px;
+  cursor: pointer;
+  border: none;
 }

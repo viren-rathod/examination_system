@@ -50,10 +50,16 @@
           <span   onclick="timer('10')">Time Left :</span>          
           <p id="time1"  class="badge rounded-pill text-bg-primary " >time</p>         
       </div>
-        <div id="category-buttons">
-            <% for(let i = 0;i<category.length;i++) { %>
-              <a id="<%=category[i].category_id%>" onclick="category_changer(this)"><%= category[i].category_name  %></a> 
-             <% } %>
+        <div class="page d-flex justify-content-center align-items-center pt-3 " id="examtab">
+            <%# for(let i = 0;i<category.length;i++) { %>
+              <!-- <a id="<%#=category[i].category_id%>" onclick="category_changer(this)"><%#= category[i].category_name  %></a>  -->
+             <%# } %>
+
+             <% for(let i = 0;i<category.length;i++) { %>
+              <a id="<%=category[i].category_id%>" class="pagination" onclick="category_changer(this)" <%if(i==0 ){%> style="background-color:#ffc94e; color:black;" <% }%>>
+                  <%= category[i].category_name  %>
+              </a>
+              <% } %>
         </div>
         <div class="bg-white p-3 border-bottom">
           <div

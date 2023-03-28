@@ -1,17 +1,18 @@
 let prevQuestionId = 1;
 let allOptions = document.getElementsByName("option");
 let selectedAns = "";
-let userAnswers = new Array(total_questions).fill(null);
-let questionIds = new Array(total_questions).fill(null);
-// console.log(userAnswers,questionIds);
-
+let userAnswers = [...new Array(parseInt(total_questions))];
+let questionIds = Array.from(
+  { length: parseInt(total_questions) + 1 },
+  (_, i) => i
+);
 async function getAnswers(temp) {
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
   });
 }
 async function getQue(id) {
-  console.log(id, prevQuestionId);
+  // console.log(id, prevQuestionId);
   let que = await fetch(`/getCategoryName?id=${id}`);
   let cat_name = await que.json();
   document.querySelector(
@@ -115,6 +116,14 @@ async function fetcher(str) {
 }
 
 async function next_btn(id) {
+  prevQuestionId = parseInt(id) + 1;
+  if (document.querySelector(`#i${parseInt(id) + 1}`))
+    document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
+      "lightblue";
+  document.querySelector(`#i${id}`).style.backgroundColor = "white";
+
+  userAnswers[id] = selectedAns;
+  questionIds[id] = parseInt(id);
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
   });
@@ -129,14 +138,24 @@ async function next_btn(id) {
     document.querySelector(
       ".category-title"
     ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
+
+    document.querySelectorAll(".pagination").forEach((a) => {
+      a.style.backgroundColor = "white";
+      a.style.color = "black";
+    });
+    document.getElementById(`${cat_name_json[0].category_id}`).style.color =
+      "black";
+    document.getElementById(
+      `${cat_name_json[0].category_id}`
+    ).style.backgroundColor = "#ffc94e";
   }
-  userAnswers[id] = selectedAns;
-  questionIds[id] = id;
+
   let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ selectedAns, id }),
   });
+  let a2 = await a1.json();
   selectedAns = "";
   if (tmp[0]) {
     let s = `<div
@@ -164,16 +183,10 @@ async function next_btn(id) {
       btns.innerHTML = s;
     }
   }
-  prevQuestionId = parseInt(id) + 1;
-  if (document.querySelector(`#i${parseInt(id) + 1}`))
-    document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
-      "lightblue";
-  document.querySelector(`#i${id}`).style.backgroundColor = "white";
 }
 
 async function previous_btn(id) {
   prevQuestionId = parseInt(id) - 1;
-  // console.log(prevQuestionId);
   document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
     "lightblue";
   document.querySelector(`#i${id}`).style.backgroundColor = "white";
@@ -189,6 +202,15 @@ async function previous_btn(id) {
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
+  document.querySelectorAll(".pagination").forEach((a) => {
+    a.style.backgroundColor = "white";
+    a.style.color = "black";
+  });
+  document.getElementById(`${cat_name_json[0].category_id}`).style.color =
+    "black";
+  document.getElementById(
+    `${cat_name_json[0].category_id}`
+  ).style.backgroundColor = "#ffc94e";
   let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
@@ -214,6 +236,7 @@ async function previous_btn(id) {
 }
 
 async function category_changer(e) {
+  // console.log(e);
   let temp = await fetch(`/categoryGet?id=${e.id}`);
   let ans = await temp.json();
 
@@ -226,12 +249,15 @@ async function category_changer(e) {
 
   start = parseInt(ans.data[0].question_id);
   end = start + parseInt(ans.category[0].no_of_question) - 1;
-  // console.log(start, end);
 
   let c_name = e.textContent;
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
+  document.querySelector(`#i${prevQuestionId}`).style.backgroundColor = "white";
+  document.querySelector(`#i${ans.data[0].question_id}`).style.backgroundColor =
+    "lightblue";
+  prevQuestionId = parseInt(ans.data[0].question_id);
   let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans.data[0].question_text}</h5>
@@ -315,21 +341,26 @@ async function category_changer(e) {
     </div>`;
 
   btns.innerHTML = btn;
+
+  document.querySelectorAll(".pagination").forEach((a) => {
+    a.style.backgroundColor = "white";
+    a.style.color = "black";
+  });
+  e.style.backgroundColor = "#ffc94e";
+  e.style.color = "black";
 }
 
 submit.addEventListener("click", async () => {
   if (confirm("Are you sure you want to submit the Exam ?")) {
-    // await fetch(`/endExam?exam_id=${req.session.examId}`);
-
-    console.log(userAnswers);
-    console.log(questionIds);
-    // await fetch(`/answerPost?ans=${ans_user}`, {
-    //   method: "POST",
-    //   headers: { "content-type": "application/json" },
-    //   body: JSON.stringify({ ans_user }),
-    // });
-
-    // window.location.href = "/endExam";
+    for (let i = 1; i < userAnswers.length; i++) {
+      if (userAnswers[i] == undefined) {
+        let a = await fetch(
+          `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
+        );
+        let b = await a.json();
+      }
+    }
+    window.location.href = "/endExam";
   }
 });
 
