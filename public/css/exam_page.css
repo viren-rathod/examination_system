@@ -22,6 +22,10 @@
   color: white;
 }
 
+.selected {
+  background-color: lightblue;
+}
+
 .overlay {
   width: 100%;
   position: fixed;

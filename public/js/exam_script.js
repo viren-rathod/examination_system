@@ -1,6 +1,7 @@
-console.log("script is already working....");
+// console.log("script is already working....");
+// console.log(total_questions_of_category);
+let prevQuestionId = 1;
 let allOptions = document.getElementsByName("option");
-// console.log(allOptions.length);
 let selectedAns = "";
 
 async function getAnswers(temp) {
@@ -13,40 +14,30 @@ async function getAnswers(temp) {
   // console.log("selectedAns", selectedAns);
   // ans_user = temp.value;
 }
-// let chk = ["", "", "", "", ""];
+async function getQue(id) {
+  console.log(id,prevQuestionId);
+  let que = await fetch(`/getCategoryName?id=${id}`);
+  let cat_name = await que.json();
+  document.querySelector(
+    ".category-title"
+  ).innerHTML = `<h4 class="category-title">${cat_name[0].category_name}</h4>`;
+  fetcher(
+    `/pagingGet/?question_no=${id}&category_id=${cat_name[0].category_id}`
+  );
+  document.getElementById(`i${prevQuestionId}`).style.backgroundColor = 'white';
+  document.getElementById(`i${id}`).style.backgroundColor = 'lightblue';
+  prevQuestionId = id
+}
 
 async function fetcher(str) {
   let temp = await fetch(str);
   let ans = await temp.json();
-  // let ans_from_db = await fetch(`/getAllAns`);
-  // let ans_from_db_json = await ans_from_db.json();
-  // // ans_arr = [...ans_from_db_json];
-  // for (let i = 0; i < total_questions; i++) {
-  //   ans_arr[i] = ans_from_db_json[i];
-  // }
-
   let user_ans = await fetch("/getAns", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(ans),
   });
   let user_ans_json = await user_ans.json();
-  // console.log("USER ANS ", str);
-  // console.log("check :- ", user_ans_json[0].user_answers);
-  // ans_arr[ans[0].question_id] = user_ans_json[0].user_answers
-  // let opts = [
-  //   ans[0].option_a,
-  //   ans[0].option_b,
-  //   ans[0].option_c,
-  //   ans[0].option_d,
-  // ];
-
-  // if (user_ans_json.length != 0)
-  //   for (let i = 0; i < opts.length; i++) {
-  //     if (opts[i] == user_ans_json[0].user_answers) chk[i] = "checked";
-  //     else chk[i] = "";
-  //   }
-
   let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans[0].question_text}</h5>
@@ -100,9 +91,9 @@ async function fetcher(str) {
                   </label>
                 </div>`;
   if (total_questions >= ans[0].question_id) que.innerHTML = s;
-  else {
-    // console.log("bnhjhjbdbtbjnjnytn");
-  }
+  // else {
+  //   // console.log("bnhjhjbdbtbjnjnytn");
+  // }
 
   let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
   que_no.innerHTML = qn;
@@ -128,12 +119,17 @@ async function fetcher(str) {
         />
     </div>`;
   btns.innerHTML = btn;
+
+  // for (let j = start; j <= end; j++) {
+  //   document.querySelector(`#i${j}`).style.backgroundColor = "white";
+  // }
+  // // console.log(`#i${ans[0].question_id}`,start,end);
+  // let currentQuestion = document.querySelector(`#i${ans[0].question_id}`);
+  // currentQuestion.style.backgroundColor = "lightblue";
 }
 
 async function next_btn(id) {
-  // console.log(id);
   allOptions.forEach((e) => {
-    // console.log(e.value);
     if (e.checked) selectedAns = e.value;
   });
   let temp1 = await fetch(`/nextGet?id=${id}`);
@@ -142,7 +138,6 @@ async function next_btn(id) {
     await fetcher(
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
-    // getAnswers("null");
     let cat_name = await fetch(`/getCategoryName?id=${id}&btn=next`);
     let cat_name_json = await cat_name.json();
     document.querySelector(
@@ -155,7 +150,6 @@ async function next_btn(id) {
     body: JSON.stringify({ selectedAns, id }),
   });
   selectedAns = "";
-  // ans_user = "";
   if (tmp[0]) {
     let s = `<div
       class="row justify-content-around align-items-center"
@@ -182,9 +176,20 @@ async function next_btn(id) {
       btns.innerHTML = s;
     }
   }
+  prevQuestionId = parseInt(id)+1;
+  // console.log(prevQuestionId);
+  // document.querySelector(`#i${prevQuestionId+1}`).style.backgroundColor = "white";
+  document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
+    "lightblue";
+  document.querySelector(`#i${id}`).style.backgroundColor = "white";
 }
 
 async function previous_btn(id) {
+  prevQuestionId = parseInt(id) -1;
+  // console.log(prevQuestionId);
+  document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
+    "lightblue";
+  document.querySelector(`#i${id}`).style.backgroundColor = "white";
   let temp = await fetch(`/prevGet?id=${id}`);
   let tmp = await temp.json();
   if (tmp[0]) {
@@ -192,19 +197,11 @@ async function previous_btn(id) {
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
   }
-  // getAnswers("null");
   let cat_name = await fetch(`/getCategoryName?id=${id}&btn=prev`);
   let cat_name_json = await cat_name.json();
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
-  // selectedAns = user_ans_json[0].user_answers;
-  // getAnswers("null")
-  // let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
-  //   method: "POST",
-  //   headers: { "content-type": "application/json" },
-  //   body: JSON.stringify({ selectedAns, id }),
-  // });      // ans_user = "";
   let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
@@ -230,20 +227,19 @@ async function previous_btn(id) {
 }
 
 async function category_changer(e) {
-  
   let temp = await fetch(`/categoryGet?id=${e.id}`);
   let ans = await temp.json();
-  
-  /*  /pagingGet/?question_no=2&category_id=1  */
-  
+
   let user_ans = await fetch("/getAns", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(ans.data),
   });
   let user_ans_json = await user_ans.json();
-  
-  // console.log("ANS2 :- ", user_ans_json);
+
+  start = parseInt(ans.data[0].question_id);
+  end = start + parseInt(ans.category[0].no_of_question) - 1;
+  // console.log(start, end);
 
   let c_name = e.textContent;
   document.querySelector(
@@ -256,45 +252,53 @@ async function category_changer(e) {
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${ans.data[0].option_a}" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans.data[0].option_a
-                        ? "checked"
-                        : ""
-                    }>
+                    <input type="radio" name="option" value="${
+                      ans.data[0].option_a
+                    }" ${
+    user_ans_json.length &&
+    user_ans_json[0].user_answers == ans.data[0].option_a
+      ? "checked"
+      : ""
+  }>
                     <span>${ans.data[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${ans.data[0].option_b}" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans.data[0].option_b
-                        ? "checked"
-                        : ""
-                    }>
+                    <input type="radio" name="option" value="${
+                      ans.data[0].option_b
+                    }" ${
+    user_ans_json.length &&
+    user_ans_json[0].user_answers == ans.data[0].option_b
+      ? "checked"
+      : ""
+  }>
                     <span>${ans.data[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${ans.data[0].option_c}" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans.data[0].option_c
-                        ? "checked"
-                        : ""
-                    }>
+                    <input type="radio" name="option" value="${
+                      ans.data[0].option_c
+                    }" ${
+    user_ans_json.length &&
+    user_ans_json[0].user_answers == ans.data[0].option_c
+      ? "checked"
+      : ""
+  }>
                     <span>${ans.data[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${ans.data[0].option_d}" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans.data[0].option_d
-                        ? "checked"
-                        : ""
-                    }>
+                    <input type="radio" name="option" value="${
+                      ans.data[0].option_d
+                    }" ${
+    user_ans_json.length &&
+    user_ans_json[0].user_answers == ans.data[0].option_d
+      ? "checked"
+      : ""
+  }>
                     <span>${ans.data[0].option_d}</span>
                   </label>
                 </div>`;
@@ -326,27 +330,30 @@ async function category_changer(e) {
 
   btns.innerHTML = btn;
 
-  let page = "";
-  for (var i = 0; i < ans.category[0].no_of_question; i++) {
-    if (i + 1 === ans.question_no) {
-      page += `<span
-      class="selected m-1 btn pagination-number"
-        onclick="fetcher('pagingGet/?question_no=${
-          ans.data[0].question_id + i
-        }&category_id=${ans.category[0].category_id}')"
-        >${i + 1}</span
-      >`;
-      continue;
-    }
-    page += `<span
-    class="m-1 btn pagination-number"
-        onclick="fetcher('/pagingGet/?question_no=${
-          ans.data[0].question_id + i
-        }&category_id=${ans.category[0].category_id}')"
-        >${i + 1}</span
-      >`;
-  }
-  document.getElementById("page").innerHTML = page;
+  // let page = "";
+  // for (var i = 0; i < ans.category[0].no_of_question; i++) {
+  //   if (i + 1 === ans.question_no) {
+  //     page += `<span
+  //     class="selected m-1 btn pagination-number" id=i${
+  //       ans.data[0].question_id + i
+  //     }
+  //       onclick="fetcher('pagingGet/?question_no=${
+  //         ans.data[0].question_id + i
+  //       }&category_id=${ans.category[0].category_id}')"
+  //       >${i + 1}</span
+  //     >`;
+  //     continue;
+  //   }
+  //   page += `<span
+  //   class="m-1 btn pagination-number" id=i${ans.data[0].question_id + i}
+  //       onclick="fetcher('/pagingGet/?question_no=${
+  //         ans.data[0].question_id + i
+  //       }&category_id=${ans.category[0].category_id}')"
+  //       >${i + 1}</span
+  //     >`;
+  // }
+  // // console.log(document.getElementById("page")," AND ",page);
+  // document.getElementById("page").innerHTML = page;
 }
 
 if (document.getElementById("submit")) {
