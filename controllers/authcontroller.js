@@ -412,12 +412,8 @@ const form1 = async (req, res) => {
         }
       }
 
-      // console.log("-------------------------------------");
-      // console.log(data1);
-      // console.log("-------------------------------------");
-
       let userEmail = req.session.email;
-      console.log("Session E - mail -: ", req.session.email);
+      // console.log("Session E - mail -: ", req.session);
 
       let sql = `select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${user_email}'`;
       let [data] = await con.execute(sql);
@@ -438,6 +434,7 @@ const validate_code = async (req, res) => {
   let examId = req.query.exam_id;
   console.log("ye code hai tera ", examId, "Thank you!");
   // console.log("Email: ", email);
+  req.session.exam_id = examId;
   let sql11 = `select exam_access_code from exam where exam_id=${examId};`;
   // console.log(sql11);
   let verify = await con.execute(sql11);
@@ -453,7 +450,8 @@ const examGet = async (req, res) => {
       category_id = req.query.category_id || 1; // Get the requested page number, default to 1 if not provided
     const question_per_page = 1; //* Limit || Number of questions to display per page
     const offset = (question_no - 1) * question_per_page;
-    let exam_id = 1;
+    console.log('req.session.examId',req.session.exam_id);
+    let exam_id = req.session.exam_id || 1;
     // console.log("Session :- ", req.session.email);
     let [exam] = await con.execute(
       `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
@@ -572,13 +570,11 @@ const getAllAns = async (req, res) => {
   // console.log("Ans :- ",q);
   res.json(q);
 };
-
 const endExam = async (req, res) => {
   res.render("end");
 };
 
 const getCategoryName = async (req, res) => {
-  // console.log("hhgghfghkjhk",req.query.btn=="next"? parseInt(req.query.id) + 1 : parseInt(req.query.id) - 1 );
   if (req.query.btn == "next" || req.query.btn == "prev") {
     let [c_name] = await con.execute(
       `select b.category_name, b.category_id from questions a,category b where a.category_id=b.category_id and a.question_id= ${
@@ -587,7 +583,6 @@ const getCategoryName = async (req, res) => {
           : parseInt(req.query.id) - 1
       }`
     );
-    // console.log("in if :- ", c_name);
     res.json(c_name);
   } else {
     let [c_name] = await con.execute(
@@ -597,10 +592,6 @@ const getCategoryName = async (req, res) => {
     );
     res.json(c_name);
   }
-  // console.log("dhsfhifghij");
-  // let qid = req.query.qid;
-  // console.log('qid :- ',c_name);
-  // res.json(c_name);
 };
 
 module.exports = {
