@@ -11,43 +11,55 @@
     />
     <link rel="stylesheet" href="/css/exam_page.css" />
   </head>
-  <body>
+  <body onload="timer('<%= exam[0].exam_time %>')">
     <header>
       <nav class="navbar navbar-expand-lg bg-warning">
-          <div class="container-fluid">
-              <!-- <img src="/exam_logo.jpg" class="img-circle" alt="logo"> -->
-              <h2 class="h2">Online Exam System</h2>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="d-flex justify-content-between " id="navbarNav">
-                  <ul class="navbar-nav d-flex justify-content-between ">
-
-                      <li class="nav-item">
-                          <!-- <h2 class="h2"><%#= %></h2> -->
-                          <h2 class="h2">User name</h2>
-                      </li>
-                  </ul>
-              </div>
+        <div class="container-fluid">
+          <!-- <img src="/exam_logo.jpg" class="img-circle" alt="logo"> -->
+          <h2 class="h2">Online Exam System</h2>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="d-flex justify-content-between" id="navbarNav">
+            <ul class="navbar-nav d-flex justify-content-between">
+              <li class="nav-item">
+                <!-- <h2 class="h2"><%#= %></h2> -->
+                <h2 class="username"></h2>
+              </li>
+            </ul>
           </div>
+        </div>
       </nav>
-      
-  </header>  
+    </header>
 
-    <div class="container mt-5">     
-    <div class="d-flex justify-content-center row">
-      <div class="overflow-hidden col-md-10 col-lg-10 border">
+    <div class="container mt-5">
+
+      <div class="d-flex justify-content-center row">
+        <div class="overflow-hidden col-md-10 col-lg-10 border">
         <h1 class="m-1"><%= exam[0].exam_name %></h1>
-        <!-- <h2 id="category-title"></h2> -->
+      <!-- <h2 id="category-title"></h2> -->
         <div class="text-end">        
-          <span   onclick="timer('10')">Time Left :</span>          
+              
           <p id="time1"  class="badge rounded-pill text-bg-primary " >time</p>         
       </div>
-        <div id="category-buttons">
-            <% for(let i = 0;i<category.length;i++) { %>
-              <a id="<%=category[i].category_id%>" onclick="category_changer(this)"><%= category[i].category_name  %></a> 
-             <% } %>
+        <div class="page d-flex justify-content-center align-items-center pt-3 " id="examtab">
+            <%# for(let i = 0;i<category.length;i++) { %>
+              <!-- <a id="<%#=category[i].category_id%>" onclick="category_changer(this)"><%#= category[i].category_name  %></a>  -->
+             <%# } %>
+
+             <% for(let i = 0;i<category.length;i++) { %>
+              <a id="<%=category[i].category_id%>" class="pagination" onclick="category_changer(this)" <%if(i==0 ){%> style="background-color:#ffc94e; color:black;" <% }%>>
+                  <%= category[i].category_name  %>
+              </a>
+              <% } %>
         </div>
         <div class="bg-white p-3 border-bottom">
           <div
@@ -150,34 +162,58 @@
             id="submit"
           />
         </div>
-      </div>
-
-      <div
+          </div>
+        <!-- <div
         class="page d-flex justify-content-center align-items-center pt-3"
         id="page"
       >
-        <%for(var i=1;i<=category[0].no_of_question;i++){ %> <% if(i ===
+      <%# console.log("jkbuiebtjkn",total_questions_of_category);  %>
+        <%#for(var i=1;i<=total_questions_of_category[0].total;i++){  %> <%# if(i ===
+        question_no){ %>
+        <span
+          id="i<%#=i%>"
+          class="selected m-1 btn pagination-number"
+          onclick="fetcher('pagingGet/?question_no=<%#=i%>&category_id=<%#=category[0].category_id%>')"
+          ><%#=i%></span
+        >
+        <%# continue; %> <%# } %>
+        <span
+          id="i<%#=i%>"
+          class="m-1 btn pagination-number"
+          onclick="fetcher('/pagingGet/?question_no=<%#=i%>&category_id=<%#=category[0].category_id%>')"
+          ><%#=i%></span
+        >
+        <%# } %>
+           </div> -->
+           <div
+        class="page d-flex justify-content-center align-items-center pt-3"
+        id="page"
+      >
+        <%for(var i=1;i<=exam[0].total_questions;i++){  %> <% if(i ===
         question_no){ %>
         <span
           id="i<%=i%>"
           class="selected m-1 btn pagination-number"
-          onclick="fetcher('pagingGet/?question_no=<%=i%>&category_id=<%=category[0].category_id%>')"
+          onclick="fetcher('pagingGet/?question_no=<%=i%>%>')"
           ><%=i%></span
         >
         <% continue; %> <% } %>
         <span
           id="i<%=i%>"
           class="m-1 btn pagination-number"
-          onclick="fetcher('/pagingGet/?question_no=<%=i%>&category_id=<%=category[0].category_id%>')"
+          
+          onclick="getQue('<%=i%>')"
           ><%=i%></span
         >
         <% } %>
+           </div>
       </div>
-    </div>
     </div>
   </body>
   <script>
     var total_questions = `<%=exam[0].total_questions%>`;
+    var start = 1;
+    var end = `<%=total_questions_of_category[0].total%>`;
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

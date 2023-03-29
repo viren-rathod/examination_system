@@ -152,6 +152,7 @@ const loginpostpage = async (req, res) => {
 
     var selectUser = `SELECT * from user_login where email = '${email}'`;
     var [userData] = await con.execute(selectUser);
+    // console.log(userData);
 
     if (userData.length == 0) {
         // res.send("email is not match");
@@ -175,18 +176,23 @@ const loginpostpage = async (req, res) => {
                 // res.send("Password is not match");
                 res.render("login", { msg: "email or pasword does not match" });
             } else {
-                if (userData[0].user_login_status == 0) {
-                    res.render("activation.ejs", {
-                        email: email,
-                        resultRandom: resultRandom,
-                    });
-                } else {
-                    req.session.email = email;
-                    req.session.stdId = emailResult[0].student_id;
-                    req.session.userId = userData[0].user_id;
 
+                if (userData[0]['role'] != 0) {
+                    res.render("login", { msg: "role is not match" });
+                }
+                else {
+                    if (userData[0].user_login_status == 0) {
+                        res.render("activation.ejs", {
+                            email: email,
+                            resultRandom: resultRandom,
+                        });
+                    } else {
+                        req.session.email = email;
+                        req.session.stdId = emailResult[0].student_id;
+                        req.session.userId = userData[0].user_id;
 
-                    res.redirect("/home");
+                        res.redirect("/home");
+                    }
                 }
             }
         }
@@ -429,4 +435,4 @@ module.exports = {
     resultpageGet,
     profile_updatepagePOST,
     logoutpageGet, updateProfilePassword
-}  
+}

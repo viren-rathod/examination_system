@@ -20,6 +20,6 @@ router.post("/getAns", examControllers.getAns);
 router.get("/endExam", examControllers.endExam);
 router.get("/getCategoryName", examControllers.getCategoryName);
 router.get("/getAllAns", examControllers.getAllAns);
-// router.get('/exam_homepageGet', examControllers.exam_homepageGet);
+router.get("/allAnswerGet", examControllers.allAnswerGet);
 
 module.exports = router;
