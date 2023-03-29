@@ -4,6 +4,8 @@ const bod = require("body-parser");
 const path = require("path");
 
 const userControllers = require("../controllers/userController");
+// const verifyToken = require("../middlaware/AuthMiddleware");
+// const verifyHome = require("../middlaware/AuthMiddleware");
 
 // Dhruv and kevin routes
 router.get("/home", userControllers.homepageGet);
@@ -14,7 +16,9 @@ router.post("/profile_update", userControllers.profile_updatepagePOST);
 router.get("/", userControllers.logingetpage);
 router.get("/register", userControllers.registerpage);
 router.post("/register", userControllers.registerpost);
+
 router.get("/login", userControllers.logingetpage);
+
 router.post("/login", userControllers.loginpostpage);
 router.get("/city", userControllers.city);
 router.get("/forget", userControllers.forgetGet);

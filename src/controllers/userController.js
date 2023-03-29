@@ -27,16 +27,16 @@ const logoutpageGet = async(req, res) => {
 const homepageGet = async(req, res) => {
     // req.session.email = email;
 
-    if (!req.session.email) {
-        res.render("login", { msg: "" });
-    } else {
+    // if (!req.session.email) {
+    //     res.render("login", { msg: "" });
+    // } else {
         // console.log("Sesion :- ", req.session.email);
         // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
         const [result] = await con.execute(
             `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
         );
         res.render("homestart", { editdata: result });
-    }
+    // }
 };
 
 const exam_homepageGet = async(req, res) => {
@@ -203,6 +203,7 @@ const loginpostpage = async(req, res) => {
                             resultRandom: resultRandom,
                         });
                     } else {
+                        // console.log("i am coming");
                         req.session.email = email;
                         req.session.stdId = emailResult[0].student_id;
                         req.session.userId = userData[0].user_id;

@@ -4,7 +4,7 @@ const bod = require("body-parser");
 const path = require("path");
 
 const examControllers = require("../controllers/examController");
-
+// const verifyToken = require("../middlaware/AuthMiddleware");
 
 //viren and Naresh Routes
 router.get("/form1", examControllers.form1);
