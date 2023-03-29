@@ -116,7 +116,6 @@ async function next_btn(id) {
   prevQuestionId = parseInt(id) + 1;
   userAnswers[id] = selectedAns;
   questionIds[id] = parseInt(id);
-  index = index + 1;
 
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
@@ -150,10 +149,7 @@ async function next_btn(id) {
   });
   let a2 = await a1.json();
   selectedAns = "";
-  if (document.querySelector(`#i${parseInt(id) + 1}`))
-    document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
-      "lightblue";
-  document.querySelector(`#i${id}`).style.backgroundColor = "white";
+
   if (tmp[0]) {
     let s = `<div
       class="row justify-content-around align-items-center"
@@ -348,7 +344,7 @@ async function endExam() {
   if (confirm("Are you sure you want to submit the Exam ?")) {
     for (let i = 1; i <= userAnswers.length; i++) {
       if (questionIds[i] && userAnswers[i] == undefined) {
-        console.log(questionIds[i]);
+        // console.log(i);
         let a = await fetch(
           `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
         );
