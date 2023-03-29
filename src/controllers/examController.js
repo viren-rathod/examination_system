@@ -94,8 +94,8 @@ const examGet = async (req, res) => {
     const question_no = 1; // Get the requested page number, default to 1 if not provided
     const question_per_page = 1; //* Limit || Number of questions to display per page
     const offset = (question_no - 1) * question_per_page;
-    // console.log("req.session.examId", req.session.userId);
     let exam_id = req.session.exam_id || 1;
+    console.log(exam_id);
     let [exam] = await con.execute(
       `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
     );
@@ -106,8 +106,6 @@ const examGet = async (req, res) => {
       `select a.category_name,a.category_id from category a,exam_category b where a.category_id=b.category_id and exam_id=${exam_id}`
     );
     let category_id = category[0].category_id;
-    // console.log('Exam :- ',category_id);
-    // console.log("category :- ", req.query.category_id);
 
     let [data] = await con.execute(
       `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} LIMIT ${question_per_page} OFFSET ${offset}`
@@ -115,7 +113,7 @@ const examGet = async (req, res) => {
     let [total_questions_of_category] = await con.execute(
       `select count(*) as total from questions where category_id = ${category_id} `
     );
-    // console.log(total_questions_of_category);
+    // console.log(total_questions_of_category, data);
     if (data.length) {
       res.render("exam_question", {
         e: data[0],
@@ -183,6 +181,7 @@ const nextGet = async (req, res) => {
   // console.log(question);
   res.json(question);
 };
+
 const prevGet = async (req, res) => {
   let id = parseInt(req.query.id) - 1;
   let [question] = await con.execute(
@@ -201,6 +200,7 @@ const answerPost = async (req, res) => {
     if (check.length == 0) {
       let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${req.session.userId},1,${b.id},'${b.selectedAns}',1)`;
       let [data] = await con.execute(query);
+      res.json(data);
     } else {
       let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id}`;
       let [data] = await con.execute(query);
@@ -219,26 +219,30 @@ const getAns = async (req, res) => {
   );
   res.json(q);
 };
+
 const getAllAns = async (req, res) => {
   let [q] = await con.execute(`SELECT user_answers FROM user_answers`);
   // console.log("Ans :- ",q);
   res.json(q);
 };
+
 const endExam = async (req, res) => {
   let b = req.body;
   res.render("result");
 };
+
 const allAnswerGet = async (req, res) => {
   let b = req.query;
-
+  console.log("B", b, req.session.exam_id, req.session.userId);
   if (b.id) {
     let [check] = await con.execute(
-      `SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId}`
+      `SELECT user_answers FROM user_answers WHERE question_id=${parseInt(
+        b.id
+      )} and user_id=${req.session.userId}`
     );
-    // console.log(check.length);
     if (check.length == 0) {
       let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${req.session.userId
-        },1,${parseInt(b.id)},'',1)`;
+        },${req.session.exam_id},${parseInt(b.id)},'',1)`;
       let [data] = await con.execute(query);
       res.json(data);
     } else {

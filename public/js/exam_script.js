@@ -85,7 +85,8 @@ async function fetcher(str) {
                 </div>`;
   if (total_questions >= ans[0].question_id) que.innerHTML = s;
 
-  let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
+  // let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
+  let qn = `<span class= "que-no">${index}</span>`;
   que_no.innerHTML = qn;
   let btn = `<div
       class="row justify-content-around align-items-center"
@@ -113,13 +114,9 @@ async function fetcher(str) {
 
 async function next_btn(id) {
   prevQuestionId = parseInt(id) + 1;
-  if (document.querySelector(`#i${parseInt(id) + 1}`))
-    document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
-      "lightblue";
-  document.querySelector(`#i${id}`).style.backgroundColor = "white";
-
   userAnswers[id] = selectedAns;
   questionIds[id] = parseInt(id);
+  index = index + 1;
 
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
@@ -153,8 +150,10 @@ async function next_btn(id) {
   });
   let a2 = await a1.json();
   selectedAns = "";
-
-
+  if (document.querySelector(`#i${parseInt(id) + 1}`))
+    document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
+      "lightblue";
+  document.querySelector(`#i${id}`).style.backgroundColor = "white";
   if (tmp[0]) {
     let s = `<div
       class="row justify-content-around align-items-center"
@@ -185,6 +184,7 @@ async function next_btn(id) {
 
 async function previous_btn(id) {
   prevQuestionId = parseInt(id) - 1;
+  index = index - 1;
   document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
     "lightblue";
   document.querySelector(`#i${id}`).style.backgroundColor = "white";
@@ -347,8 +347,8 @@ submit.addEventListener("click", () => {
 async function endExam() {
   if (confirm("Are you sure you want to submit the Exam ?")) {
     for (let i = 1; i <= userAnswers.length; i++) {
-      if (userAnswers[i] == undefined) {
-        console.log(i);
+      if (questionIds[i] && userAnswers[i] == undefined) {
+        console.log(questionIds[i]);
         let a = await fetch(
           `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
         );
@@ -360,7 +360,7 @@ async function endExam() {
 }
 /*? Timer*/
 function timer(x) {
-  console.log(x);
+  // console.log(x);
   let y = parseInt(x);
   console.log(typeof y);
 

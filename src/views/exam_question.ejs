@@ -67,7 +67,7 @@
           >
             <h4 class="category-title"><%=category[0].category_name%></h4>
             <span
-              ><span id="que_no"><%= e.question_id %></span> of <%=
+              ><span id="que_no">1</span> of <%=
               exam[0].total_questions %></span
             >
           </div>
@@ -212,7 +212,7 @@
   </body>
   <script>
     var total_questions = `<%=exam[0].total_questions%>`;
-    var start = 1;
+    var start = 1,index=1;
     var end = `<%=total_questions_of_category[0].total%>`;
   </script>
 
