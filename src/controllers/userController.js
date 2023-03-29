@@ -79,11 +79,13 @@ const registerpage = async(req, res) => {
 
     var selectCollege = `select * from colleges`;
     var [collegeResult] = await con.execute(selectCollege);
+    console.log(collegeResult)
 
     res.render("register", {
         stateResult: stateResult,
         cityResult: cityResult,
         collegeResult: collegeResult,
+
     });
 };
 
@@ -109,6 +111,15 @@ const registerpost = async(req, res) => {
     var [cid] = await con.execute(
         `select * from colleges where college_name='${college}'`
     );
+    var selectState = `select state_name from state `;
+    var [stateResult] = await con.execute(selectState); //
+
+    var selectCity = `select city_name from city where state_id = 1`;
+    var [cityResult] = await con.execute(selectCity);
+
+    var selectCollege = `select * from colleges`;
+    var [collegeResult] = await con.execute(selectCollege);
+
     // console.log(cid);
 
     var stateId = `select state_id from state where state_name ='${state}'`;
@@ -121,6 +132,12 @@ const registerpost = async(req, res) => {
 
     if (selectResult.length != 0) {
         return res.send("This Email is already Exectute");
+        // res.render("register", {
+        //     msg: "This Email is already ragister",
+        //     stateResult: stateResult,
+        //     cityResult: cityResult,
+        //     collegeResult: collegeResult,
+        // });
     } else {
         var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${sid[0].state_id}', '${city}' , '${cid[0].college_id}' , '0',NOW() )`;
         var [insertResult] = await con.execute(insertQuery);
