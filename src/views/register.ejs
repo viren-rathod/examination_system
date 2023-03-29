@@ -57,7 +57,7 @@
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="number" id="phone1" class="form-control form-control-lg" placeholder="Contact Number" onchange="return sameAll('phone')" name="phoneN" required />
+                                        <input type="text" id="form3Example9" class="form-control form-control-lg" onkeyup="return validePhone(this)" placeholder="Contact Number" name="phoneN" required />
                                         <p id="phone_label"></p>
                                     </div>
 
@@ -205,84 +205,73 @@
             }
         }
 
-        if (filed == 'last') {
-            var n1 = document.getElementById("lname").value;
-            var name1_arr = [];
-            var valid1 = new RegExp("[^a-z|^A-Z]");
-            if (valid1.test(n1)) {
-                name1_arr.push("Name is not  contain any number")
-            }
-
-            if (name1_arr.length > 0) {
-                document.getElementById('last_lable').innerHTML = name1_arr.join("\n");
-                document.getElementById('last_lable').style.color = "red";
-                document.getElementById("submitAll").disabled = true;
-                return false;
-            } else {
-                document.getElementById('last_lable').innerHTML = "";
-                document.getElementById("submitAll").disabled = false;
-                return true
-            }
-        }
-
-        if (filed == 'phone') {
-            var phone11 = document.getElementById("phone1").value;
-            var phone_length = phone11.length;
-            // console.log(phone_length)
-            var err_arr = [];
-
-            if (phone_length > 10) {
-                err_arr.push("length is greater than 10");
-            }
-            if (phone_length < 10 && phone_length > 0) {
-                err_arr.push("length is less than 10");
-            }
-
-            if (err_arr.length > 0) {
-                document.getElementById('phone_label').innerHTML = err_arr.join("\n");
-                document.getElementById('phone_label').style.color = "red";
-                document.getElementById("submitAll").disabled = true;
-            } else {
-                document.getElementById('phone_label').innerHTML = "";
-                document.getElementById("submitAll").disabled = false;
-            }
-
-        }
-
-        if (filed == 'email') {
-            var emailVal = document.getElementById("email").value;
-            let e1 = emailVal.indexOf("@");
-            let e2 = emailVal.lastIndexOf(".");
-            var errEmail = [];
-            if (emailVal.length == 0) {
-                document.getElementById("email_valid").innerHTML = ""
-            } else {
-                if (e1 < 2) {
-                    errEmail.push("@ is write after two point")
-                }
-                if (e2 < e1 + 2) {
-                    errEmail.push(".(Dot)  enter two point after @. ")
-                }
-                if (e2 + 2 >= emailVal.length) {
-                    errEmail.push("Plese enter valid email")
-                }
-                if (emailVal.length == 0) {
-                    document.getElementById("email_valid").innerHTML = ""
-                }
-            }
-
-            if (errEmail.length > 0) {
-
-                document.getElementById("email_valid").innerHTML = "Plese eneter the valid emnail";
-                document.getElementById("email_valid").style.color = "red";
-                document.getElementById("submitAll").disabled = true;
-            } else {
-                document.getElementById("email_valid").innerHTML = ""
-                document.getElementById("submitAll").disabled = false;
-            }
+        if (name_arr.length > 0) {
+            document.getElementById('last_lable').innerHTML = name_arr.join("\n");
+            document.getElementById('last_lable').style.color = "red";
+            document.getElementById("submitAll").disabled = true;
+            return false;
+        } else {
+            document.getElementById('last_lable').innerHTML = "";
+            document.getElementById("submitAll").disabled = false;
+            return true
         }
 
     }
+
+    function validatePhoneNumber(input_str) {
+        var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+        return re.test(input_str);
+    }
+
+    function validePhone(phone) {
+        var phone_length = phone.length;
+
+
+        var err_arr = [];
+        if (validatePhoneNumber(phone.value)) {
+            document.getElementById('phone_label').innerHTML = "";
+            document.getElementById("submitAll").disabled = false;
+        } else {
+            document.getElementById('phone_label').innerHTML = "Not valid Number";
+            document.getElementById('phone_label').style.color = "red";
+            document.getElementById("submitAll").disabled = true;
+        }
+    }
+
+    if (filed == 'email') {
+        var emailVal = document.getElementById("email").value;
+        let e1 = emailVal.indexOf("@");
+        let e2 = emailVal.lastIndexOf(".");
+        var errEmail = [];
+        if (emailVal.length == 0) {
+            document.getElementById("email_valid").innerHTML = ""
+        } else {
+            if (e1 < 2) {
+                errEmail.push("@ is write after two point")
+            }
+            if (e2 < e1 + 2) {
+                errEmail.push(".(Dot)  enter two point after @. ")
+            }
+            if (e2 + 2 >= emailVal.length) {
+                errEmail.push("Plese enter valid email")
+            }
+            if (emailVal.length == 0) {
+                document.getElementById("email_valid").innerHTML = ""
+            }
+        }
+
+        if (errEmail.length > 0) {
+
+            document.getElementById("email_valid").innerHTML = "Plese eneter the valid emnail";
+            document.getElementById("email_valid").style.color = "red";
+            document.getElementById("submitAll").disabled = true;
+        } else {
+            document.getElementById("email_valid").innerHTML = ""
+            document.getElementById("submitAll").disabled = false;
+        }
+    }
+
+
 
 
 

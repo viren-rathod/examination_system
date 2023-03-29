@@ -1,22 +1,17 @@
-// console.log("script is already working....");
-// console.log(total_questions_of_category);
 let prevQuestionId = 1;
 let allOptions = document.getElementsByName("option");
 let selectedAns = "";
-
+let userAnswers = [...new Array(parseInt(total_questions))];
+let questionIds = Array.from({ length: parseInt(total_questions) + 1 },
+    (_, i) => i
+);
 async function getAnswers(temp) {
-    // console.log("called");
     allOptions.forEach((e) => {
-        // console.log(e.value);
         if (e.checked) selectedAns = e.value;
     });
-
-
-    // console.log("selectedAns", selectedAns);
-    // ans_user = temp.value;
 }
 async function getQue(id) {
-    console.log(id, prevQuestionId);
+    // console.log(id, prevQuestionId);
     let que = await fetch(`/getCategoryName?id=${id}`);
     let cat_name = await que.json();
     document.querySelector(
@@ -25,9 +20,9 @@ async function getQue(id) {
     fetcher(
         `/pagingGet/?question_no=${id}&category_id=${cat_name[0].category_id}`
     );
-    document.getElementById(`i${prevQuestionId}`).style.backgroundColor = 'white';
-    document.getElementById(`i${id}`).style.backgroundColor = 'lightblue';
-    prevQuestionId = id
+    document.getElementById(`i${prevQuestionId}`).style.backgroundColor = "white";
+    document.getElementById(`i${id}`).style.backgroundColor = "lightblue";
+    prevQuestionId = id;
 }
 
 async function fetcher(str) {
@@ -46,55 +41,48 @@ async function fetcher(str) {
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_a}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_a
-                        ? "checked"
-                        : ""
-                    }>
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_a
+      ? "checked"
+      : ""
+    }>
                     <span>${ans[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_b}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_b
-                        ? "checked"
-                        : ""
-                    } >
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_b
+      ? "checked"
+      : ""
+    } >
                     <span>${ans[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_c}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_c
-                        ? "checked"
-                        : ""
-                    } >
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_c
+      ? "checked"
+      : ""
+    } >
                     <span>${ans[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_d}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_d
-                        ? "checked"
-                        : ""
-                    } >
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_d
+      ? "checked"
+      : ""
+    } >
                     <span>${ans[0].option_d}</span>
                   </label>
                 </div>`;
     if (total_questions >= ans[0].question_id) que.innerHTML = s;
-    // else {
-    //   // console.log("bnhjhjbdbtbjnjnytn");
-    // }
 
     let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
     que_no.innerHTML = qn;
@@ -120,16 +108,24 @@ async function fetcher(str) {
         />
     </div>`;
     btns.innerHTML = btn;
-
-    // for (let j = start; j <= end; j++) {
-    //   document.querySelector(`#i${j}`).style.backgroundColor = "white";
-    // }
-    // // console.log(`#i${ans[0].question_id}`,start,end);
-    // let currentQuestion = document.querySelector(`#i${ans[0].question_id}`);
-    // currentQuestion.style.backgroundColor = "lightblue";
 }
 
 async function next_btn(id) {
+    prevQuestionId = parseInt(id) + 1;
+    if (document.querySelector(`#i${parseInt(id) + 1}`))
+        document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
+        "lightblue";
+    document.querySelector(`#i${id}`).style.backgroundColor = "white";
+
+    userAnswers[id] = selectedAns;
+    questionIds[id] = parseInt(id);
+    let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ selectedAns, id }),
+    });
+    let a2 = await a1.json();
+    selectedAns = "";
     allOptions.forEach((e) => {
         if (e.checked) selectedAns = e.value;
     });
@@ -144,13 +140,19 @@ async function next_btn(id) {
         document.querySelector(
             ".category-title"
         ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
+
+        document.querySelectorAll(".pagination").forEach((a) => {
+            a.style.backgroundColor = "white";
+            a.style.color = "black";
+        });
+        document.getElementById(`${cat_name_json[0].category_id}`).style.color =
+            "black";
+        document.getElementById(
+            `${cat_name_json[0].category_id}`
+        ).style.backgroundColor = "#ffc94e";
     }
-    let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ selectedAns, id }),
-    });
-    selectedAns = "";
+
+
     if (tmp[0]) {
         let s = `<div
       class="row justify-content-around align-items-center"
@@ -177,17 +179,10 @@ async function next_btn(id) {
             btns.innerHTML = s;
         }
     }
-    prevQuestionId = parseInt(id) + 1;
-    // console.log(prevQuestionId);
-    // document.querySelector(`#i${prevQuestionId+1}`).style.backgroundColor = "white";
-    document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
-        "lightblue";
-    document.querySelector(`#i${id}`).style.backgroundColor = "white";
 }
 
 async function previous_btn(id) {
     prevQuestionId = parseInt(id) - 1;
-    // console.log(prevQuestionId);
     document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
         "lightblue";
     document.querySelector(`#i${id}`).style.backgroundColor = "white";
@@ -203,6 +198,15 @@ async function previous_btn(id) {
     document.querySelector(
         ".category-title"
     ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
+    document.querySelectorAll(".pagination").forEach((a) => {
+        a.style.backgroundColor = "white";
+        a.style.color = "black";
+    });
+    document.getElementById(`${cat_name_json[0].category_id}`).style.color =
+        "black";
+    document.getElementById(
+        `${cat_name_json[0].category_id}`
+    ).style.backgroundColor = "#ffc94e";
     let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
@@ -250,66 +254,61 @@ async function category_changer(e) {
 
     start = parseInt(ans.data[0].question_id);
     end = start + parseInt(ans.category[0].no_of_question) - 1;
-    // console.log(start, end);
 
     let c_name = e.textContent;
     document.querySelector(
         ".category-title"
     ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
-    // console.log("Data : -", ans);
+    // console.log(`#i${ans.data[0].question_id}`);
+    document.querySelector(`#i${prevQuestionId}`).style.backgroundColor = "white";
+    document.querySelector(`#i${ans.data[0].question_id}`).style.backgroundColor =
+        "lightblue";
+    prevQuestionId = parseInt(ans.data[0].question_id);
     let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans.data[0].question_text}</h5>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_a
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_a
+                    <input type="radio" name="option" value="${ans.data[0].option_a
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_a
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_b
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_b
+                    <input type="radio" name="option" value="${ans.data[0].option_b
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_b
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_c
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_c
+                    <input type="radio" name="option" value="${ans.data[0].option_c
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_c
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_d
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_d
+                    <input type="radio" name="option" value="${ans.data[0].option_d
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_d
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_d}</span>
                   </label>
                 </div>`;
@@ -341,65 +340,50 @@ async function category_changer(e) {
 
     btns.innerHTML = btn;
 
-    // let page = "";
-    // for (var i = 0; i < ans.category[0].no_of_question; i++) {
-    //   if (i + 1 === ans.question_no) {
-    //     page += `<span
-    //     class="selected m-1 btn pagination-number" id=i${
-    //       ans.data[0].question_id + i
-    //     }
-    //       onclick="fetcher('pagingGet/?question_no=${
-    //         ans.data[0].question_id + i
-    //       }&category_id=${ans.category[0].category_id}')"
-    //       >${i + 1}</span
-    //     >`;
-    //     continue;
-    //   }
-    //   page += `<span
-    //   class="m-1 btn pagination-number" id=i${ans.data[0].question_id + i}
-    //       onclick="fetcher('/pagingGet/?question_no=${
-    //         ans.data[0].question_id + i
-    //       }&category_id=${ans.category[0].category_id}')"
-    //       >${i + 1}</span
-    //     >`;
-    // }
-    // // console.log(document.getElementById("page")," AND ",page);
-    // document.getElementById("page").innerHTML = page;
+    document.querySelectorAll(".pagination").forEach((a) => {
+        a.style.backgroundColor = "white";
+        a.style.color = "black";
+    });
+    e.style.backgroundColor = "#ffc94e";
+    e.style.color = "black";
 }
 
-if (document.getElementById("submit")) {
-    submit.addEventListener("click", async() => {
-        // console.log("submitted");
-        // console.log("ANSWER", ans);
-        if (!ans) {
-            await fetch(`/answerPost?ans=${ans_user}`, {
-                method: "POST",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ ans_user }),
-            });
-            window.location.href = "/endExam";
+submit.addEventListener("click", () => {
+    endExam();
+});
+async function endExam() {
+    if (confirm("Are you sure you want to submit the Exam ?")) {
+        for (let i = 1; i <= userAnswers.length; i++) {
+            if (userAnswers[i] == undefined) {
+                console.log(i);
+                let a = await fetch(
+                    `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
+                );
+                let b = await a.json();
+            }
         }
         window.location.href = "/endExam";
-    });
+    }
 }
-// function timer(x) {
-//   console.log(x);
-//   let y = parseInt(x);
-//   console.log(typeof y);
+/*? Timer*/
+function timer(x) {
+    console.log(x);
+    let y = parseInt(x);
+    console.log(typeof y);
 
-//   var minit = y;
-//   var second = 0;
-//   var nareshInterval = setInterval(() => {
-//     document.getElementById("time1").innerHTML = `${minit}:${second}`;
+    var minit = y;
+    var second = 0;
+    var nareshInterval = setInterval(() => {
+        document.getElementById("time1").innerHTML = `${minit}:${second}`;
 
-//     if (second == 0) {
-//       minit--;
-//       second = 60;
-//     }
-//     second--;
-//     if (minit == -1) {
-//       clearInterval(nareshInterval);
-//       // submit();
-//     }
-//   }, 1000);
-// }
+        if (second == 0) {
+            minit--;
+            second = 60;
+        }
+        second--;
+        if (minit == -1) {
+            clearInterval(nareshInterval);
+            // submit();
+        }
+    }, 1000);
+}

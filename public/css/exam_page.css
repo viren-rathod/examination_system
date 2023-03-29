@@ -28,6 +28,10 @@
     background-color: lightblue;
 }
 
+a {
+    text-decoration: none;
+}
+
 .overlay {
     width: 100%;
     position: fixed;
@@ -117,74 +121,6 @@
     background-color: 3px solid black;
 }
 
-
-/* #fullscreen-button span:nth-child(1) {
-    top: 11px;
-    left: 11px;
-}
-
-#fullscreen-button span:nth-child(2) {
-    top: 11px;
-    left: 22px;
-    transform: rotate(90deg);
-}
-
-#fullscreen-button span:nth-child(3) {
-    top: 22px;
-    left: 11px;
-    transform: rotate(-90deg);
-}
-
-#fullscreen-button span:nth-child(4) {
-    top: 22px;
-    left: 22px;
-    transform: rotate(-180deg);
-} */
-
-
-/* Fullscreen True
-------------------------------*/
-
-
-/* [fullscreen] #fullscreen-button span:nth-child(1) {
-    top: 22px;
-    left: 22px;
-}
-
-[fullscreen] #fullscreen-button span:nth-child(2) {
-    top: 22px;
-    left: 11px;
-}
-
-[fullscreen] #fullscreen-button span:nth-child(3) {
-    top: 11px;
-    left: 22px;
-}
-
-[fullscreen] #fullscreen-button span:nth-child(4) {
-    top: 11px;
-    left: 11px;
-} */
-
-
-/* Dark Style
-------------------------------*/
-
-
-/* [light-mode=dark] {
-    background: #be2222;
-    color: #fff;
-}
-
-[light-mode=dark] #fullscreen-button {
-    background: rgba(255, 255, 255, .05);
-}
-
-[light-mode=dark] #fullscreen-button span {
-    border-top: 2.5px solid #fff;
-    border-left: 2.5px solid #fff;
-} */
-
 #btnTitle {
     padding-right: 50px;
 }
@@ -193,7 +129,7 @@
     margin-left: 20px;
     padding: 10px;
     font-size: 20px;
-    border-radius: 11px;
+    border-radius: 5px;
     cursor: pointer;
     border: none;
 }
