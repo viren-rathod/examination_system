@@ -200,6 +200,7 @@ const answerPost = async (req, res) => {
     if (check.length == 0) {
       let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${req.session.userId},1,${b.id},'${b.selectedAns}',1)`;
       let [data] = await con.execute(query);
+      res.json(data);
     } else {
       let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id}`;
       let [data] = await con.execute(query);
@@ -232,7 +233,7 @@ const endExam = async (req, res) => {
 
 const allAnswerGet = async (req, res) => {
   let b = req.query;
-  console.log('B',b,req.session.exam_id,req.session.userId);
+  console.log("B", b, req.session.exam_id, req.session.userId);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${parseInt(
