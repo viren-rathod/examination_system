@@ -124,6 +124,7 @@ async function next_btn(id) {
 
   userAnswers[id] = selectedAns;
   questionIds[id] = parseInt(id);
+
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
   });
@@ -357,8 +358,8 @@ submit.addEventListener("click", () => {
 async function endExam() {
   if (confirm("Are you sure you want to submit the Exam ?")) {
     for (let i = 1; i <= userAnswers.length; i++) {
-      if (userAnswers[i] == undefined) {
-        console.log(i);
+      if (questionIds[i] && userAnswers[i] == undefined) {
+        console.log(questionIds[i]);
         let a = await fetch(
           `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
         );
