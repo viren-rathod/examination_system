@@ -120,13 +120,7 @@ async function next_btn(id) {
 
   userAnswers[id] = selectedAns;
   questionIds[id] = parseInt(id);
-  let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ selectedAns, id }),
-  });
-  let a2 = await a1.json();
-  selectedAns = "";
+
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
   });
@@ -152,7 +146,13 @@ async function next_btn(id) {
       `${cat_name_json[0].category_id}`
     ).style.backgroundColor = "#ffc94e";
   }
-
+  let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ selectedAns, id }),
+  });
+  let a2 = await a1.json();
+  selectedAns = "";
 
   if (tmp[0]) {
     let s = `<div
