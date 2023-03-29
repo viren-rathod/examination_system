@@ -254,6 +254,7 @@ async function category_changer(e) {
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
+  // console.log(`#i${ans.data[0].question_id}`);
   document.querySelector(`#i${prevQuestionId}`).style.backgroundColor = "white";
   document.querySelector(`#i${ans.data[0].question_id}`).style.backgroundColor =
     "lightblue";
@@ -350,10 +351,14 @@ async function category_changer(e) {
   e.style.color = "black";
 }
 
-submit.addEventListener("click", async () => {
+submit.addEventListener("click", () => {
+  endExam();
+});
+async function endExam() {
   if (confirm("Are you sure you want to submit the Exam ?")) {
-    for (let i = 1; i < userAnswers.length; i++) {
+    for (let i = 1; i <= userAnswers.length; i++) {
       if (userAnswers[i] == undefined) {
+        console.log(i);
         let a = await fetch(
           `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
         );
@@ -362,27 +367,26 @@ submit.addEventListener("click", async () => {
     }
     window.location.href = "/endExam";
   }
-});
-
+}
 /*? Timer*/
-// function timer(x) {
-//   console.log(x);
-//   let y = parseInt(x);
-//   console.log(typeof y);
+function timer(x) {
+  console.log(x);
+  let y = parseInt(x);
+  console.log(typeof y);
 
-//   var minit = y;
-//   var second = 0;
-//   var nareshInterval = setInterval(() => {
-//     document.getElementById("time1").innerHTML = `${minit}:${second}`;
+  var minit = y;
+  var second = 0;
+  var nareshInterval = setInterval(() => {
+    document.getElementById("time1").innerHTML = `${minit}:${second}`;
 
-//     if (second == 0) {
-//       minit--;
-//       second = 60;
-//     }
-//     second--;
-//     if (minit == -1) {
-//       clearInterval(nareshInterval);
-//       // submit();
-//     }
-//   }, 1000);
-// }
+    if (second == 0) {
+      minit--;
+      second = 60;
+    }
+    second--;
+    if (minit == -1) {
+      clearInterval(nareshInterval);
+      // submit();
+    }
+  }, 1000);
+}

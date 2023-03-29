@@ -1,16 +1,15 @@
-let ischeckemail = true;
-let ischeckname1 = true,
-    ischeckname2 = true;
-let isContact = true;
-let isaddress = true;
+var ischeckemail = true;
+var ischeckname1 = true, ischeckname2 = true;
+var isContact = true;
+var isaddress = true;
 var savebutton = document.getElementById('savebutton');
 var saveall = document.getElementById('totalSave');
 var readonly = true;
 var inputs = document.querySelectorAll('input');
 var firstname = document.getElementById('first_name').value;
 var email = document.getElementById('email').value;
-let contact = document.getElementById('contact');
-let address = document.getElementById('address').value;
+var contact = document.getElementById('contact');
+var address = document.getElementById('address').value;
 async function checkNameValid1(ele) {
     let input_val = ele.value;
     let err_mes = document.getElementById('err_name');
@@ -18,7 +17,8 @@ async function checkNameValid1(ele) {
     if (input_val == "" || !regex.test(input_val)) {
         err_mes.innerHTML = "Not a Valid Name";
         ischeckname1 = false;
-    } else {
+    }
+    else {
         firstname = input_val;
         err_mes.innerHTML = "";
         ischeckname1 = true;
@@ -40,33 +40,6 @@ async function checkEmail(ele) {
         ischeckemail = false;
     }
     checksubmit();
-}
-
-
-// savebutton.addEventListener('click', function () {
-//     for (var i = 0; i < inputs.length; i++) {
-//         console.log(inputs[i]);
-//         inputs[i].toggleAttribute('readonly');
-//         
-//     };
-// });
-
-async function checksubmit() {
-    if (ischeckemail && ischeckname1 && isContact) {
-        saveall.disabled = false;
-        saveall.style.cursor = 'pointer';
-        console.log(firstname, email)
-        const ans = await fetch('/profile_update', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id, firstname, email, contact
-            })
-        });
-
-    }
-    else {
-        saveall.disabled = true;
-    }
 }
 
 
@@ -111,9 +84,9 @@ async function checkAddress(ele) {
     checksubmit();
 }
 
-let isCheckgender = true;
-let ansgen;
-const gender1 = document.getElementsByName("gender");
+var isCheckgender = true;
+var ansgen;
+var gender1 = document.getElementsByName("gender");
 gender1.forEach(ele => {
     if (ele.checked) {
         ansgen = ele.value;
@@ -128,15 +101,12 @@ async function checksubmit() {
 
         saveall.disabled = false;
         saveall.style.cursor = 'pointer';
-
-        console.log(firstname, email, contact.value, address, ansgen)
         const ans = await fetch('/profile_update', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 firstname, email, contact: contact.value, address, gender: ansgen
             })
         });
-
     }
     else {
         saveall.disabled = true;
@@ -145,3 +115,70 @@ async function checksubmit() {
 
 
 
+
+
+// ///////////////////////////////////////////
+function popupClick() {
+    var divParent = document.getElementById("addPop");
+    // var popupProfile = document.getElementById("profilePopup");
+    var spanC = document.createElement("span");
+    spanC.classList.add("popuptext")
+    spanC.classList.toggle("show");
+    spanC.innerHTML = "Profile Update Complete!"
+    document.getElementById("addPop").appendChild(spanC)
+    const myTimeout = setTimeout(callLogin, 1000);
+    function callLogin() {
+        spanC.remove()
+    }
+}
+async function validateProfilePaw() {
+    var old_pass = document.getElementById("old_pass").value;
+    var save_pass = document.getElementById("save_pass").value;
+    var save_confirm = document.getElementById("save_confirm").value;
+    var err_old = document.getElementById("err_old");
+    var err_new = document.getElementById("err_new");
+    var err_confirm = document.getElementById("err_confirm");
+    var profileFetch = await fetch('/profilePassword', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            old_pass,
+            save_pass,
+            save_confirm
+        })
+    }).then(res => res.json())
+        .then(data => {
+            if (data.text == "wrong") {
+                err_old.innerHTML = 'Password Does Not Match'
+                err_new.innerHTML = ""
+                err_confirm.innerHTML = ""
+            }
+            if (data.text == "blank") {
+                err_new.innerHTML = "Plese Fill the data"
+                err_old.innerHTML = ''
+                err_confirm.innerHTML = ""
+            }
+            if (data.text == "empty") {
+                err_confirm.innerHTML = "Plese Fill the data"
+                err_old.innerHTML = ''
+                err_new.innerHTML = ""
+            }
+            if (data.text == "notMatch") {
+                err_confirm.innerHTML = "Enter Same Password"
+                err_old.innerHTML = ''
+                err_new.innerHTML = ""
+            }
+            if (data.text == "success") {
+                // location.assign("/login")
+                // alert("password changed successfully")
+                var popup = document.getElementById("myPopup");
+                popup.classList.toggle("show");
+                const myTimeout = setTimeout(callLogin, 1000);
+                function callLogin() {
+                    location.assign("/login")
+                }
+            }
+        })
+}
