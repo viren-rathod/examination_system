@@ -152,7 +152,7 @@ const loginpostpage = async (req, res) => {
 
     var selectUser = `SELECT * from user_login where email = '${email}'`;
     var [userData] = await con.execute(selectUser);
-    console.log(userData);
+    // console.log(userData);
 
     if (userData.length == 0) {
         // res.send("email is not match");
@@ -435,4 +435,4 @@ module.exports = {
     resultpageGet,
     profile_updatepagePOST,
     logoutpageGet, updateProfilePassword
-}  
+}

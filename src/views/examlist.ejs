@@ -26,8 +26,9 @@
         <header>
             <nav class="navbar navbar-expand-lg bg-warning">
                 <div class="container-fluid">
-                    <img src="/img/exam_logo.png" class="img-circle" alt="logo">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <img src="/images/exam_logo.png" class="img-circle" alt="logo">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="d-flex" id="navbarNav">
@@ -41,7 +42,8 @@
                                     Exam</a>
                             </li>
                             <li class="nav-item">
-                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalCart">Profile
+                                <button type="button" class="btn" data-bs-toggle="modal"
+                                    data-bs-target="#modalCart">Profile
                                 </button>
                             </li>
 
@@ -104,20 +106,26 @@
                                     <div class="form-outline">
                                         <label class="form-label" for="form3Example8">First Name </label>
 
-                                        <input type="text" id="first_name" name="first_name" class="form-control form-control-lg" value="<%=editdata[0].name %>" oninput="checkNameValid1(this)">
+                                        <input type="text" id="first_name" name="first_name"
+                                            class="form-control form-control-lg" value="<%=editdata[0].name %>"
+                                            oninput="checkNameValid1(this)">
                                         <span class="text-danger" id="err_name">
 
                                         </span>
                                     </div>
 
                                     <div class="form-outline">
-                                        <label class="form-label" for="form3Example8">Email Name </label><input type="text" name="email" id="email" class="form-control form-control-lg" value="<%=editdata[0].email %>" oninput="checkEmail(this)">
+                                        <label class="form-label" for="form3Example8">Email Name </label><input
+                                            type="text" name="email" id="email" class="form-control form-control-lg"
+                                            value="<%=editdata[0].email %>" oninput="checkEmail(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="email_id">
                                         </span>
                                     </div>
 
                                     <div class="form-outline">
-                                        <label class="form-label" for="form3Example8">Contact Number </label><input type="number" class="form-control form-control-lg" name="contact" id="contact" value="<%=editdata[0].contact %>" oninput="checkContact(this)">
+                                        <label class="form-label" for="form3Example8">Contact Number </label><input
+                                            type="number" class="form-control form-control-lg" name="contact"
+                                            id="contact" value="<%=editdata[0].contact %>" oninput="checkContact(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="contact_id">
                                         </span>
                                     </div>
@@ -125,26 +133,45 @@
                                         <div class="genders">
                                             <label>Gender : </label>
                                             <%if(editdata[0].gender=='Male') { %>
-                                                <label for="gender_male"> Male </label> <input type="radio" name="gender" value="Male" checked id="gender_male" onchange="checkgender(this)">
+                                                <label for="gender_male"> Male </label> <input type="radio"
+                                                    name="gender" value="Male" checked id="gender_male"
+                                                    onchange="checkgender(this)">
                                                 <label for="gender_female" class="form-check-label">Female
                                                 </label>
-                                                <input type="radio" name="gender" value="Female" id="gender_female" onchange="checkgender(this)">
-                                                <label for="gender_other">Other </label><input type="radio" name="gender" value="Other" id="gender_other" onchange="checkgender(this)">
+                                                <input type="radio" name="gender" value="Female" id="gender_female"
+                                                    onchange="checkgender(this)">
+                                                <label for="gender_other">Other </label><input type="radio"
+                                                    name="gender" value="Other" id="gender_other"
+                                                    onchange="checkgender(this)">
                                                 <% } else if (editdata[0].gender=='Female' ) {%>
-                                                    <label for="gender_male"> Male </label> <input type="radio" name="gender" value="Male" id="gende_male" onchange="checkgender(this)">
-                                                    <label for="gender_female">Female </label><input type="radio" name="gender" checked value="Female" id="gender_female" onchange="checkgender(this)">
-                                                    <label for="gender_other">Other </label><input type="radio" name="gender" value="Other" id="gender_other" onchange="checkgender(this)">
+                                                    <label for="gender_male"> Male </label> <input type="radio"
+                                                        name="gender" value="Male" id="gende_male"
+                                                        onchange="checkgender(this)">
+                                                    <label for="gender_female">Female </label><input type="radio"
+                                                        name="gender" checked value="Female" id="gender_female"
+                                                        onchange="checkgender(this)">
+                                                    <label for="gender_other">Other </label><input type="radio"
+                                                        name="gender" value="Other" id="gender_other"
+                                                        onchange="checkgender(this)">
 
                                                     <% } else if(editdata[0].gender=='Other' ) {%>
-                                                        <label for="gender_male"> Male </label> <input type="radio" name="gender" value="Male" id="gende_male" onchange="checkgender(this)">
-                                                        <label for="gender_female">Female </label><input type="radio" name="gender" value="Female" id="gender_female" onchange="checkgender(this)">
-                                                        <label for="gender_other">Other </label><input type="radio" name="gender" value="Other" checked id="gender_other" onchange="checkgender(this)">
+                                                        <label for="gender_male"> Male </label> <input type="radio"
+                                                            name="gender" value="Male" id="gende_male"
+                                                            onchange="checkgender(this)">
+                                                        <label for="gender_female">Female </label><input type="radio"
+                                                            name="gender" value="Female" id="gender_female"
+                                                            onchange="checkgender(this)">
+                                                        <label for="gender_other">Other </label><input type="radio"
+                                                            name="gender" value="Other" checked id="gender_other"
+                                                            onchange="checkgender(this)">
                                                         <%}%>
                                         </div>
                                     </div>
 
                                     <div class="form-outline">
-                                        <label class="form-label" for="form3Example8">Address </label> <input type="text" name="address" class="form-control form-control-lg" id="address" value="<%=editdata[0].address%>" oninput="checkAddress(this)">
+                                        <label class="form-label" for="form3Example8">Address </label> <input
+                                            type="text" name="address" class="form-control form-control-lg" id="address"
+                                            value="<%=editdata[0].address%>" oninput="checkAddress(this)">
                                         <span class="text-danger fs-16 m-point5 iblock " id="addre_err">
                                         </span>
                                     </div>
@@ -156,11 +183,13 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <div data-bs-dismiss="modal">
-                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#changePassword">Change Password
+                                <button type="button" class="btn" data-bs-toggle="modal"
+                                    data-bs-target="#changePassword">Change Password
                                 </button>
                             </div>
 
-                            <button id="totalSave" class="btn btn-warning" onclick="popupClick()" data-bs-dismiss="modal" oninput="checksubmit()">Save</button>
+                            <button id="totalSave" class="btn btn-warning" onclick="popupClick()"
+                                data-bs-dismiss="modal" oninput="checksubmit()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -191,7 +220,9 @@
 
                                         <div class="form-outline">
                                             <label class="form-label" for="form3Example8">Email Name
-                                            </label><input type="text" name="email" id="email" class="form-control form-control-lg" value="<%=editdata[0].email %>" oninput="checkEmail(this)" readonly>
+                                            </label><input type="text" name="email" id="email"
+                                                class="form-control form-control-lg" value="<%=editdata[0].email %>"
+                                                oninput="checkEmail(this)" readonly>
                                             <span class="text-danger fs-16 m-point5 iblock " id="email_id">
                                             </span>
                                         </div>
@@ -199,7 +230,8 @@
                                             <label class="form-label" for="form3Example8">Old Password
                                             </label>
 
-                                            <input type="text" id="old_pass" name="old_pass" class="form-control form-control-lg">
+                                            <input type="text" id="old_pass" name="old_pass"
+                                                class="form-control form-control-lg">
                                             <span class="text-danger" id="err_old">
 
                                             </span>
@@ -208,7 +240,8 @@
                                             <label class="form-label" for="form3Example8"> New Password
                                             </label>
 
-                                            <input type="text" id="save_pass" name="save_pass" class="form-control form-control-lg">
+                                            <input type="text" id="save_pass" name="save_pass"
+                                                class="form-control form-control-lg">
                                             <span class="text-danger" id="err_new">
 
                                             </span>
@@ -218,7 +251,8 @@
                                             <label class="form-label" for="form3Example8">Confirm Password
                                             </label>
 
-                                            <input type="text" id="save_confirm" name="save_confirm" class="form-control form-control-lg">
+                                            <input type="text" id="save_confirm" name="save_confirm"
+                                                class="form-control form-control-lg">
                                             <span class="text-danger" id="err_confirm">
 
                                             </span>
@@ -231,7 +265,8 @@
 
                             <!-- Modal footer -->
                             <div class="modal-footer">
-                                <input type="button" onclick="validateProfilePaw()" id="passSave" class="btn btn-warning" value="Save">
+                                <input type="button" onclick="validateProfilePaw()" id="passSave"
+                                    class="btn btn-warning" value="Save">
                             </div>
                         </form>
                     </div>
@@ -278,7 +313,9 @@
                                             Unattempted
                                         </td>
                                         <td class="table-info">
-                                            <a href="javascript:popupdata('')" onclick="sendfoo(this)" id="<%=sql[i].exam_id%>" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Start</a>
+                                            <a href="javascript:popupdata('')" onclick="sendfoo(this)"
+                                                id="<%=sql[i].exam_id%>" class="btn btn-success" data-bs-toggle="modal"
+                                                data-bs-target="#staticBackdrop">Start</a>
 
                                         </td>
                                         <%}%>
@@ -287,7 +324,10 @@
                                                     Attempted
                                                 </td>
                                                 <td class="table-info">
-                                                    <a href="javascript:popupdata('')" onclick="return sendfoo(this)" id="<%=sql[i].exam_id%>" class="btn btn-success disabled" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Start</a>
+                                                    <a href="javascript:popupdata('')" onclick="return sendfoo(this)"
+                                                        id="<%=sql[i].exam_id%>" class="btn btn-success disabled"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#staticBackdrop">Start</a>
 
                                                 </td>
                                                 <%}%>
@@ -302,21 +342,24 @@
 
 
                         <!-- Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">Welcome
                                             <%=result.name%>
                                         </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="clearf()"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close" onclick="clearf()"></button>
                                     </div>
                                     <div class="modal-body">
                                         <input type="hidden" value="<%=sql[0].exam_id%>" id="id_access">
                                         <%- include('form') -%>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" onclick="clearf()" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" onclick="clearf()" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
 
                                     </div>
                                 </div>
