@@ -139,6 +139,10 @@ body {
     overflow-y: auto;
 }
 
+.genders {
+    padding-top: 20px;
+}
+
 .genders label {
     padding-top: 0px;
     padding-left: 32px;

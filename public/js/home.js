@@ -42,27 +42,27 @@ async function checkEmail(ele) {
     checksubmit();
 }
 
+function validatePhoneNumber(input_str) {
+    var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
 
+    return re.test(input_str);
+}
 async function checkContact(ele) {
     const contact_val = ele.value;
     const contact_id = document.getElementById('contact_id');
 
-    if (contact_val.length === 10) {
+
+
+    if (validatePhoneNumber(contact_val)) {
         contact.value = contact_val;
         contact_id.innerHTML = '';
         isContact = true;
     }
-    if (contact_val.length < 10 && contact_val.length > 0) {
+    else {
         contact.value = contact_val;
-        contact_id.innerHTML = 'length is less than 10';
+        contact_id.innerHTML = 'Not Valid Number';
         isContact = false;
     }
-    if (contact_val.length > 10) {
-        contact.value = contact_val;
-        contact_id.innerHTML = 'length is greater than 10';
-        isContact = false;
-    }
-
 
     checksubmit();
 }
