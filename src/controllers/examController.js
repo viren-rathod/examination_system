@@ -195,14 +195,15 @@ const answerPost = async (req, res) => {
   console.log("ID :- ", b, "uid", req.session.userId);
   if (b.id) {
     let [check] = await con.execute(
-      `SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId}`
+      `SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
     );
     if (check.length == 0) {
-      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${req.session.userId},1,${b.id},'${b.selectedAns}',1)`;
+      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${req.session.userId},${req.session.exam_id},${b.id},'${b.selectedAns}',1)`;
+      // console.log(query);
       let [data] = await con.execute(query);
       res.json(data);
     } else {
-      let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id}`;
+      let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id} and user_id=${req.session.userId}`;
       let [data] = await con.execute(query);
       res.json(data);
     }
@@ -238,7 +239,7 @@ const allAnswerGet = async (req, res) => {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${parseInt(
         b.id
-      )} and user_id=${req.session.userId}`
+      )} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
     );
     if (check.length == 0) {
       let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${

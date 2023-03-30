@@ -45,6 +45,7 @@
                                         <p id="email_valid"></p>
 
                                         <label for="">Plese enter your otp : </label>
+                                        <label for="" id="otp"></label>
                                         <input type="password" id="enterOtp" onchange="validOtp()" name="password" class="form-control form-control-lg" placeholder="Enter Otp" required />
                                         <p id="password_lable"></p>
                                     </div>
@@ -79,8 +80,7 @@
             }).then(res => res.json())
             .then(data => {
                 otp = data.otp;
-
-
+                document.getElementById("otp").innerHTML = otp;
             })
     }
 

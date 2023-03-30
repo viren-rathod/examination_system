@@ -155,7 +155,7 @@ async function next_btn(id) {
     document.getElementById(
       `${cat_name_json[0].category_id}`
     ).style.backgroundColor = "#ffc94e";
-    console.log(userAnswers);
+    // console.log(userAnswers);
   }
 
   let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
@@ -393,7 +393,6 @@ function timer(x) {
   var second = 0;
   var nareshInterval = setInterval(() => {
     document.getElementById("time1").innerHTML = `${minit}:${second}`;
-
     if (second == 0) {
       minit--;
       second = 60;
@@ -402,6 +401,7 @@ function timer(x) {
     if (minit == -1) {
       clearInterval(nareshInterval);
       // submit();
+      endExam();
     }
   }, 1000);
 }
