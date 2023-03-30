@@ -14,17 +14,17 @@ const ejs = require("ejs");
 const { signedCookie } = require("cookie-parser");
 const { Console } = require("console");
 const path = require("path");
-require('dotenv').config({ path: './.env' });
+require('dotenv').config();
 const PORT = process.env.PORT;
 
 //set engines
 app.set("view engine", "ejs");
 
-app.set("views", path.join(__dirname, "/views"))
-app.use(express.static("./public"));
+app.set("views", path.join(__dirname, "src/views"))
+app.use(express.static("public"));
 
-const exam = require("./routes/examRoute");
-const user = require("./routes/userRoute");
+const exam = require("./src/routes/examRoute");
+const user = require("./src/routes/userRoute");
 
 //kevin
 app.use(cookie());

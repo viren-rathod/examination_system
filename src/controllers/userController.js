@@ -52,7 +52,7 @@ const profile_updatepagePOST = async (req, res) => {
     try {
         const { firstname, email, contact, address, gender } = req.body
 
-        let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+        let sql = `update student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
         // console.log(sql);
         await con.execute(sql);
         req.session.email = email;
