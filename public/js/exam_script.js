@@ -27,6 +27,7 @@ async function getQue(id) {
 }
 
 async function fetcher(str) {
+  // console.log("i", index);
   let temp = await fetch(str);
   let ans = await temp.json();
   let user_ans = await fetch("/getAns", {
@@ -107,13 +108,16 @@ async function fetcher(str) {
   
       <input
         type="button"
-        value=${ans[0].question_id == total_questions ? "SAVE" : "NEXT"}
+        value="NEXT"
         onclick="next_btn('${ans[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
         />
     </div>`;
-  btns.innerHTML = btn;
+  if (ans[0].question_id <= total_questions) btns.innerHTML = btn;
+  else if (total_questions < ans[0].question_id) {
+    next.disabled = true;
+  }
 }
 
 async function next_btn(id) {
@@ -127,7 +131,12 @@ async function next_btn(id) {
   });
   let temp1 = await fetch(`/nextGet?id=${id}`);
   let tmp = await temp1.json();
-  if (tmp[0]) {
+  // console.log( tmp[0].question_id);
+  if (tmp[0] && tmp[0].question_id <= total_questions) {
+    // prevQuestionId = parseInt(id) + 1;
+    // userAnswers[id] = selectedAns;
+    // questionIds[id] = parseInt(id);
+    // index = index + 1;
     await fetcher(
       `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
     );
@@ -146,6 +155,7 @@ async function next_btn(id) {
     document.getElementById(
       `${cat_name_json[0].category_id}`
     ).style.backgroundColor = "#ffc94e";
+    console.log(userAnswers);
   }
 
   let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
@@ -158,7 +168,8 @@ async function next_btn(id) {
   if (document.querySelector(`#i${parseInt(id) + 1}`))
     document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
       "lightblue";
-  document.querySelector(`#i${id}`).style.backgroundColor = "white";
+  if (document.querySelector(`#i${id}`))
+    document.querySelector(`#i${id}`).style.backgroundColor = "white";
   if (tmp[0]) {
     let s = `<div
       class="row justify-content-around align-items-center"
@@ -355,13 +366,14 @@ async function category_changer(e) {
 }
 
 submit.addEventListener("click", () => {
+  console.log(userAnswers);
   endExam();
 });
 async function endExam() {
   if (confirm("Are you sure you want to submit the Exam ?")) {
     for (let i = 1; i <= userAnswers.length; i++) {
       if (questionIds[i] && userAnswers[i] == undefined) {
-        console.log(questionIds[i]);
+        // console.log(questionIds[i], userAnswers[i]);
         let a = await fetch(
           `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
         );
