@@ -18,7 +18,8 @@ require('dotenv').config({ path: '../.env' });
 const PORT = process.env.PORT;
 
 //set engines
-app.set("views", "./views");
+// app.set("views", "./views");
+path.join(__dirname+"/src/views")
 app.set("view engine", "ejs");
 
 app.use(express.static("../public"));
