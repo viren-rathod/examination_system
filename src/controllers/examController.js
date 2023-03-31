@@ -34,12 +34,12 @@ const form1 = async (req, res) => {
       );
 
       let [sql1] = await con.execute(
-        `select exam_id,exam_name,exam_access_code,total_questions,exam_time,user_id,exam_status from exam where exam_status=0`
+        `select exam_id,exam_name,exam_access_code,total_questions,exam_time,user_id,exam_status from exam where exam_status=1`
       );
       //   console.log("hello nareshjbffh", sql1[0].exam_id);
 
       let [sql2] = await con.execute(
-        `select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=0 and user_answers.user_id=${req.session.userId}`
+        `select exam.exam_id,exam_name,user_answers.user_id from exam,user_answers where  user_answers.exam_id=exam.exam_id and exam_status=1 and user_answers.user_id=${req.session.userId}`
       );
       //   console.log("sql 2", sql2, req.session.userId);
       let flag1 = 0;
@@ -63,7 +63,7 @@ const form1 = async (req, res) => {
       let userEmail = req.session.email;
       //   console.log("Session E - mail -: ", req.session.email);
 
-      let sql = `select name,email,contact,gender,city,college_name from student INNER JOIN colleges on  colleges.college_id=student.college_id where email='${user_email}'`;
+      let sql = `select name,email,contact,gender,city,college_name from student INNER JOIN colleges on colleges.college_id=student.college_id where email='${user_email}'`;
       let [data] = await con.execute(sql);
       // console.log(data[0]);
       let result = data[0];
@@ -94,10 +94,10 @@ const examGet = async (req, res) => {
     const question_no = 1; // Get the requested page number, default to 1 if not provided
     const question_per_page = 1; //* Limit || Number of questions to display per page
     const offset = (question_no - 1) * question_per_page;
-    let exam_id = req.session.exam_id || 1;
-    console.log(exam_id);
+    let exam_id = req.session.exam_id;
+    // console.log(exam_id);
     let [exam] = await con.execute(
-      `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}'`
+      `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}' and exam_status = 1`
     );
     // let [category] = await con.execute(
     //   `select category_name,b.category_id from exam a, exam_category b,category c where a.exam_id=b.exam_id and b.category_id=c.category_id and a.exam_id=${exam_id}`
@@ -105,6 +105,15 @@ const examGet = async (req, res) => {
     let [category] = await con.execute(
       `select a.category_name,a.category_id from category a,exam_category b where a.category_id=b.category_id and exam_id=${exam_id}`
     );
+    let [ques] = await con.execute(`select question_id,question_text from exam a, exam_category b, questions c 
+    where a.exam_id=b.exam_id and b.category_id=c.category_id and b.exam_id=${exam_id}`);
+    let qids = [];
+
+    ques.forEach(q=>{
+      qids.push(q.question_id);
+    })
+      // console.log(ques);
+
     let category_id = category[0].category_id;
 
     let [data] = await con.execute(
@@ -192,7 +201,7 @@ const prevGet = async (req, res) => {
 
 const answerPost = async (req, res) => {
   let b = req.body;
-  console.log("ID :- ", b, "uid", req.session.userId);
+  // console.log("ID :- ", b, "uid", req.session.userId);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
@@ -234,7 +243,7 @@ const endExam = async (req, res) => {
 
 const allAnswerGet = async (req, res) => {
   let b = req.query;
-  console.log("B", b, req.session.exam_id, req.session.userId);
+  // console.log("B", b, req.session.exam_id, req.session.userId);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${parseInt(

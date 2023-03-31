@@ -12,9 +12,9 @@ async function getAnswers(temp) {
   });
 }
 async function getQue(id) {
-  // console.log(id, prevQuestionId);
   let que = await fetch(`/getCategoryName?id=${id}`);
   let cat_name = await que.json();
+  console.log('cat_name',cat_name);
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${cat_name[0].category_name}</h4>`;
@@ -366,7 +366,7 @@ async function category_changer(e) {
 }
 
 submit.addEventListener("click", () => {
-  console.log(userAnswers);
+  // console.log(userAnswers);
   endExam();
 });
 async function endExam() {
@@ -387,7 +387,7 @@ async function endExam() {
 function timer(x) {
   // console.log(x);
   let y = parseInt(x);
-  console.log(typeof y);
+  // console.log(typeof y);
 
   var minit = y;
   var second = 0;
