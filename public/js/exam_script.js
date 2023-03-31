@@ -43,48 +43,44 @@ async function fetcher(str) {
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_a}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_a
-                        ? "checked"
-                        : ""
-                    }>
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_a
+      ? "checked"
+      : ""
+    }>
                     <span>${ans[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_b}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_b
-                        ? "checked"
-                        : ""
-                    } >
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_b
+      ? "checked"
+      : ""
+    } >
                     <span>${ans[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_c}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_c
-                        ? "checked"
-                        : ""
-                    } >
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_c
+      ? "checked"
+      : ""
+    } >
                     <span>${ans[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
                     <input type="radio" name="option" value="${ans[0].option_d}"
-                    onclick="getAnswers(this)" ${
-                      user_ans_json.length &&
-                      user_ans_json[0].user_answers == ans[0].option_d
-                        ? "checked"
-                        : ""
-                    } >
+                    onclick="getAnswers(this)" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans[0].option_d
+      ? "checked"
+      : ""
+    } >
                     <span>${ans[0].option_d}</span>
                   </label>
                 </div>`;
@@ -124,7 +120,6 @@ async function next_btn(id) {
   prevQuestionId = parseInt(id) + 1;
   userAnswers[id] = selectedAns;
   questionIds[id] = parseInt(id);
-  index = index + 1;
 
   allOptions.forEach((e) => {
     if (e.checked) selectedAns = e.value;
@@ -157,7 +152,6 @@ async function next_btn(id) {
     ).style.backgroundColor = "#ffc94e";
     // console.log(userAnswers);
   }
-
   let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -279,53 +273,45 @@ async function category_changer(e) {
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_a
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_a
+                    <input type="radio" name="option" value="${ans.data[0].option_a
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_a
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_a}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_b
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_b
+                    <input type="radio" name="option" value="${ans.data[0].option_b
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_b
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_b}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_c
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_c
+                    <input type="radio" name="option" value="${ans.data[0].option_c
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_c
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_c}</span>
                   </label>
                 </div>
                 <div class="ans ml-2">
                   <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_d
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_d
+                    <input type="radio" name="option" value="${ans.data[0].option_d
+    }" ${user_ans_json.length &&
+      user_ans_json[0].user_answers == ans.data[0].option_d
       ? "checked"
       : ""
-  }>
+    }>
                     <span>${ans.data[0].option_d}</span>
                   </label>
                 </div>`;

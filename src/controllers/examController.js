@@ -251,9 +251,8 @@ const allAnswerGet = async (req, res) => {
       )} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
     );
     if (check.length == 0) {
-      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${
-        req.session.userId
-      },${req.session.exam_id},${parseInt(b.id)},'',1)`;
+      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${req.session.userId
+        },${req.session.exam_id},${parseInt(b.id)},'',1)`;
       let [data] = await con.execute(query);
       res.json(data);
     } else {
@@ -267,10 +266,9 @@ const allAnswerGet = async (req, res) => {
 const getCategoryName = async (req, res) => {
   if (req.query.btn == "next" || req.query.btn == "prev") {
     let [c_name] = await con.execute(
-      `select b.category_name, b.category_id from questions a,category b where a.category_id=b.category_id and a.question_id= ${
-        req.query.btn == "next"
-          ? parseInt(req.query.id) + 1
-          : parseInt(req.query.id) - 1
+      `select b.category_name, b.category_id from questions a,category b where a.category_id=b.category_id and a.question_id= ${req.query.btn == "next"
+        ? parseInt(req.query.id) + 1
+        : parseInt(req.query.id) - 1
       }`
     );
     res.json(c_name);

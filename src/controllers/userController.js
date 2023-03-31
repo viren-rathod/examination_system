@@ -52,10 +52,17 @@ const profile_updatepagePOST = async (req, res) => {
   try {
     const { firstname, email, contact, address, gender } = req.body;
 
+<<<<<<< HEAD
+        let sql = `update student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+        // console.log(sql);
+        await con.execute(sql);
+        req.session.email = email;
+=======
     let sql = `update student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `;
     // console.log(sql);
     await con.execute(sql);
     req.session.email = email;
+>>>>>>> dev_viren
 
     let updateUser = `update user_login set email='${email}' where user_id=${req.session.userId} `;
     await con.execute(updateUser);
@@ -70,8 +77,13 @@ const profile_updatepagePOST = async (req, res) => {
 
 //register get function
 const registerpage = async (req, res) => {
+<<<<<<< HEAD
+    var selectState = `select * from state `;
+    var [stateResult] = await con.execute(selectState); //
+=======
   var selectState = `select * from state `;
   var [stateResult] = await con.execute(selectState); //
+>>>>>>> dev_viren
 
   var selectCity = `select city_name,city_id from city where state_id = 1`;
   var [cityResult] = await con.execute(selectCity);
@@ -88,6 +100,19 @@ const registerpage = async (req, res) => {
 
 //register post function
 const registerpost = async (req, res) => {
+<<<<<<< HEAD
+    var fname = req.body.fname,
+        lname = req.body.lname,
+        email = req.body.email,
+        password = req.body.password,
+        address = req.body.address,
+        gender = req.body.gender,
+        phoneN = req.body.phoneN,
+        state = req.body.state,
+        city = req.body.city,
+        college = req.body.college;
+    // console.log(college)
+=======
   var fname = req.body.fname,
     lname = req.body.lname,
     email = req.body.email,
@@ -98,6 +123,7 @@ const registerpost = async (req, res) => {
     state = req.body.state,
     city = req.body.city,
     college = req.body.college;
+>>>>>>> dev_viren
 
   var snum = await bcrypt.genSalt(10);
   var passwordStrong = await bcrypt.hash(password, snum);
@@ -105,6 +131,21 @@ const registerpost = async (req, res) => {
   var selectQuery = `SELECT * FROM student where email = '${email}' `;
   var [selectResult] = await con.execute(selectQuery);
 
+<<<<<<< HEAD
+
+    if (selectResult.length != 0) {
+        return res.send("This Email is already Exectute");
+    } else {
+        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${state}', '${city}' , '${college}' , '0',NOW() )`;
+        var [insertResult] = await con.execute(insertQuery);
+
+        var insrertRole = `Insert into user_login (email , password , role , user_login_status,created_date) values ('${email}' , '${passwordStrong}' , '0' , '0',NOW())`;
+        var [roleResult] = await con.execute(insrertRole);
+
+
+        res.render("login", { msg: "" });
+    }
+=======
   var [cid] = await con.execute(
     `select * from colleges where college_name='${college}'`
   );
@@ -134,6 +175,7 @@ const registerpost = async (req, res) => {
 
     res.render("login", { msg: "" });
   }
+>>>>>>> dev_viren
 };
 
 //login get user
@@ -149,8 +191,14 @@ const loginpostpage = async (req, res) => {
   var selectEmail = `SELECT * FROM student where email = '${email}' `;
   var [emailResult] = await con.execute(selectEmail);
 
+<<<<<<< HEAD
+    var selectUser = `SELECT * from user_login where email = '${email}'`;
+    var [userData] = await con.execute(selectUser);
+    // console.log(userData);
+=======
   var selectUser = `SELECT * from user_login where email = '${email}'`;
   var [userData] = await con.execute(selectUser);
+>>>>>>> dev_viren
 
   if (userData.length == 0) {
     // res.send("email is not match");
@@ -184,7 +232,36 @@ const loginpostpage = async (req, res) => {
           req.session.stdId = emailResult[0].student_id;
           req.session.userId = userData[0].user_id;
 
+<<<<<<< HEAD
+            var compare = await bcrypt.compare(password, comparePassword);
+            var resultRandom = Math.random().toString(36).substring(2, 7);
+            // console.log("Viren@123 :- ", compare);
+            if (!compare) {
+                // res.send("Password is not match");
+                res.render("login", { msg: "email or pasword does not match" });
+            } else {
+
+                if (userData[0]['role'] != 0) {
+                    res.render("login", { msg: "role is not match" });
+                }
+                else {
+                    if (userData[0].user_login_status == 0) {
+                        res.render("activation.ejs", {
+                            email: email,
+                            resultRandom: resultRandom,
+                        });
+                    } else {
+                        req.session.email = email;
+                        req.session.stdId = emailResult[0].student_id;
+                        req.session.userId = userData[0].user_id;
+
+                        res.redirect("/home");
+                    }
+                }
+            }
+=======
           res.redirect("/home");
+>>>>>>> dev_viren
         }
       }
     }
@@ -217,6 +294,17 @@ function generateOTP() {
 
 // city function
 const city = async (req, res) => {
+<<<<<<< HEAD
+    var state = req.query.state;
+    // console.log("viren", state)
+
+    // var stateId = `select state_id from state where state_name= '${state}'`;
+    // var [sid] = await con.execute(stateId);
+
+    var [result9] = await con.query(
+        `select city_name from city where state_id = '${state}'`
+    );
+=======
   var state = req.query.state;
 
 //   var stateId = `select state_id from state where state_name= '${state}'`;
@@ -226,6 +314,7 @@ const city = async (req, res) => {
   var [result9] = await con.query(
     `select city_name from city where state_id = '${state}'`
   );
+>>>>>>> dev_viren
 
   res.json({ result9 });
 };
@@ -407,6 +496,29 @@ var updateProfilePassword = async (req, res) => {
 };
 
 module.exports = {
+<<<<<<< HEAD
+    registerpage,
+    registerpost,
+    logingetpage,
+    loginpostpage,
+    city,
+    forgetGet,
+    setPasswordGet,
+    setPasswordPost,
+    sendOtp,
+    updatePasswordGet,
+    updatePasswordPost,
+    activePost,
+    validPost,
+    changePasswordPost,
+    validPassword,
+    homepageGet,
+    exam_homepageGet,
+    resultpageGet,
+    profile_updatepagePOST,
+    logoutpageGet, updateProfilePassword
+}
+=======
   registerpage,
   registerpost,
   logingetpage,
@@ -429,3 +541,4 @@ module.exports = {
   logoutpageGet,
   updateProfilePassword,
 };
+>>>>>>> dev_viren

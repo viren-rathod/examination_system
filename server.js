@@ -15,13 +15,14 @@ const { signedCookie } = require("cookie-parser");
 const { Console } = require("console");
 const path = require("path");
 require("dotenv").config({ path: "./.env" });
-const PORT = process.env.PORT;
+const PORT = process.env.PORT; 
 
 //set engines
 app.set("views", path.join(__dirname, "/src/views"));
 app.set("view engine", "ejs");
 
 app.use(express.static("./public"));
+
 
 const exam = require("./src/routes/examRoute");
 const user = require("./src/routes/userRoute");
@@ -36,11 +37,12 @@ app.use(bodyParser.json());
 
 // const oneDay = 1000 * 60 * 60 * 24;
 app.use(
-  sessions({
-    secret: "bhimanikevin",
-    saveUninitialized: true,
-    resave: false,
-  })
+
+    sessions({
+        secret: "bhimanikevin",
+        saveUninitialized: true,
+        resave: false,
+    })
 );
 
 app.use("/", exam);
@@ -49,3 +51,4 @@ app.use("/", user);
 app.listen(PORT, () => {
   console.log("Server running on port", PORT, "http://127.0.0.1:" + PORT);
 });
+

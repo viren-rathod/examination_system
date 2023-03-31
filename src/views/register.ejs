@@ -64,7 +64,7 @@
 
                                     <div class="form-outline mb-4">
                                         <input type="text" id="form3Example9" class="form-control form-control-lg"
-                                            onkeyup="return validePhone(this.value)" placeholder="Contact Number"
+                                            onkeyup="return validePhone(this)" placeholder="Contact Number"
                                             name="phoneN" required />
                                         <p id="phone_label"></p>
                                     </div>
@@ -83,7 +83,7 @@
 
                                             <option value="" selected disabled>Select</option>
                                             <% for(let k=0;k<collegeResult.length;k++){ %>
-                                                <option value="<%=collegeResult[k].college_name%>">
+                                                <option value="<%=collegeResult[k].college_id%>">
                                                     <%=collegeResult[k].college_name%>
                                                 </option>
                                                 <% } %>
@@ -98,6 +98,7 @@
                                                 onchange="city_select(this.value)" required>
                                                 <option value="" selected disabled>Select</option>
                                                 <% for(let i=0;i<stateResult.length;i++){ %>
+                                                    <option value="<%= stateResult[i].state_id %>">
                                                     <option value="<%= stateResult[i].state_id %>">
                                                         <%=stateResult[i].state_name %>
                                                     </option>
@@ -244,26 +245,23 @@
         }
 
     }
-
+    function validatePhoneNumber(input_str) {
+        var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+        return re.test(input_str);
+    }
     function validePhone(phone) {
         var phone_length = phone.length;
-        // console.log(phone_length)
+
+
         var err_arr = [];
-
-        if (phone_length > 10) {
-            err_arr.push("length is greater than 10");
-        }
-        if (phone_length < 10 && phone_length > 0) {
-            err_arr.push("length is less than 10");
-        }
-
-        if (err_arr.length > 0) {
-            document.getElementById('phone_label').innerHTML = err_arr.join("\n");
-            document.getElementById('phone_label').style.color = "red";
-            document.getElementById("submitAll").disabled = true;
-        } else {
+        if (validatePhoneNumber(phone.value)) {
             document.getElementById('phone_label').innerHTML = "";
             document.getElementById("submitAll").disabled = false;
+        }
+        else {
+            document.getElementById('phone_label').innerHTML = "Not valid Number";
+            document.getElementById('phone_label').style.color = "red";
+            document.getElementById("submitAll").disabled = true;
         }
     }
 
@@ -339,9 +337,9 @@
 
 
     var select_city = document.getElementById('select_city');
-    
-    async function city_select(state) {        
-        // console.log('state',state);
+
+    async function city_select(state) {
+        console.log("viren ", state)
         fetch(`/city?state=${state}`, {
             method: 'get',
             headers: {
