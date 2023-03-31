@@ -41,7 +41,7 @@
 
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <input type="text" id="box" onchange="return sameAll('name')" class="form-control form-control-lg" placeholder="First Name" name="fname" required />
+                                            <input type="text" id="box" onkeyup="return sameAll('name')" class="form-control form-control-lg" placeholder="First Name" name="fname" required />
                                             <p id="first_lable"></p>
 
                                         </div>
@@ -49,7 +49,7 @@
 
                                     <div class="col-md-6 mb-4">
                                         <div class="form-outline">
-                                            <input type="text" id="lname" onchange="return sameAll('last')" class="form-control form-control-lg" placeholder="Last Name" name="lname" required />
+                                            <input type="text" id="lname" onkeyup="return sameAll('last')" class="form-control form-control-lg" placeholder="Last Name" name="lname" required />
                                             <p id="last_lable"></p>
 
                                         </div>
@@ -74,7 +74,7 @@
 
                                             <option value="" selected disabled>Select</option>
                                             <% for(let k=0;k<collegeResult.length;k++){ %>
-                                                <option value="<%=collegeResult[k].college_name%>">
+                                                <option value="<%=collegeResult[k].college_id%>">
                                                     <%=collegeResult[k].college_name%>
                                                 </option>
                                                 <% } %>
@@ -88,7 +88,7 @@
                                             <select class="select" name="state" id="state" onchange="city_select(this.value)" required>
                                                 <option value="" selected disabled>Select</option>
                                                 <% for(let i=0;i<stateResult.length;i++){ %>
-                                                    <option value="<%= stateResult[i].state_name %>">
+                                                    <option value="<%= stateResult[i].state_id %>">
                                                         <%=stateResult[i].state_name %>
                                                     </option>
                                                     <% } %>
@@ -132,8 +132,7 @@
 
 
                                     <div class="form-outline mb-4">
-                                        <input type="email" id="email" class="form-control form-control-lg" onkeyup="return sameAll('email')" onchange="valid_email(this.value)" placeholder="Email" name="email" />
-
+                                        <input type="email" id="form3Example90" class="form-control form-control-lg" onkeyup="validitionOfEmail(this.value)" onchange="valid_email(this.value)" placeholder="Email" name="email" />
                                         <p id="email_valid"></p>
 
                                     </div>
@@ -151,12 +150,6 @@
                                     <div class="d-flex justify-content-center pt-3">
                                         <input type="reset" class="btn btn-light btn-lg" value="Reset All">
                                         <input type="submit" id="submitAll" class="btn btn-warning btn-lg ms-2" value="Submit All">
-
-                                    </div>
-
-                                    <div class="d-flex justify-content-center pt-3">
-                                        <input type="reset" class="btn btn-light btn-lg" value="clear All">
-                                        <input type="submit" id="clearAll" class="btn btn-warning btn-lg ms-2" value="Reset All">
 
                                     </div>
                                     <div class="d-flex justify-content-center pt-3">
@@ -189,77 +182,51 @@
     }
 
     function sameAll(filed) {
-        if (filed == 'name') {
+        if (filed == "name") {
             var name_arr = [];
-
             var n = document.getElementById("box").value;
             var valid = new RegExp("[^a-z|^A-Z]");
             if (valid.test(n)) {
-                // error
                 name_arr.push("Name is not  contain any number")
-                    // return false
-                    // return "firstname should contain only letters"
+
             }
-~
-            // if (name_arr.length !== 0 && )
 
             if (name_arr.length > 0) {
                 document.getElementById('first_lable').innerHTML = name_arr.join("\n");
                 document.getElementById('first_lable').style.color = "red";
                 document.getElementById("submitAll").disabled = true;
-                // return false;
+                return false;
+            } else {
+                document.getElementById('first_lable').innerHTML = "";
+                document.getElementById("submitAll").disabled = false;
+                return true;
             }
-            // else {
-            //     document.getElementById('first_lable').innerHTML = "";
-            //     document.getElementById("submitAll").disabled = false;
-            //     return true;
-            // }
+
         }
-        if (filed == 'last') {
-            var last_name = [];
-
-            var n = document.getElementById("lname").value;
+        if (filed == "last") {
+            var name_arr2 = [];
+            var last = document.getElementById("lname").value;
             var valid = new RegExp("[^a-z|^A-Z]");
-            if (valid.test(n)) {
-                // error
-                last_name.push("last anme is not  contain any number")
-                    // return false
-                    // return "firstname should contain only letters"
+            if (valid.test(last)) {
+                name_arr2.push("Name is not  contain any number")
             }
 
-            // if (name_arr.length !== 0 && )
-
-            if (last_name.length > 0) {
-                document.getElementById('last_lable').innerHTML = last_name.join("\n");
+            if (name_arr2.length > 0) {
+                document.getElementById('last_lable').innerHTML = name_arr2.join("\n");
                 document.getElementById('last_lable').style.color = "red";
                 document.getElementById("submitAll").disabled = true;
-                // return false;
+                return false;
+            } else {
+                document.getElementById('last_lable').innerHTML = "";
+                document.getElementById("submitAll").disabled = false;
+                return true
             }
-            // else {
-            //     document.getElementById('first_lable').innerHTML = "";
-            //     document.getElementById("submitAll").disabled = false;
-            //     return true;
-            // }
         }
-
-        if (last_name.length !== 0 && name_arr.length !== 0) {
-            document.getElementById("submitAll").disabled = false;
-        }
-
-        document.getElementById('clearAll').innerHTML = name_arr.join("\n");
-
-        // if (name_arr.length > 0) {
-        //     document.getElementById('last_lable').innerHTML = name_arr.join("\n");
-        //     document.getElementById('last_lable').style.color = "red";
-        //     document.getElementById("submitAll").disabled = true;
-        //     return false;
-        // } else {
-        //     document.getElementById('last_lable').innerHTML = "";
-        //     document.getElementById("submitAll").disabled = false;
-        //     return true
-        // }
-
     }
+
+
+
+
 
     function validatePhoneNumber(input_str) {
         var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
@@ -281,8 +248,8 @@
         }
     }
 
-    if (filed == 'email') {
-        var emailVal = document.getElementById("email").value;
+
+    function validitionOfEmail(emailVal) {
         let e1 = emailVal.indexOf("@");
         let e2 = emailVal.lastIndexOf(".");
         var errEmail = [];
@@ -312,12 +279,8 @@
             document.getElementById("email_valid").innerHTML = ""
             document.getElementById("submitAll").disabled = false;
         }
+
     }
-
-
-
-
-
 
 
     function validPass(password) {
@@ -359,7 +322,7 @@
     var select_city = document.getElementById('select_city');
 
     async function city_select(state) {
-
+        console.log("viren ", state)
         fetch(`/city?state=${state}`, {
                 method: 'get',
                 headers: {
