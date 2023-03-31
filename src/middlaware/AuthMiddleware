@@ -15,7 +15,7 @@ let verifyToken = async(req, res, next) => {
 
 let verifyHome = async(req, res, next) => {
 
-    console.log(":in verifyy")
+    // console.log(":in verifyy")
     const token =
         req.session.stdId;
 

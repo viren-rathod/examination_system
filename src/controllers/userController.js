@@ -35,7 +35,7 @@ const homepageGet = async(req, res) => {
     const [result] = await con.execute(
         `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
     );
-    console.log(result);
+    // console.log(result);
     res.render("homestart", { editdata: result });
     // }
 
@@ -81,7 +81,7 @@ const registerpage = async(req, res) => {
 
     var selectCollege = `select * from colleges`;
     var [collegeResult] = await con.execute(selectCollege);
-    console.log(collegeResult)
+    // console.log(collegeResult)
 
     res.render("register", {
         stateResult: stateResult,
@@ -221,7 +221,7 @@ function generateOTP() {
 // city function
 const city = async(req, res) => {
     var state = req.query.state;
-    console.log("viren", state)
+    // console.log("viren", state)
 
     // var stateId = `select state_id from state where state_name= '${state}'`;
     // var [sid] = await con.execute(stateId);
