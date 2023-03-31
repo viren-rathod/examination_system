@@ -153,6 +153,12 @@
                                         <input type="submit" id="submitAll" class="btn btn-warning btn-lg ms-2" value="Submit All">
 
                                     </div>
+
+                                    <div class="d-flex justify-content-center pt-3">
+                                        <input type="reset" class="btn btn-light btn-lg" value="clear All">
+                                        <input type="submit" id="clearAll" class="btn btn-warning btn-lg ms-2" value="Reset All">
+
+                                    </div>
                                     <div class="d-flex justify-content-center pt-3">
                                         <label for="">Do Have Account? <a href="/login"> Login Here </a></label>
                                     </div>
@@ -189,32 +195,69 @@
             var n = document.getElementById("box").value;
             var valid = new RegExp("[^a-z|^A-Z]");
             if (valid.test(n)) {
+                // error
                 name_arr.push("Name is not  contain any number")
-
+                    // return false
+                    // return "firstname should contain only letters"
             }
+~
+            // if (name_arr.length !== 0 && )
 
             if (name_arr.length > 0) {
                 document.getElementById('first_lable').innerHTML = name_arr.join("\n");
                 document.getElementById('first_lable').style.color = "red";
                 document.getElementById("submitAll").disabled = true;
-                return false;
-            } else {
-                document.getElementById('first_lable').innerHTML = "";
-                document.getElementById("submitAll").disabled = false;
-                return true;
+                // return false;
             }
+            // else {
+            //     document.getElementById('first_lable').innerHTML = "";
+            //     document.getElementById("submitAll").disabled = false;
+            //     return true;
+            // }
+        }
+        if (filed == 'last') {
+            var last_name = [];
+
+            var n = document.getElementById("lname").value;
+            var valid = new RegExp("[^a-z|^A-Z]");
+            if (valid.test(n)) {
+                // error
+                last_name.push("last anme is not  contain any number")
+                    // return false
+                    // return "firstname should contain only letters"
+            }
+
+            // if (name_arr.length !== 0 && )
+
+            if (last_name.length > 0) {
+                document.getElementById('last_lable').innerHTML = last_name.join("\n");
+                document.getElementById('last_lable').style.color = "red";
+                document.getElementById("submitAll").disabled = true;
+                // return false;
+            }
+            // else {
+            //     document.getElementById('first_lable').innerHTML = "";
+            //     document.getElementById("submitAll").disabled = false;
+            //     return true;
+            // }
         }
 
-        if (name_arr.length > 0) {
-            document.getElementById('last_lable').innerHTML = name_arr.join("\n");
-            document.getElementById('last_lable').style.color = "red";
-            document.getElementById("submitAll").disabled = true;
-            return false;
-        } else {
-            document.getElementById('last_lable').innerHTML = "";
+        if (last_name.length !== 0 && name_arr.length !== 0) {
             document.getElementById("submitAll").disabled = false;
-            return true
         }
+
+        document.getElementById('clearAll').innerHTML = name_arr.join("\n");
+
+        // if (name_arr.length > 0) {
+        //     document.getElementById('last_lable').innerHTML = name_arr.join("\n");
+        //     document.getElementById('last_lable').style.color = "red";
+        //     document.getElementById("submitAll").disabled = true;
+        //     return false;
+        // } else {
+        //     document.getElementById('last_lable').innerHTML = "";
+        //     document.getElementById("submitAll").disabled = false;
+        //     return true
+        // }
 
     }
 

@@ -30,13 +30,15 @@ const homepageGet = async(req, res) => {
     // if (!req.session.email) {
     //     res.render("login", { msg: "" });
     // } else {
-        // console.log("Sesion :- ", req.session.email);
-        // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
-        const [result] = await con.execute(
-            `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
-        );
-        res.render("homestart", { editdata: result });
+    // console.log("Sesion :- ", req.session.email);
+    // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+    const [result] = await con.execute(
+        `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
+    );
+    console.log(result);
+    res.render("homestart", { editdata: result });
     // }
+    
 };
 
 const exam_homepageGet = async(req, res) => {
