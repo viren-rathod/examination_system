@@ -12,10 +12,10 @@ var nodemailer = require("nodemailer");
 const app = express();
 const ejs = require("ejs");
 const { signedCookie } = require("cookie-parser");
+const { Console } = require("console");
 const path = require("path");
 require("dotenv").config({ path: "./.env" });
 const PORT = process.env.PORT;
-const { Console } = require("console");
 
 //set engines
 app.set("views", path.join(__dirname, "/views"));
