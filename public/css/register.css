@@ -53,6 +53,10 @@
     font-size: 40px;
 }
 
+select {
+    width: 100%;
+}
+
 
 /* .imgDiv {
     padding: 30px;

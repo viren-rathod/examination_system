@@ -98,7 +98,7 @@
                                                 onchange="city_select(this.value)" required>
                                                 <option value="" selected disabled>Select</option>
                                                 <% for(let i=0;i<stateResult.length;i++){ %>
-                                                    <option value="<%= stateResult[i].state_name %>">
+                                                    <option value="<%= stateResult[i].state_id %>">
                                                         <%=stateResult[i].state_name %>
                                                     </option>
                                                     <% } %>
@@ -339,9 +339,9 @@
 
 
     var select_city = document.getElementById('select_city');
-
-    async function city_select(state) {
-
+    
+    async function city_select(state) {        
+        // console.log('state',state);
         fetch(`/city?state=${state}`, {
             method: 'get',
             headers: {
