@@ -14,7 +14,7 @@ async function getAnswers(temp) {
 async function getQue(id) {
   let que = await fetch(`/getCategoryName?id=${id}`);
   let cat_name = await que.json();
-  console.log('cat_name',cat_name);
+  // console.log('cat_name',cat_name);
   document.querySelector(
     ".category-title"
   ).innerHTML = `<h4 class="category-title">${cat_name[0].category_name}</h4>`;

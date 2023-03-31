@@ -18,13 +18,13 @@ require("dotenv").config({ path: "./.env" });
 const PORT = process.env.PORT;
 
 //set engines
-app.set("views", path.join(__dirname, "/views"));
+app.set("views", path.join(__dirname, "/src/views"));
 app.set("view engine", "ejs");
 
 app.use(express.static("./public"));
 
-const exam = require("./routes/examRoute");
-const user = require("./routes/userRoute");
+const exam = require("./src/routes/examRoute");
+const user = require("./src/routes/userRoute");
 
 //kevin
 app.use(cookie());
