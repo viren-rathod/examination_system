@@ -19,7 +19,6 @@ const { Console } = require("console");
 
 //set engines
 app.set("views", path.join(__dirname, "/views"));
-// console.log(__dirname + "/views");
 app.set("view engine", "ejs");
 
 app.use(express.static("./public"));
