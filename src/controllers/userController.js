@@ -71,7 +71,7 @@ const profile_updatepagePOST = async (req, res) => {
 
 //register get function
 const registerpage = async (req, res) => {
-    var selectState = `select state_name from state `;
+    var selectState = `select * from state `;
     var [stateResult] = await con.execute(selectState); //
 
     var selectCity = `select city_name from city where state_id = 1`;
@@ -99,6 +99,7 @@ const registerpost = async (req, res) => {
         state = req.body.state,
         city = req.body.city,
         college = req.body.college;
+    // console.log(college)
 
     var snum = await bcrypt.genSalt(10);
     var passwordStrong = await bcrypt.hash(password, snum);
@@ -106,32 +107,16 @@ const registerpost = async (req, res) => {
     var selectQuery = `SELECT * FROM student where email = '${email}' `;
     var [selectResult] = await con.execute(selectQuery);
 
-    var [cid] = await con.execute(
-        `select * from colleges where college_name='${college}'`
-    );
-    // console.log(cid);
-
-    var stateId = `select state_id from state where state_name ='${state}'`;
-    var [sid] = await con.execute(stateId);
-
-    // req.session.email = email;
-    // req.session.stdId = insertResult.insertId;
-    // req.session.userId = roleResult.insertId;
-    // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
     if (selectResult.length != 0) {
         return res.send("This Email is already Exectute");
     } else {
-        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${sid[0].state_id}', '${city}' , '${cid[0].college_id}' , '0',NOW() )`;
+        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${state}', '${city}' , '${college}' , '0',NOW() )`;
         var [insertResult] = await con.execute(insertQuery);
 
         var insrertRole = `Insert into user_login (email , password , role , user_login_status,created_date) values ('${email}' , '${passwordStrong}' , '0' , '0',NOW())`;
         var [roleResult] = await con.execute(insrertRole);
 
-        // req.session.email = email;
-        // req.session.stdId = insertResult.insertId;
-        // req.session.userId = roleResult.insertId;
-        // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
         res.render("login", { msg: "" });
     }
@@ -226,12 +211,13 @@ function generateOTP() {
 // city function
 const city = async (req, res) => {
     var state = req.query.state;
+    // console.log("viren", state)
 
-    var stateId = `select state_id from state where state_name= '${state}'`;
-    var [sid] = await con.execute(stateId);
+    // var stateId = `select state_id from state where state_name= '${state}'`;
+    // var [sid] = await con.execute(stateId);
 
     var [result9] = await con.query(
-        `select city_name from city where state_id = '${sid[0]["state_id"]}'`
+        `select city_name from city where state_id = '${state}'`
     );
 
     res.json({ result9 });

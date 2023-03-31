@@ -83,7 +83,7 @@
 
                                             <option value="" selected disabled>Select</option>
                                             <% for(let k=0;k<collegeResult.length;k++){ %>
-                                                <option value="<%=collegeResult[k].college_name%>">
+                                                <option value="<%=collegeResult[k].college_id%>">
                                                     <%=collegeResult[k].college_name%>
                                                 </option>
                                                 <% } %>
@@ -98,7 +98,7 @@
                                                 onchange="city_select(this.value)" required>
                                                 <option value="" selected disabled>Select</option>
                                                 <% for(let i=0;i<stateResult.length;i++){ %>
-                                                    <option value="<%= stateResult[i].state_name %>">
+                                                    <option value="<%= stateResult[i].state_id %>">
                                                         <%=stateResult[i].state_name %>
                                                     </option>
                                                     <% } %>
@@ -338,7 +338,7 @@
     var select_city = document.getElementById('select_city');
 
     async function city_select(state) {
-
+        console.log("viren ", state)
         fetch(`/city?state=${state}`, {
             method: 'get',
             headers: {
