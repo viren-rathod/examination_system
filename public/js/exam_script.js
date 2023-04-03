@@ -89,8 +89,8 @@ async function fetcher(str) {
                 </div>`;
     if (total_questions >= ans[0].question_id) que.innerHTML = s;
 
-    // let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
-    let qn = `<span class= "que-no">${index}</span>`;
+    let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
+    // let qn = `<span class= "que-no">${index}</span>`;
     que_no.innerHTML = qn;
     let btn = `<div
       class="row justify-content-around align-items-center"
@@ -123,7 +123,7 @@ async function next_btn(id) {
     prevQuestionId = parseInt(id) + 1;
     userAnswers[id] = selectedAns;
     questionIds[id] = parseInt(id);
-    index = index + 1;
+    // index = index + 1;
 
     allOptions.forEach((e) => {
         if (e.checked) selectedAns = e.value;
@@ -199,7 +199,7 @@ async function next_btn(id) {
 
 async function previous_btn(id) {
     prevQuestionId = parseInt(id) - 1;
-    index = index - 1;
+    // index = index - 1;
     document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
         "lightblue";
     document.querySelector(`#i${id}`).style.backgroundColor = "white";

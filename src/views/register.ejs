@@ -14,7 +14,6 @@
     <section class="mainSection">
         <div class="container">
 
-
             <div class="rowSection">
 
 
@@ -70,7 +69,7 @@
 
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label" for="form3Example8">Collage : </label>
-                                        <select class="select" name="college" required>
+                                        <select class="select" name="college" id="college" required>
 
                                             <option value="" selected disabled>Select</option>
                                             <% for(let k=0;k<collegeResult.length;k++){ %>
@@ -170,7 +169,6 @@
         var confirm = document.getElementById('confirm').value;
         // console.log(password, confirm);
 
-
         if (password != confirm) {
             // alert("Please Enter Same Password In Both Input");
             document.getElementById("confirm_lable").innerHTML = "Passwords does not match!"
@@ -182,15 +180,16 @@
     }
 
     function sameAll(filed) {
+        var name_arr = [];
+        var name_arr2 = [];
+
         if (filed == "name") {
-            var name_arr = [];
+
             var n = document.getElementById("box").value;
             var valid = new RegExp("[^a-z|^A-Z]");
             if (valid.test(n)) {
                 name_arr.push("Name is not  contain any number")
-
             }
-
             if (name_arr.length > 0) {
                 document.getElementById('first_lable').innerHTML = name_arr.join("\n");
                 document.getElementById('first_lable').style.color = "red";
@@ -204,7 +203,7 @@
 
         }
         if (filed == "last") {
-            var name_arr2 = [];
+
             var last = document.getElementById("lname").value;
             var valid = new RegExp("[^a-z|^A-Z]");
             if (valid.test(last)) {
@@ -221,12 +220,9 @@
                 document.getElementById("submitAll").disabled = false;
                 return true
             }
+
         }
     }
-
-
-
-
 
 
     function validatePhoneNumber(input_str) {
@@ -236,7 +232,6 @@
 
     function validePhone(phone) {
         var phone_length = phone.length;
-
 
         var err_arr = [];
         if (validatePhoneNumber(phone.value)) {
@@ -248,7 +243,6 @@
             document.getElementById("submitAll").disabled = true;
         }
     }
-
 
     function validitionOfEmail(emailVal) {
         let e1 = emailVal.indexOf("@");
