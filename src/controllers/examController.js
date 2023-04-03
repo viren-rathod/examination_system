@@ -116,7 +116,8 @@ const examGet = async(req, res) => {
         let [total_questions_of_category] = await con.execute(
             `select count(*) as total from questions where category_id = ${category_id} `
         );
-        // console.log(total_questions_of_category);
+        console.log("error bug ", data[0])
+            // console.log(total_questions_of_category);
         if (data.length) {
             res.render("exam_question", {
                 e: data[0],

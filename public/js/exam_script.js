@@ -89,8 +89,8 @@ async function fetcher(str) {
                 </div>`;
     if (total_questions >= ans[0].question_id) que.innerHTML = s;
 
-    // let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
-    let qn = `<span class= "que-no">${index}</span>`;
+    let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
+    // let qn = `<span class= "que-no">${index}</span>`;
     que_no.innerHTML = qn;
     let btn = `<div
       class="row justify-content-around align-items-center"
@@ -123,7 +123,7 @@ async function next_btn(id) {
     prevQuestionId = parseInt(id) + 1;
     userAnswers[id] = selectedAns;
     questionIds[id] = parseInt(id);
-    index = index + 1;
+    // index = index + 1;
 
     allOptions.forEach((e) => {
         if (e.checked) selectedAns = e.value;
@@ -199,7 +199,7 @@ async function next_btn(id) {
 
 async function previous_btn(id) {
     prevQuestionId = parseInt(id) - 1;
-    index = index - 1;
+    // index = index - 1;
     document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
         "lightblue";
     document.querySelector(`#i${id}`).style.backgroundColor = "white";
@@ -366,10 +366,24 @@ async function category_changer(e) {
 
 submit.addEventListener("click", () => {
     // console.log(userAnswers);
-    endExam();
+    endExam("simple");
 });
-async function endExam() {
-    if (confirm("Are you sure you want to submit the Exam ?")) {
+async function endExam(filed) {
+    if (filed == "simple") {
+        if (confirm("Are you sure you want to submit the Exam ?")) {
+            for (let i = 1; i <= userAnswers.length; i++) {
+                if (questionIds[i] && userAnswers[i] == undefined) {
+                    // console.log(questionIds[i], userAnswers[i]);
+                    let a = await fetch(
+                        `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
+                    );
+                    let b = await a.json();
+                }
+            }
+            window.location.href = "/endExam";
+        }
+    }
+    if (filed == "end") {
         for (let i = 1; i <= userAnswers.length; i++) {
             if (questionIds[i] && userAnswers[i] == undefined) {
                 // console.log(questionIds[i], userAnswers[i]);
@@ -400,7 +414,7 @@ function timer(x) {
         if (minit == -1) {
             clearInterval(nareshInterval);
             // submit();
-            endExam();
+            endExam("end");
         }
     }, 1000);
 }
