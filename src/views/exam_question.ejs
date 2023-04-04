@@ -50,16 +50,13 @@
               
           <p id="time1"  class="badge rounded-pill text-bg-primary " >time</p>         
       </div>
-        <div class="page d-flex justify-content-center align-items-center pt-3 " id="examtab">
-            <%# for(let i = 0;i<category.length;i++) { %>
-              <!-- <a id="<%#=category[i].category_id%>" onclick="category_changer(this)"><%#= category[i].category_name  %></a>  -->
-             <%# } %>
+        <div class="page d-flex justify-content-center align-items-center pt-3 " id="examtab">           
 
-             <% for(let i = 0;i<category.length;i++) { %>
-              <a id="<%=category[i].category_id%>" class="pagination" onclick="category_changer(this)" <%if(i==0 ){%> style="background-color:#ffc94e; color:black;" <% }%>>
-                  <%= category[i].category_name  %>
-              </a>
-              <% } %>
+             <%# for(let i = 0;i<category.length;i++) { %>
+              <!-- <a id="<%#=category[i].category_id%>" class="pagination" onclick="category_changer(this)" <%#if(i==0 ){%> style="background-color:#ffc94e; color:black;" <%# }%>>
+                  <%#= category[i].category_name  %>
+              </a> -->
+              <%# } %>
         </div>
         <div class="bg-white p-3 border-bottom">
           <div
@@ -139,18 +136,17 @@
                   onclick="previous_btn('<%=e.question_id%>')" 
                   class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
                   id="prev" 
-                  <% if(e.question_id == 1) { %> 
-                    disabled 
-                  <% } %> />
+                  <% if(e.question_id==qids[0]){ %>
+                    disabled
+                    <% } %>
+                   />
               <input 
                   type="button" 
                   value="NEXT"
                   onclick="next_btn('<%=e.question_id%>')" 
                   class="btn btn-primary btn-success col-2 font-weight-bold" 
                   id="next"
-                  <% if(e.question_id == exam[0].total_questions) { %> 
-                    disabled 
-                  <% } %> />
+                   />
             </div>
           </div>
         </form>
@@ -162,47 +158,25 @@
             id="submit"
           />
         </div>
-          </div>
-        <!-- <div
-        class="page d-flex justify-content-center align-items-center pt-3"
-        id="page"
-      >
-      <%# console.log("jkbuiebtjkn",total_questions_of_category);  %>
-        <%#for(var i=1;i<=total_questions_of_category[0].total;i++){  %> <%# if(i ===
-        question_no){ %>
-        <span
-          id="i<%#=i%>"
-          class="selected m-1 btn pagination-number"
-          onclick="fetcher('pagingGet/?question_no=<%#=i%>&category_id=<%#=category[0].category_id%>')"
-          ><%#=i%></span
-        >
-        <%# continue; %> <%# } %>
-        <span
-          id="i<%#=i%>"
-          class="m-1 btn pagination-number"
-          onclick="fetcher('/pagingGet/?question_no=<%#=i%>&category_id=<%#=category[0].category_id%>')"
-          ><%#=i%></span
-        >
-        <%# } %>
-           </div> -->
+          </div>       
+          
            <div
         class="page d-flex justify-content-center align-items-center pt-3"
         id="page"
       >
-        <%for(var i=1;i<=exam[0].total_questions;i++){  %> <% if(i ===
+      <%for(var i=1 , j=0;i<=exam[0].total_questions;i++,j++){ %> <% if(qids[j] ===
         question_no){ %>
         <span
-          id="i<%=i%>"
+          id="i<%=qids[j]%>"
+          onclick="getQue('<%=qids[j]%>','<%=i%>')"
           class="selected m-1 btn pagination-number"
-          onclick="fetcher('pagingGet/?question_no=<%=i%>%>')"
           ><%=i%></span
         >
         <% continue; %> <% } %>
         <span
-          id="i<%=i%>"
-          class="m-1 btn pagination-number"
-          
-          onclick="getQue('<%=i%>')"
+          id="i<%=qids[j]%>"
+          class="m-1 btn pagination-number"          
+          onclick="getQue('<%=qids[j]%>','<%=i%>')"
           ><%=i%></span
         >
         <% } %>
@@ -212,8 +186,9 @@
   </body>
   <script>
     var total_questions = `<%=exam[0].total_questions%>`;
-    var start = 1,index=1;
+    var start = 1,index=0;
     var end = `<%=total_questions_of_category[0].total%>`;
+    var qids = `<%= qids %>`
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
