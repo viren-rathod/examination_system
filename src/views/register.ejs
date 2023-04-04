@@ -134,7 +134,7 @@
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="password" id="password" class="form-control form-control-lg" onkeyup="validPass(this.value)" placeholder="Password" name="password" required />
+                                        <input type="password" id="password" class="form-control form-control-lg" onkeyup="sameAll('psw')" placeholder="Password" name="password" required />
                                         <p id="password_lable"></p>
                                     </div>
 
@@ -179,6 +179,7 @@
     let flag2 = 0;
     let flag3 = 0;
     let flag4 = 0;
+    let flag5 = 0;
 
     function sameAll(filed) {
         var name_arr = [];
@@ -189,7 +190,7 @@
             var n = document.getElementById("box").value;
             var valid = new RegExp("[^a-z|^A-Z]");
             if (valid.test(n)) {
-                name_arr.push("Name is not  contain any number")
+                name_arr.push("Name is not  contain any number or space")
             }
             if (name_arr.length > 0) {
                 document.getElementById('first_lable').innerHTML = name_arr.join("\n");
@@ -209,7 +210,7 @@
             var last = document.getElementById("lname").value;
             var valid = new RegExp("[^a-z|^A-Z]");
             if (valid.test(last)) {
-                name_arr2.push("Name is not  contain any number")
+                name_arr2.push("Name is not  contain any number or space")
             }
 
             if (name_arr2.length > 0) {
@@ -275,50 +276,52 @@
             }
         }
 
+        if (filed == "psw") {
+            var password = document.getElementById("password").value
+            const errors = [];
+            if (password.length == 0) {
+                document.getElementById("password_lable").innerHTML = ""
+            } else {
+                if (password.length < 3) {
+                    errors.push("Your password must be at least 3 characters");
+                }
+                if (password.search(/[a-z]/) < 0) {
+                    errors.push("Your password must contain at least one lower case letter.");
+                }
+                if (password.search(/[0-9]/) < 0) {
+                    errors.push("Your password must contain at least one digit.");
+                }
+                if (password.search(/[!@#\$%\^&\*_]/) < 0) {
+                    errors.push("Your password must contain at least special char from -[ ! @ # $ % ^ & * _ ]");
+                }
+                if (password.length > 10) {
+                    errors.push("Your password must be at max 10 characters");
+                }
+            }
 
-        if (flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0) {
+            if (errors.length > 0) {
+
+                document.getElementById("password_lable").innerHTML = errors.join("\n");
+                document.getElementById("password_lable").style.color = "red";
+                document.getElementById("submitAll").disabled = true;
+                flag5 = 1;
+            } else {
+                document.getElementById("password_lable").innerHTML = ""
+                flag5 = 0;
+            }
+        }
+
+
+        if (flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0) {
             document.getElementById("submitAll").disabled = false;
         }
     }
 
 
-    function validitionOfEmail(emailVal) {
-
-
-    }
 
 
     function validPass(password) {
-        const errors = [];
-        if (password.length == 0) {
-            document.getElementById("password_lable").innerHTML = ""
-        } else {
-            if (password.length < 3) {
-                errors.push("Your password must be at least 3 characters");
-            }
-            if (password.search(/[a-z]/) < 0) {
-                errors.push("Your password must contain at least one lower case letter.");
-            }
-            if (password.search(/[0-9]/) < 0) {
-                errors.push("Your password must contain at least one digit.");
-            }
-            if (password.search(/[!@#\$%\^&\*_]/) < 0) {
-                errors.push("Your password must contain at least special char from -[ ! @ # $ % ^ & * _ ]");
-            }
-            if (password.length > 10) {
-                errors.push("Your password must be at max 10 characters");
-            }
-        }
 
-        if (errors.length > 0) {
-
-            document.getElementById("password_lable").innerHTML = errors.join("\n");
-            document.getElementById("password_lable").style.color = "red";
-            document.getElementById("submitAll").disabled = true;
-        } else {
-            document.getElementById("password_lable").innerHTML = ""
-            document.getElementById("submitAll").disabled = false;
-        }
     }
 
 

@@ -1,17 +1,19 @@
-let prevQuestionId = 1;
 let allOptions = document.getElementsByName("option");
 let selectedAns = "";
 let userAnswers = [...new Array(parseInt(total_questions))];
 let questionIds = Array.from({ length: parseInt(total_questions) + 1 },
     (_, i) => i
 );
+let ind = index;
+let qs = qids.split(",");
+let prevQuestionId = qs[0];
 async function getAnswers(temp) {
     allOptions.forEach((e) => {
         if (e.checked) selectedAns = e.value;
     });
 }
-async function getQue(id) {
-    // console.log(id, prevQuestionId);
+async function getQue(id, i) {
+    index = parseInt(i) - 1;
     let que = await fetch(`/getCategoryName?id=${id}`);
     let cat_name = await que.json();
     document.querySelector(
@@ -26,7 +28,6 @@ async function getQue(id) {
 }
 
 async function fetcher(str) {
-    // console.log("i", index);
     let temp = await fetch(str);
     let ans = await temp.json();
     let user_ans = await fetch("/getAns", {
@@ -87,11 +88,12 @@ async function fetcher(str) {
                     <span>${ans[0].option_d}</span>
                   </label>
                 </div>`;
-    if (total_questions >= ans[0].question_id) que.innerHTML = s;
 
-    let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
-    // let qn = `<span class= "que-no">${index}</span>`;
-    que_no.innerHTML = qn;
+    if (total_questions > index) que.innerHTML = s;
+
+    // let qn = `<span class= "que-no">${ans[0].question_id}</span>`;
+    let qn = `<span class= "que-no">${index + 1}</span>`;
+    if (index < total_questions) que_no.innerHTML = qn;
     let btn = `<div
       class="row justify-content-around align-items-center"
       id="row"
@@ -102,75 +104,81 @@ async function fetcher(str) {
         onclick="previous_btn('${ans[0].question_id}')"
         class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
         id="prev"
-        ${ans[0].question_id == 1 ? " disabled" : ""}
+        ${index == 0 ? " disabled" : ""}
       />
   
       <input
         type="button"
-        value="NEXT"
+        value=${index == total_questions - 1 ? "SAVE" : "NEXT"}
         onclick="next_btn('${ans[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
         />
     </div>`;
-    if (ans[0].question_id <= total_questions) btns.innerHTML = btn;
-    else if (total_questions < ans[0].question_id) {
-        next.disabled = true;
-    }
+    if (index < total_questions) btns.innerHTML = btn;
 }
 
 async function next_btn(id) {
-    prevQuestionId = parseInt(id) + 1;
-    userAnswers[id] = selectedAns;
-    questionIds[id] = parseInt(id);
-    // index = index + 1;
+    if (index <= total_questions) {
+        if (index == total_questions) prevQuestionId = qs[index];
+        if (index < total_questions - 1) index = index + 1;
+        if (index != total_questions) prevQuestionId = qs[index];
 
-    allOptions.forEach((e) => {
-        if (e.checked) selectedAns = e.value;
-    });
-    let temp1 = await fetch(`/nextGet?id=${id}`);
-    let tmp = await temp1.json();
-    // console.log( tmp[0].question_id);
-    if (tmp[0] && tmp[0].question_id <= total_questions) {
-        // prevQuestionId = parseInt(id) + 1;
-        // userAnswers[id] = selectedAns;
-        // questionIds[id] = parseInt(id);
-        // index = index + 1;
-        await fetcher(
-            `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
-        );
-        let cat_name = await fetch(`/getCategoryName?id=${id}&btn=next`);
-        let cat_name_json = await cat_name.json();
-        document.querySelector(
-            ".category-title"
-        ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
-
-        document.querySelectorAll(".pagination").forEach((a) => {
-            a.style.backgroundColor = "white";
-            a.style.color = "black";
+        allOptions.forEach((e) => {
+            if (e.checked) selectedAns = e.value;
         });
-        document.getElementById(`${cat_name_json[0].category_id}`).style.color =
-            "black";
-        document.getElementById(
-            `${cat_name_json[0].category_id}`
-        ).style.backgroundColor = "#ffc94e";
-        // console.log(userAnswers);
-    }
 
-    let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ selectedAns, id }),
-    });
-    let a2 = await a1.json();
-    selectedAns = "";
-    if (document.querySelector(`#i${parseInt(id) + 1}`))
-        document.querySelector(`#i${parseInt(id) + 1}`).style.backgroundColor =
-        "lightblue";
-    if (document.querySelector(`#i${id}`))
-        document.querySelector(`#i${id}`).style.backgroundColor = "white";
-    if (tmp[0]) {
-        let s = `<div
+        questionIds[id] = parseInt(id);
+
+        let temp1 = await fetch(`/nextGet?id=${prevQuestionId}`);
+        let tmp = await temp1.json();
+        if (tmp[0]) {
+            await fetcher(
+                `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
+            );
+            let cat_name = await fetch(
+                `/getCategoryName?id=${prevQuestionId}&btn=next`
+            );
+            let cat_name_json = await cat_name.json();
+            document.querySelector(
+                ".category-title"
+            ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
+
+            document.querySelectorAll(".pagination").forEach((a) => {
+                a.style.backgroundColor = "white";
+                a.style.color = "black";
+            });
+            // document.getElementById(`${cat_name_json[0].category_id}`).style.color =
+            //   "black";
+            // document.getElementById(
+            //   `${cat_name_json[0].category_id}`
+            // ).style.backgroundColor = "#ffc94e";
+            // console.log(userAnswers);
+        }
+        if (index == total_questions - 1) {
+            ind = ind + 1;
+        } else ind = index - 1;
+        userAnswers[ind] = selectedAns;
+
+        userAnswers.push(selectedAns);
+        let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ selectedAns, id }),
+        });
+        let a2 = await a1.json();
+
+        selectedAns = "";
+
+        if (document.querySelector(`#i${prevQuestionId}`))
+            document.querySelector(`#i${prevQuestionId}`).style.backgroundColor =
+            "lightblue";
+
+        if (document.querySelector(`#i${id}`))
+            document.querySelector(`#i${id}`).style.backgroundColor = "white";
+
+        if (tmp[0]) {
+            let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
     >
@@ -180,30 +188,37 @@ async function next_btn(id) {
         onclick="previous_btn('${tmp[0].question_id}')"
         class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
         id="prev"
-        ${tmp[0].question_id == 1 ? " disabled" : ""}
+        ${index == 0 ? "disabled" : ""}        
       />
   
       <input
         type="button"
-        value=${tmp[0].question_id == total_questions ? "SAVE" : "NEXT"}
+        value=${index == total_questions - 1 ? "SAVE" : "NEXT"}
         onclick="next_btn('${tmp[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
       />
     </div>`;
-        if (total_questions != tmp[0].question_id) {
-            btns.innerHTML = s;
+            if (total_questions != index) {
+                btns.innerHTML = s;
+            }
+            if (index == total_questions) next.disabled = true;
         }
     }
 }
 
 async function previous_btn(id) {
-    prevQuestionId = parseInt(id) - 1;
-    // index = index - 1;
-    document.querySelector(`#i${parseInt(id) - 1}`).style.backgroundColor =
+    index = index - 1;
+    prevQuestionId = qs[index];
+    console.log("prev", prevQuestionId, index);
+
+    if (document.querySelector(`#i${prevQuestionId}`))
+        document.querySelector(`#i${prevQuestionId}`).style.backgroundColor =
         "lightblue";
-    document.querySelector(`#i${id}`).style.backgroundColor = "white";
-    let temp = await fetch(`/prevGet?id=${id}`);
+    if (document.querySelector(`#i${id}`))
+        document.querySelector(`#i${id}`).style.backgroundColor = "white";
+
+    let temp = await fetch(`/prevGet?id=${prevQuestionId}`);
     let tmp = await temp.json();
     if (tmp[0]) {
         await fetcher(
@@ -219,11 +234,12 @@ async function previous_btn(id) {
         a.style.backgroundColor = "white";
         a.style.color = "black";
     });
-    document.getElementById(`${cat_name_json[0].category_id}`).style.color =
-        "black";
-    document.getElementById(
-        `${cat_name_json[0].category_id}`
-    ).style.backgroundColor = "#ffc94e";
+    // document.getElementById(`${cat_name_json[0].category_id}`).style.color =
+    //   "black";
+    // document.getElementById(
+    //   `${cat_name_json[0].category_id}`
+    // ).style.backgroundColor = "#ffc94e";
+
     let s = `<div
       class="row justify-content-around align-items-center"
       id="row"
@@ -234,15 +250,17 @@ async function previous_btn(id) {
         onclick="previous_btn('${tmp[0].question_id}')"
         class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
         id="prev"
-        ${tmp[0].question_id == 1 ? " disabled" : ""}
+        ${index == 0 ? "disabled" : ""}
+        
       />
   
       <input
         type="button"
-        value=${tmp[0].question_id == total_questions ? "SAVE" : "NEXT"}
+        value=${index == total_questions - 1 ? "SAVE" : "NEXT"}
         onclick="next_btn('${tmp[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
+        ${index == total_questions ? " disabled" : ""}
       />
     </div>`;
     btns.innerHTML = s;
@@ -267,11 +285,11 @@ async function category_changer(e) {
     document.querySelector(
         ".category-title"
     ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
-    // console.log(`#i${ans.data[0].question_id}`);
     document.querySelector(`#i${prevQuestionId}`).style.backgroundColor = "white";
     document.querySelector(`#i${ans.data[0].question_id}`).style.backgroundColor =
         "lightblue";
     prevQuestionId = parseInt(ans.data[0].question_id);
+
     let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans.data[0].question_text}</h5>
@@ -328,7 +346,7 @@ async function category_changer(e) {
                     <span>${ans.data[0].option_d}</span>
                   </label>
                 </div>`;
-    que.innerHTML = s;
+    if (index <= total_questions) que.innerHTML = s;
     let qn = `<span class= "que-no">${ans.data[0].question_id}</span>`;
     que_no.innerHTML = qn;
     let btn = `<div
@@ -341,15 +359,16 @@ async function category_changer(e) {
         onclick="previous_btn('${ans.data[0].question_id}')"
         class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
         id="prev"
-        ${total_questions == 1 ? " disabled" : ""}
+        ${index == 0 ? " disabled" : ""}
       />
   
       <input
         type="button"
-        value=${ans.data[0].question_id == total_questions ? "SAVE" : "NEXT"}
+        value=${index - 1 == total_questions ? "SAVE" : "NEXT"}
         onclick="next_btn('${ans.data[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
+        ${index == total_questions ? " disabled" : ""}
       />
       
     </div>`;
@@ -365,37 +384,60 @@ async function category_changer(e) {
 }
 
 submit.addEventListener("click", () => {
-    // console.log(userAnswers);
     endExam("simple");
 });
-async function endExam(filed) {
-    if (filed == "simple") {
+// async function endExam(filed) {
+//     if (filed == 'simple') {
+//         if (confirm("Are you sure you want to submit the Exam ?")) {
+//             for (let i = 1; i <= total_questions; i++) {
+//                 if (qs[i - 1] && userAnswers[i - 1] == undefined) {
+//                     let a = await fetch(
+//                         `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
+//                     );
+//                     let b = await a.json();
+//                 }
+//             }
+//             window.location.href = "/endExam";
+//         }
+//     }
+//     if (filed == 'end') {
+//         for (let i = 1; i <= total_questions; i++) {
+//             if (qs[i - 1] && userAnswers[i - 1] == undefined) {
+//                 let a = await fetch(
+//                     `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
+//                 );
+//                 let b = await a.json();
+//             }
+//         }
+//         window.location.href = "/endExam";
+//     }
+// }
+
+async function endExam(field) {
+    if (field == "simple") {
         if (confirm("Are you sure you want to submit the Exam ?")) {
-            for (let i = 1; i <= userAnswers.length; i++) {
-                if (questionIds[i] && userAnswers[i] == undefined) {
-                    // console.log(questionIds[i], userAnswers[i]);
+            for (let i = 1; i <= total_questions; i++) {
+                if (qs[i - 1] && userAnswers[i - 1] == undefined) {
                     let a = await fetch(
-                        `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
+                        `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
                     );
                     let b = await a.json();
                 }
             }
-            window.location.href = "/endExam";
         }
-    }
-    if (filed == "end") {
-        for (let i = 1; i <= userAnswers.length; i++) {
-            if (questionIds[i] && userAnswers[i] == undefined) {
-                // console.log(questionIds[i], userAnswers[i]);
+    } else {
+        for (let i = 1; i <= total_questions; i++) {
+            if (qs[i - 1] && userAnswers[i - 1] == undefined) {
                 let a = await fetch(
-                    `/allAnswerGet?ans=${userAnswers[i]}&id=${parseInt(questionIds[i])}`
+                    `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
                 );
                 let b = await a.json();
             }
         }
-        window.location.href = "/endExam";
     }
+    window.location.href = "/endExam";
 }
+
 /*? Timer*/
 function timer(x) {
     // console.log(x);
@@ -413,7 +455,6 @@ function timer(x) {
         second--;
         if (minit == -1) {
             clearInterval(nareshInterval);
-            // submit();
             endExam("end");
         }
     }, 1000);
