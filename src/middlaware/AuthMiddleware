@@ -1,7 +1,7 @@
 var session = require('express-session')
 
 
-let verifyToken = async(req, res, next) => {
+let verifyToken = async (req, res, next) => {
 
     const token =
         req.session.stdId;
