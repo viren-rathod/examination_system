@@ -6,6 +6,7 @@ var nodemailer = require("nodemailer");
 const { signedCookie } = require("cookie-parser");
 const { Console } = require("console");
 const bcrypt = require("bcryptjs");
+const e = require("connect-flash");
 
 async function queryExecuter(query) {
   return new Promise((resolve, rejects) => {
