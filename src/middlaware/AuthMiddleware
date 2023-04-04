@@ -8,22 +8,11 @@ let verifyToken = async(req, res, next) => {
 
     if (!token) {
         // return res.status(403).send("A token is required for authentication");
-        res.redirect('/login');
+        return res.render('login', { msg: "" });
     }
     next();
 }
 
-let verifyHome = async(req, res, next) => {
 
-    // console.log(":in verifyy")
-    const token =
-        req.session.stdId;
 
-    if (!token) {
-        return res.render("login", { msg: "" })
-    }
-    next();
-
-}
-
-module.exports = { verifyToken, verifyHome };
+module.exports = { verifyToken };
