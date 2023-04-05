@@ -19,41 +19,43 @@ async function queryExecuter(query) {
 }
 
 //dhruv
-const logoutpageGet = async (req, res) => {
+const logoutpageGet = async(req, res) => {
     req.session.destroy();
     res.redirect("/login");
 };
 
-const homepageGet = async (req, res) => {
+const homepageGet = async(req, res) => {
     // req.session.email = email;
 
     // if (!req.session.email) {
     //     res.render("login", { msg: "" });
     // } else {
-        // console.log("Sesion :- ", req.session.email);
-        // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
-        const [result] = await con.execute(
-            `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
-        );
-        res.render("homestart", { editdata: result });
+    // console.log("Sesion :- ", req.session.email);
+    // console.log(`select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`);
+    const [result] = await con.execute(
+        `select student_id,name,address,email,contact,city,gender from  student where email='${req.session.email}'`
+    );
+    // console.log(result);
+    res.render("homestart", { editdata: result });
     // }
+
 };
 
-const exam_homepageGet = async (req, res) => {
+const exam_homepageGet = async(req, res) => {
     const [result] = await con.execute(`select * from questions;`);
 
     res.render("exam_start", { exam_que: result });
 };
 
-const resultpageGet = async (req, res) => {
+const resultpageGet = async(req, res) => {
     res.render("result");
 };
-const profile_updatepagePOST = async (req, res) => {
+const profile_updatepagePOST = async(req, res) => {
     try {
         const { firstname, email, contact, address, gender } = req.body
 
-        let sql = `update exam_system.student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
-        // console.log(sql);
+        let sql = `update student set name='${firstname}',email='${email}',address='${address}',contact='${contact}',gender='${gender}' where email='${req.session.email}' `
+            // console.log(sql);
         await con.execute(sql);
         req.session.email = email;
 
@@ -70,8 +72,8 @@ const profile_updatepagePOST = async (req, res) => {
 // var con.execute = utils.promisify(con.query).bind(con);
 
 //register get function
-const registerpage = async (req, res) => {
-    var selectState = `select state_name from state `;
+const registerpage = async(req, res) => {
+    var selectState = `select * from state `;
     var [stateResult] = await con.execute(selectState); //
 
     var selectCity = `select city_name from city where state_id = 1`;
@@ -79,16 +81,18 @@ const registerpage = async (req, res) => {
 
     var selectCollege = `select * from colleges`;
     var [collegeResult] = await con.execute(selectCollege);
+    // console.log(collegeResult)
 
     res.render("register", {
         stateResult: stateResult,
         cityResult: cityResult,
         collegeResult: collegeResult,
+
     });
 };
 
 //register post function
-const registerpost = async (req, res) => {
+const registerpost = async(req, res) => {
     var fname = req.body.fname,
         lname = req.body.lname,
         email = req.body.email,
@@ -99,6 +103,7 @@ const registerpost = async (req, res) => {
         state = req.body.state,
         city = req.body.city,
         college = req.body.college;
+    // console.log(college)
 
     var snum = await bcrypt.genSalt(10);
     var passwordStrong = await bcrypt.hash(password, snum);
@@ -106,44 +111,34 @@ const registerpost = async (req, res) => {
     var selectQuery = `SELECT * FROM student where email = '${email}' `;
     var [selectResult] = await con.execute(selectQuery);
 
-    var [cid] = await con.execute(
-        `select * from colleges where college_name='${college}'`
-    );
-    // console.log(cid);
-
-    var stateId = `select state_id from state where state_name ='${state}'`;
-    var [sid] = await con.execute(stateId);
-
-    // req.session.email = email;
-    // req.session.stdId = insertResult.insertId;
-    // req.session.userId = roleResult.insertId;
-    // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
     if (selectResult.length != 0) {
         return res.send("This Email is already Exectute");
+        // res.render("register", {
+        //     msg: "This Email is already ragister",
+        //     stateResult: stateResult,
+        //     cityResult: cityResult,
+        //     collegeResult: collegeResult,
+        // });
     } else {
-        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${sid[0].state_id}', '${city}' , '${cid[0].college_id}' , '0',NOW() )`;
+        var insertQuery = `INSERT INTO student (name, contact , email, password, address ,gender ,state_id , city , college_id , student_status,created_date ) VALUES ('${fname}', '${phoneN}','${email}','${passwordStrong}','${address}', '${gender}'  ,'${state}', '${city}' , '${college}' , '0',NOW() )`;
         var [insertResult] = await con.execute(insertQuery);
 
         var insrertRole = `Insert into user_login (email , password , role , user_login_status,created_date) values ('${email}' , '${passwordStrong}' , '0' , '0',NOW())`;
         var [roleResult] = await con.execute(insrertRole);
 
-        // req.session.email = email;
-        // req.session.stdId = insertResult.insertId;
-        // req.session.userId = roleResult.insertId;
-        // console.log("register session s u e", req.session.stdId, req.session.userId, req.session.email)
 
         res.render("login", { msg: "" });
     }
 };
 
 //login get user
-const logingetpage = async (req, res) => {
+const logingetpage = async(req, res) => {
     res.render("login", { msg: "" });
 };
 
 //login post user
-const loginpostpage = async (req, res) => {
+const loginpostpage = async(req, res) => {
     var email = req.body.email;
     var password = req.body.password;
 
@@ -179,8 +174,7 @@ const loginpostpage = async (req, res) => {
 
                 if (userData[0]['role'] != 0) {
                     res.render("login", { msg: "role is not match" });
-                }
-                else {
+                } else {
                     if (userData[0].user_login_status == 0) {
                         res.render("activation.ejs", {
                             email: email,
@@ -200,17 +194,17 @@ const loginpostpage = async (req, res) => {
     }
 };
 
-const forgetGet = async (req, res, next) => {
+const forgetGet = async(req, res, next) => {
     res.render("validEmail");
 };
 
 // page of set password get
-const setPasswordGet = async (req, res, next) => {
+const setPasswordGet = async(req, res, next) => {
     res.redirect("/login");
 };
 
 // page of set password post
-const setPasswordPost = async (req, res, next) => {
+const setPasswordPost = async(req, res, next) => {
     res.render("setPassword");
 };
 
@@ -225,14 +219,15 @@ function generateOTP() {
 }
 
 // city function
-const city = async (req, res) => {
+const city = async(req, res) => {
     var state = req.query.state;
+    // console.log("viren", state)
 
-    var stateId = `select state_id from state where state_name= '${state}'`;
-    var [sid] = await con.execute(stateId);
+    // var stateId = `select state_id from state where state_name= '${state}'`;
+    // var [sid] = await con.execute(stateId);
 
     var [result9] = await con.query(
-        `select city_name from city where state_id = '${sid[0]["state_id"]}'`
+        `select city_name from city where state_id = '${state}'`
     );
 
     res.json({ result9 });
@@ -240,7 +235,7 @@ const city = async (req, res) => {
 
 //?-----------sendopt function---------------------
 
-const sendOtp = async (req, res, next) => {
+const sendOtp = async(req, res, next) => {
     var email = req.body.email;
     // console.log("Send email in post method", email);
     var otp = generateOTP();
@@ -285,13 +280,13 @@ const sendOtp = async (req, res, next) => {
 };
 
 // UPDATE PASSWORD GET request
-const updatePasswordGet = async (req, res) => {
+const updatePasswordGet = async(req, res) => {
     // res.redirect("/login");
     res.render("login", { msg: "" });
 };
 
 // update password post request
-const updatePasswordPost = async (req, res) => {
+const updatePasswordPost = async(req, res) => {
     var email = req.session.email;
     var password = req.body.password;
 
@@ -303,7 +298,7 @@ const updatePasswordPost = async (req, res) => {
 };
 
 // activetion link method (update status)
-const activePost = async (req, res) => {
+const activePost = async(req, res) => {
     var email = req.body.email;
     // console.log("JFIDHFIHDFOHDOHJ");
     var resultRandom = req.params.resultRandom;
@@ -325,7 +320,7 @@ const activePost = async (req, res) => {
 };
 
 // email validation in ragistger page
-const validPost = async (req, res) => {
+const validPost = async(req, res) => {
     var email = req.body.email1;
     var nameSelect1 = `select email from student where email = '${email}'`;
 
@@ -338,7 +333,7 @@ const validPost = async (req, res) => {
     }
 };
 
-const changePasswordPost = async (req, res) => {
+const changePasswordPost = async(req, res) => {
     var email11 = req.body.email1;
 
     var selectEmail = `select email from user_login where email = '${email11}'`;
@@ -351,7 +346,7 @@ const changePasswordPost = async (req, res) => {
     }
 };
 //  Login page pasword validation
-const validPassword = async (req, res) => {
+const validPassword = async(req, res) => {
     var email = req.body.useremail;
     var password = req.body.userPassword;
 
@@ -376,7 +371,7 @@ const validPassword = async (req, res) => {
 };
 
 // update profile update password
-var updateProfilePassword = async (req, res) => {
+var updateProfilePassword = async(req, res) => {
     var old_pass = req.body.old_pass;
     var save_pass = req.body.save_pass;
     var confirm_pass = req.body.save_confirm;
@@ -435,5 +430,6 @@ module.exports = {
     exam_homepageGet,
     resultpageGet,
     profile_updatepagePOST,
-    logoutpageGet, updateProfilePassword
+    logoutpageGet,
+    updateProfilePassword
 }

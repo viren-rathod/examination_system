@@ -4,24 +4,25 @@ const bod = require("body-parser");
 const path = require("path");
 
 const userControllers = require("../controllers/userController");
-const {verifyToken,verifyHome} = require("../middlaware/AuthMiddleware");
+const middle = require("../middlaware/AuthMiddleware");
+
 
 // Dhruv and kevin routes
-router.get("/home", verifyToken, userControllers.homepageGet);
-router.get("/exam_home",verifyToken,  userControllers.exam_homepageGet);
-router.get("/result", verifyToken, userControllers.resultpageGet);
+router.get("/home", middle.verifyToken, userControllers.homepageGet);
+router.get("/exam_home", userControllers.exam_homepageGet);
+router.get("/result", userControllers.resultpageGet);
 router.get("/logout", userControllers.logoutpageGet);
 router.post("/profile_update", userControllers.profile_updatepagePOST);
 router.get("/", userControllers.logingetpage);
 router.get("/register", userControllers.registerpage);
 router.post("/register", userControllers.registerpost);
 
-router.get("/login",verifyHome, userControllers.logingetpage);
+router.get("/login", userControllers.logingetpage);
 
 router.post("/login", userControllers.loginpostpage);
 router.get("/city", userControllers.city);
 router.get("/forget", userControllers.forgetGet);
-router.get("/setPassword", userControllers.setPasswordGet);
+router.get("/setPassword", middle.verifyToken, userControllers.setPasswordGet);
 router.post("/setPassword", userControllers.setPasswordPost);
 router.post("/fetch_api", userControllers.sendOtp);
 router.get("/updatePassword", userControllers.updatePasswordGet);

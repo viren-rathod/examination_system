@@ -52,7 +52,6 @@ body {
 /* /Profile Card Css */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
 * {
     padding: 0;
     margin: 0;
@@ -219,7 +218,6 @@ body {
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
@@ -229,7 +227,6 @@ body {
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
