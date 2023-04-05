@@ -127,3 +127,15 @@ a{
   cursor: pointer;
   border: none;
 }
+
+input[type=radio]:checked  {
+  border: 5px solid #0DFF92;
+}
+
+input[type=radio]:checked{
+  background: #0DFF92;
+}
+
+input[type=radio]:checked{
+  color: #0DFF92;
+}

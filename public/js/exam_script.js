@@ -31,6 +31,8 @@ async function getQue(id, i) {
 async function fetcher(str) {
   let temp = await fetch(str);
   let ans = await temp.json();
+  correctAns = ans[0].answ;
+  console.log('CA',correctAns);
   let user_ans = await fetch("/getAns", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -125,17 +127,19 @@ async function next_btn(id) {
     if (index < total_questions - 1) index = index + 1;
     if (index != total_questions) prevQuestionId = qs[index];
 
+    console.log(prevQuestionId);
     allOptions.forEach((e) => {
       if (e.checked) selectedAns = e.value;
     });
 
     questionIds[id] = parseInt(id);
 
-    let temp1 = await fetch(`/nextGet?id=${prevQuestionId}`);
+    let temp1 = await fetch(`/nextGet?id=${prevQuestionId}&pid=${id}`);
     let tmp = await temp1.json();
-    if (tmp[0]) {
+    console.log(tmp.correct_answer[0].answ);
+    if (tmp.question) {
       await fetcher(
-        `/pagingGet/?question_no=${tmp[0].question_id}&category_id=${tmp[0].category_id}`
+        `/pagingGet/?question_no=${tmp.question[0].question_id}&category_id=${tmp.question[0].category_id}`
       );
       let cat_name = await fetch(
         `/getCategoryName?id=${prevQuestionId}&btn=next`
@@ -165,7 +169,7 @@ async function next_btn(id) {
     let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ selectedAns, id }),
+      body: JSON.stringify({ selectedAns, id,correctAns:tmp.correct_answer[0].answ }),
     });
     let a2 = await a1.json();
 
@@ -387,8 +391,19 @@ async function category_changer(e) {
 submit.addEventListener("click", () => {
   endExam();
 });
-async function endExam() {
-  if (confirm("Are you sure you want to submit the Exam ?")) {
+async function endExam(field) {
+  if (field == "simple") {
+    if (confirm("Are you sure you want to submit the Exam ?")) {
+      for (let i = 1; i <= total_questions; i++) {
+        if (qs[i - 1] && userAnswers[i - 1] == undefined) {
+          let a = await fetch(
+            `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
+          );
+          let b = await a.json();
+        }
+      }
+    }
+  } else {
     for (let i = 1; i <= total_questions; i++) {
       if (qs[i - 1] && userAnswers[i - 1] == undefined) {
         let a = await fetch(
@@ -397,14 +412,13 @@ async function endExam() {
         let b = await a.json();
       }
     }
-    window.location.href = "/endExam";
   }
+  window.location.href = "/endExam";
 }
+
 /*? Timer*/
 function timer(x) {
-  // console.log(x);
   let y = parseInt(x);
-  // console.log(typeof y);
 
   var minit = y;
   var second = 0;
@@ -417,7 +431,7 @@ function timer(x) {
     second--;
     if (minit == -1) {
       clearInterval(nareshInterval);
-      endExam();
+      endExam("end");
     }
   }, 1000);
 }

@@ -6,7 +6,7 @@ var nodemailer = require("nodemailer");
 const { signedCookie } = require("cookie-parser");
 const { Console } = require("console");
 const bcrypt = require("bcryptjs");
-
+const userController=require("./userController");
 async function queryExecuter(query) {
   return new Promise((resolve, rejects) => {
     con.query(query, (err, result) => {
@@ -92,47 +92,51 @@ const validate_code = async (req, res) => {
 const examGet = async (req, res) => {
   try {
     // Get the requested page number, default to 1 if not provided
-    const question_per_page = 1; //* Limit || Number of questions to display per page
+    const question_per_page = 1; //* Limit |Number of questions to display per page
     let exam_id = req.session.exam_id;
-    let [exam] = await con.execute(
-      `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}' and exam_status = 1`
-    );
+    if (exam_id) {
+      let [exam] = await con.execute(
+        `SELECT exam_name,total_questions,exam_time,exam_access_code FROM exam WHERE exam_id = '${exam_id}' and exam_status = 1`
+      );
+      let [category] = await con.execute(
+        `select a.category_name,a.category_id from category a,exam_category b where a.category_id=b.category_id and exam_id=${exam_id}`
+      );
 
-    let [category] = await con.execute(
-      `select a.category_name,a.category_id from category a,exam_category b where a.category_id=b.category_id and exam_id=${exam_id}`
-    );
-
-    let [ques] =
-      await con.execute(`select question_id,question_text from exam a, exam_category b, questions c 
+      let [ques] =
+        await con.execute(`select question_id,question_text from exam a, exam_category b, questions c 
     where a.exam_id=b.exam_id and b.category_id=c.category_id and b.exam_id=${exam_id}`);
-    let qids = new Array();
+      let qids = new Array();
 
-    for (const x of ques) {
-      qids.push(x.question_id);
+      for (const x of ques) {
+        qids.push(x.question_id);
+      }
+      const question_no = qids[0];
+      let category_id = category[0].category_id;
+
+      let [data] = await con.execute(
+        `SELECT question_text,question_id,option_a,option_b,option_c,option_d,answer as answ,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.question_id=${qids[0]}`
+      );
+
+      let [total_questions_of_category] = await con.execute(
+        `select count(*) as total from questions where category_id = ${category_id} `
+      );
+      if (data.length) {
+        res.render("exam_question", {
+          e: data[0],
+          exam: exam,
+          qids: qids,
+          category: category,
+          question_no,
+          question_per_page,
+          total_questions_of_category,
+        });
+      } else res.redirect("/home");
+    } else {
+      res.redirect("/home");
     }
-    const question_no = qids[0];
-    let category_id = category[0].category_id;
-
-    let [data] = await con.execute(
-      `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.question_id=${qids[0]}`
-    );
-
-    let [total_questions_of_category] = await con.execute(
-      `select count(*) as total from questions where category_id = ${category_id} `
-    );
-    if (data.length) {
-      res.render("exam_question", {
-        e: data[0],
-        exam: exam,
-        qids: qids,
-        category: category,
-        question_no,
-        question_per_page,
-        total_questions_of_category,
-      });
-    } else res.send("Data not found");
   } catch (err) {
     console.log(err);
+    res.redirect("/home");
   }
 };
 
@@ -159,7 +163,7 @@ const categoryGet = async (req, res) => {
 };
 
 const pagingGet = async (req, res) => {
-  const category_id = req.query.category_id || 1,
+  const category_id = req.query.category_id,
     question_no = req.query.question_no + 1;
   // console.log(category_id,question_no);
   const question_per_page = 1; //* Limit || Number of questions to display per page
@@ -175,7 +179,7 @@ const pagingGet = async (req, res) => {
   );
 
   let [data] = await con.execute(
-    `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} AND a.question_id=${req.query.question_no}`
+    `SELECT question_text,question_id,option_a,option_b,option_c,option_d,a.category_id,answer as answ FROM questions as a left join category as b on a.category_id=b.category_id where a.category_id=${category_id} AND a.question_id=${req.query.question_no}`
   );
   // console.log('Data :- ',data);
   res.json(data, category[0].no_of_question, question_no);
@@ -185,10 +189,13 @@ const nextGet = async (req, res) => {
   let id = parseInt(req.query.id);
   // console.log(id);
   let [question] = await con.execute(
-    `SELECT * FROM questions WHERE question_id = ${id}`
+    `SELECT question_text,question_id,option_a,option_b,option_c,option_d,category_id FROM questions WHERE question_id = ${id}`
   );
-  // console.log(question);
-  res.json(question);
+  let [correct_answer] = await con.execute(
+    `SELECT answer as answ FROM questions WHERE question_id = ${req.query.pid}`
+  );
+  // console.log(correct_answer);
+  res.json({ question, correct_answer });
 };
 
 const prevGet = async (req, res) => {
@@ -203,26 +210,17 @@ const prevGet = async (req, res) => {
 
 const answerPost = async (req, res) => {
   let b = req.body;
-  // console.log(`SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId || 15} and exam_id=${req.session.exam_id}`);
   if (b.id) {
     let [check] = await con.execute(
-      `SELECT user_answers FROM user_answers WHERE question_id=${
-        b.id
-      } and user_id=${req.session.userId || 15} and exam_id=${
-        req.session.exam_id || 2
-      }`
+      `SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
     );
     if (check.length == 0) {
-      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${
-        req.session.userId || 15
-      },${req.session.exam_id || 2},${b.id},'${b.selectedAns}',1)`;
+      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,correct_answer,marks,created_date) VALUES (${req.session.userId},${req.session.exam_id},${b.id},'${b.selectedAns}','${b.correctAns}',1,NOW())`;
       // console.log(query);
       let [data] = await con.execute(query);
       res.json(data);
     } else {
-      let query = `UPDATE user_answers SET user_answers='${
-        b.selectedAns
-      }' WHERE question_id=${b.id} and user_id=${req.session.userId || 15}`;
+      let query = `UPDATE user_answers SET user_answers='${b.selectedAns}' WHERE question_id=${b.id} and user_id=${req.session.userId}`;
       let [data] = await con.execute(query);
       res.json(data);
     }
