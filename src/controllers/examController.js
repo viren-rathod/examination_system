@@ -1,22 +1,11 @@
 const con = require("../connections/dbconnect");
 var utils = require("util");
 const { decode } = require("punycode");
-const flash = require("connect-flash");
+
 var nodemailer = require("nodemailer");
 const { signedCookie } = require("cookie-parser");
-const { Console } = require("console");
+// const { Console } = require("console");
 const bcrypt = require("bcryptjs");
-
-async function queryExecuter(query) {
-    return new Promise((resolve, rejects) => {
-        con.query(query, (err, result) => {
-            if (err) {
-                rejects(err);
-            }
-            resolve(result);
-        });
-    });
-}
 
 //Routes
 const form1 = async(req, res) => {
