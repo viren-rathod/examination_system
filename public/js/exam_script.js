@@ -32,7 +32,7 @@ async function fetcher(str) {
   let temp = await fetch(str);
   let ans = await temp.json();
   correctAns = ans[0].answ;
-  console.log('CA',correctAns);
+  // console.log('CA',correctAns);
   let user_ans = await fetch("/getAns", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -136,7 +136,7 @@ async function next_btn(id) {
 
     let temp1 = await fetch(`/nextGet?id=${prevQuestionId}&pid=${id}`);
     let tmp = await temp1.json();
-    console.log(tmp.correct_answer[0].answ);
+    // console.log(tmp.correct_answer[0].answ);
     if (tmp.question) {
       await fetcher(
         `/pagingGet/?question_no=${tmp.question[0].question_id}&category_id=${tmp.question[0].category_id}`
@@ -215,7 +215,7 @@ async function next_btn(id) {
 async function previous_btn(id) {
   index = index - 1;
   prevQuestionId = qs[index];
-  console.log("prev", prevQuestionId, index);
+  // console.log("prev", prevQuestionId, index);
 
   if (document.querySelector(`#i${prevQuestionId}`))
     document.querySelector(`#i${prevQuestionId}`).style.backgroundColor =
