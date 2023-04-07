@@ -5,7 +5,6 @@ let questionIds = Array.from({ length: parseInt(total_questions) + 1 },
     (_, i) => i
 );
 let ind = index;
-let qs = qids.split(",");
 let prevQuestionId = qs[0];
 async function getAnswers(temp) {
     allOptions.forEach((e) => {
@@ -210,7 +209,7 @@ async function next_btn(id) {
 async function previous_btn(id) {
     index = index - 1;
     prevQuestionId = qs[index];
-    console.log("prev", prevQuestionId, index);
+    // console.log("prev", prevQuestionId, index);
 
     if (document.querySelector(`#i${prevQuestionId}`))
         document.querySelector(`#i${prevQuestionId}`).style.backgroundColor =

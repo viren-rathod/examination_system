@@ -7,12 +7,10 @@ var utils = require("util");
 const { decode } = require("punycode");
 let bodyParser = require("body-parser");
 const mysql = require("mysql2");
-const flash = require("connect-flash");
 var nodemailer = require("nodemailer");
 const app = express();
 const ejs = require("ejs");
 const { signedCookie } = require("cookie-parser");
-const { Console } = require("console");
 const path = require("path");
 require("dotenv").config({ path: "./.env" });
 const PORT = process.env.PORT;
@@ -28,11 +26,9 @@ const user = require("./src/routes/userRoute");
 
 //kevin
 app.use(cookie());
-app.use(flash());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
 
 // const oneDay = 1000  60  60 * 24;
 app.use(
