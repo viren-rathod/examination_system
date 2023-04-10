@@ -1,12 +1,13 @@
 let allOptions = document.getElementsByName("option");
 let selectedAns = "";
 let userAnswers = [...new Array(parseInt(total_questions))];
-let questionIds = Array.from(
-  { length: parseInt(total_questions) + 1 },
-  (_, i) => i
-);
+// let questionIds = Array.from(
+//   { length: parseInt(total_questions) + 1 },
+//   (_, i) => i
+// );
 let ind = index;
 let qs = qids.split(",");
+let all_correct_answers = allCorrectAnswer.split(",");
 let prevQuestionId = qs[0];
 async function getAnswers(temp) {
   allOptions.forEach((e) => {
@@ -32,7 +33,6 @@ async function fetcher(str) {
   let temp = await fetch(str);
   let ans = await temp.json();
   correctAns = ans[0].answ;
-  // console.log('CA',correctAns);
   let user_ans = await fetch("/getAns", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -112,10 +112,13 @@ async function fetcher(str) {
   
       <input
         type="button"
-        value=${index == total_questions - 1 ? "SAVE" : "NEXT"}
+        value=${
+          index == total_questions - 1 || total_questions ? "SAVE" : "NEXT"
+        }
         onclick="next_btn('${ans[0].question_id}')"
         class="btn btn-primary btn-success col-2 font-weight-bold"
         id="next"
+        ${index == total_questions + 1 ? " disabled" : ""}
         />
     </div>`;
   if (index < total_questions) btns.innerHTML = btn;
@@ -126,17 +129,12 @@ async function next_btn(id) {
     if (index == total_questions) prevQuestionId = qs[index];
     if (index < total_questions - 1) index = index + 1;
     if (index != total_questions) prevQuestionId = qs[index];
-
-    console.log(prevQuestionId);
     allOptions.forEach((e) => {
       if (e.checked) selectedAns = e.value;
     });
 
-    questionIds[id] = parseInt(id);
-
     let temp1 = await fetch(`/nextGet?id=${prevQuestionId}&pid=${id}`);
     let tmp = await temp1.json();
-    // console.log(tmp.correct_answer[0].answ);
     if (tmp.question) {
       await fetcher(
         `/pagingGet/?question_no=${tmp.question[0].question_id}&category_id=${tmp.question[0].category_id}`
@@ -169,7 +167,11 @@ async function next_btn(id) {
     let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ selectedAns, id,correctAns:tmp.correct_answer[0].answ }),
+      body: JSON.stringify({
+        selectedAns,
+        id,
+        correctAns: tmp.correct_answer[0].answ,
+      }),
     });
     let a2 = await a1.json();
 
@@ -271,149 +273,157 @@ async function previous_btn(id) {
   btns.innerHTML = s;
 }
 
-async function category_changer(e) {
-  // console.log(e);
-  let temp = await fetch(`/categoryGet?id=${e.id}`);
-  let ans = await temp.json();
+// async function category_changer(e) {
+//   // console.log(e);
+//   let temp = await fetch(`/categoryGet?id=${e.id}`);
+//   let ans = await temp.json();
 
-  let user_ans = await fetch("/getAns", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(ans.data),
-  });
-  let user_ans_json = await user_ans.json();
+//   let user_ans = await fetch("/getAns", {
+//     method: "POST",
+//     headers: { "content-type": "application/json" },
+//     body: JSON.stringify(ans.data),
+//   });
+//   let user_ans_json = await user_ans.json();
 
-  start = parseInt(ans.data[0].question_id);
-  end = start + parseInt(ans.category[0].no_of_question) - 1;
+//   start = parseInt(ans.data[0].question_id);
+//   end = start + parseInt(ans.category[0].no_of_question) - 1;
 
-  let c_name = e.textContent;
-  document.querySelector(
-    ".category-title"
-  ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
-  document.querySelector(`#i${prevQuestionId}`).style.backgroundColor = "white";
-  document.querySelector(`#i${ans.data[0].question_id}`).style.backgroundColor =
-    "lightblue";
-  prevQuestionId = parseInt(ans.data[0].question_id);
+//   let c_name = e.textContent;
+//   document.querySelector(
+//     ".category-title"
+//   ).innerHTML = `<h4 class="category-title">${c_name}</h4>`;
+//   document.querySelector(`#i${prevQuestionId}`).style.backgroundColor = "white";
+//   document.querySelector(`#i${ans.data[0].question_id}`).style.backgroundColor =
+//     "lightblue";
+//   prevQuestionId = parseInt(ans.data[0].question_id);
 
-  let s = ` <div class="d-flex flex-row align-items-center question-title">
-                  <h3 class="text-danger">Q.</h3>
-                  <h5 class="mt-1 ml-2">${ans.data[0].question_text}</h5>
-                </div>
-                <div class="ans ml-2">
-                  <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_a
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_a
-      ? "checked"
-      : ""
-  }>
-                    <span>${ans.data[0].option_a}</span>
-                  </label>
-                </div>
-                <div class="ans ml-2">
-                  <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_b
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_b
-      ? "checked"
-      : ""
-  }>
-                    <span>${ans.data[0].option_b}</span>
-                  </label>
-                </div>
-                <div class="ans ml-2">
-                  <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_c
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_c
-      ? "checked"
-      : ""
-  }>
-                    <span>${ans.data[0].option_c}</span>
-                  </label>
-                </div>
-                <div class="ans ml-2">
-                  <label class="radio">
-                    <input type="radio" name="option" value="${
-                      ans.data[0].option_d
-                    }" ${
-    user_ans_json.length &&
-    user_ans_json[0].user_answers == ans.data[0].option_d
-      ? "checked"
-      : ""
-  }>
-                    <span>${ans.data[0].option_d}</span>
-                  </label>
-                </div>`;
-  if (index <= total_questions) que.innerHTML = s;
-  let qn = `<span class= "que-no">${ans.data[0].question_id}</span>`;
-  que_no.innerHTML = qn;
-  let btn = `<div
-      class="row justify-content-around align-items-center"
-      id="row"
-    >
-      <input
-        type="button"
-        value="PREV"
-        onclick="previous_btn('${ans.data[0].question_id}')"
-        class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
-        id="prev"
-        ${index == 0 ? " disabled" : ""}
-      />
-  
-      <input
-        type="button"
-        value=${index - 1 == total_questions ? "SAVE" : "NEXT"}
-        onclick="next_btn('${ans.data[0].question_id}')"
-        class="btn btn-primary btn-success col-2 font-weight-bold"
-        id="next"
-        ${index == total_questions ? " disabled" : ""}
-      />
-      
-    </div>`;
+//   let s = ` <div class="d-flex flex-row align-items-center question-title">
+//                   <h3 class="text-danger">Q.</h3>
+//                   <h5 class="mt-1 ml-2">${ans.data[0].question_text}</h5>
+//                 </div>
+//                 <div class="ans ml-2">
+//                   <label class="radio">
+//                     <input type="radio" name="option" value="${
+//                       ans.data[0].option_a
+//                     }" ${
+//     user_ans_json.length &&
+//     user_ans_json[0].user_answers == ans.data[0].option_a
+//       ? "checked"
+//       : ""
+//   }>
+//                     <span>${ans.data[0].option_a}</span>
+//                   </label>
+//                 </div>
+//                 <div class="ans ml-2">
+//                   <label class="radio">
+//                     <input type="radio" name="option" value="${
+//                       ans.data[0].option_b
+//                     }" ${
+//     user_ans_json.length &&
+//     user_ans_json[0].user_answers == ans.data[0].option_b
+//       ? "checked"
+//       : ""
+//   }>
+//                     <span>${ans.data[0].option_b}</span>
+//                   </label>
+//                 </div>
+//                 <div class="ans ml-2">
+//                   <label class="radio">
+//                     <input type="radio" name="option" value="${
+//                       ans.data[0].option_c
+//                     }" ${
+//     user_ans_json.length &&
+//     user_ans_json[0].user_answers == ans.data[0].option_c
+//       ? "checked"
+//       : ""
+//   }>
+//                     <span>${ans.data[0].option_c}</span>
+//                   </label>
+//                 </div>
+//                 <div class="ans ml-2">
+//                   <label class="radio">
+//                     <input type="radio" name="option" value="${
+//                       ans.data[0].option_d
+//                     }" ${
+//     user_ans_json.length &&
+//     user_ans_json[0].user_answers == ans.data[0].option_d
+//       ? "checked"
+//       : ""
+//   }>
+//                     <span>${ans.data[0].option_d}</span>
+//                   </label>
+//                 </div>`;
+//   if (index <= total_questions) que.innerHTML = s;
+//   let qn = `<span class= "que-no">${ans.data[0].question_id}</span>`;
+//   que_no.innerHTML = qn;
+//   let btn = `<div
+//       class="row justify-content-around align-items-center"
+//       id="row"
+//     >
+//       <input
+//         type="button"
+//         value="PREV"
+//         onclick="previous_btn('${ans.data[0].question_id}')"
+//         class="border border-info rounded p-1 bg-white text-info font-weight-bold col-2"
+//         id="prev"
+//         ${index == 0 ? " disabled" : ""}
+//       />
 
-  btns.innerHTML = btn;
+//       <input
+//         type="button"
+//         value=${index - 1 == total_questions ? "SAVE" : "NEXT"}
+//         onclick="next_btn('${ans.data[0].question_id}')"
+//         class="btn btn-primary btn-success col-2 font-weight-bold"
+//         id="next"
+//         ${index == total_questions ? " disabled" : ""}
+//       />
 
-  document.querySelectorAll(".pagination").forEach((a) => {
-    a.style.backgroundColor = "white";
-    a.style.color = "black";
-  });
-  e.style.backgroundColor = "#ffc94e";
-  e.style.color = "black";
-}
+//     </div>`;
+
+//   btns.innerHTML = btn;
+
+//   document.querySelectorAll(".pagination").forEach((a) => {
+//     a.style.backgroundColor = "white";
+//     a.style.color = "black";
+//   });
+//   e.style.backgroundColor = "#ffc94e";
+//   e.style.color = "black";
+// }
 
 submit.addEventListener("click", () => {
-  endExam();
+  endExam("simple");
 });
 async function endExam(field) {
   if (field == "simple") {
     if (confirm("Are you sure you want to submit the Exam ?")) {
+      console.log(userAnswers,qs);
       for (let i = 1; i <= total_questions; i++) {
         if (qs[i - 1] && userAnswers[i - 1] == undefined) {
           let a = await fetch(
-            `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
+            `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(
+              qs[i - 1]
+            )}&correct_answer=${all_correct_answers[i - 1]}`
           );
           let b = await a.json();
         }
       }
+      
+      // window.location.href = "/endExam";
     }
-  } else {
+  } else if (field == "end") {
     for (let i = 1; i <= total_questions; i++) {
       if (qs[i - 1] && userAnswers[i - 1] == undefined) {
         let a = await fetch(
-          `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(qs[i - 1])}`
+          `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(
+            qs[i - 1]
+          )}&correct_answer=${all_correct_answers[i - 1]}`
         );
         let b = await a.json();
       }
     }
+    
+    // window.location.href = "/endExam";
   }
-  window.location.href = "/endExam";
 }
 
 /*? Timer*/

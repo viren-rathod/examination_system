@@ -103,13 +103,16 @@ const examGet = async (req, res) => {
       );
 
       let [ques] =
-        await con.execute(`select question_id,question_text from exam a, exam_category b, questions c 
+        await con.execute(`select question_id,question_text , answer from exam a, exam_category b, questions c 
     where a.exam_id=b.exam_id and b.category_id=c.category_id and b.exam_id=${exam_id}`);
       let qids = new Array();
+      let allCorrectAnswer = new Array();
 
       for (const x of ques) {
         qids.push(x.question_id);
+        allCorrectAnswer.push(x.answer);
       }
+      // console.log(allCorrectAnswer);
       const question_no = qids[0];
       let category_id = category[0].category_id;
 
@@ -125,6 +128,7 @@ const examGet = async (req, res) => {
           e: data[0],
           exam: exam,
           qids: qids,
+          allCorrectAnswer:allCorrectAnswer,
           category: category,
           question_no,
           question_per_page,
@@ -210,6 +214,7 @@ const prevGet = async (req, res) => {
 
 const answerPost = async (req, res) => {
   let b = req.body;
+  console.log("B :-",b);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${b.id} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
@@ -252,7 +257,7 @@ const endExam = async (req, res) => {
 
 const allAnswerGet = async (req, res) => {
   let b = req.query;
-  // console.log("B", b, req.session.exam_id, req.session.userId);
+  console.log("BDS", b);
   if (b.id) {
     let [check] = await con.execute(
       `SELECT user_answers FROM user_answers WHERE question_id=${parseInt(
@@ -260,9 +265,9 @@ const allAnswerGet = async (req, res) => {
       )} and user_id=${req.session.userId} and exam_id=${req.session.exam_id}`
     );
     if (check.length == 0) {
-      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,marks) VALUES (${
+      let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,correct_answer,created_date,marks) VALUES (${
         req.session.userId
-      },${req.session.exam_id},${parseInt(b.id)},'',1)`;
+      },${req.session.exam_id},${parseInt(b.id)},'','${b.correct_answer}',NOW(),1)`;
       let [data] = await con.execute(query);
       res.json(data);
     } else {
