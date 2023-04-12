@@ -1,10 +1,7 @@
 let allOptions = document.getElementsByName("option");
 let selectedAns = "";
-let userAnswers = [...new Array(parseInt(total_questions))];
-// let questionIds = Array.from(
-//   { length: parseInt(total_questions) + 1 },
-//   (_, i) => i
-// );
+
+let ua = {};
 let ind = index;
 let qs = qids.split(",");
 let all_correct_answers = allCorrectAnswer.split(",");
@@ -39,6 +36,7 @@ async function fetcher(str) {
     body: JSON.stringify(ans),
   });
   let user_ans_json = await user_ans.json();
+  // console.log("index", index);
   let s = ` <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Q.</h3>
                   <h5 class="mt-1 ml-2">${ans[0].question_text}</h5>
@@ -135,6 +133,7 @@ async function next_btn(id) {
 
     let temp1 = await fetch(`/nextGet?id=${prevQuestionId}&pid=${id}`);
     let tmp = await temp1.json();
+    // if(tmp.question[0].question_id==qs[total_questions-1])
     if (tmp.question) {
       await fetcher(
         `/pagingGet/?question_no=${tmp.question[0].question_id}&category_id=${tmp.question[0].category_id}`
@@ -147,23 +146,21 @@ async function next_btn(id) {
         ".category-title"
       ).innerHTML = `<h4 class="category-title">${cat_name_json[0].category_name}</h4>`;
 
-      document.querySelectorAll(".pagination").forEach((a) => {
-        a.style.backgroundColor = "white";
-        a.style.color = "black";
-      });
+      // document.querySelectorAll(".pagination").forEach((a) => {
+      //   a.style.backgroundColor = "white";
+      //   a.style.color = "black";
+      // });
       // document.getElementById(`${cat_name_json[0].category_id}`).style.color =
       //   "black";
       // document.getElementById(
       //   `${cat_name_json[0].category_id}`
       // ).style.backgroundColor = "#ffc94e";
-      // console.log(userAnswers);
     }
     if (index == total_questions - 1) {
       ind = ind + 1;
     } else ind = index - 1;
-    userAnswers[ind] = selectedAns;
+    ua[`${id}`] = selectedAns;
 
-    userAnswers.push(selectedAns);
     let a1 = await fetch(`/answerPost?ans=${selectedAns}&id=${id}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -176,12 +173,13 @@ async function next_btn(id) {
     let a2 = await a1.json();
 
     selectedAns = "";
+    // console.log(id,prevQuestionId,index);
 
     if (document.querySelector(`#i${prevQuestionId}`))
       document.querySelector(`#i${prevQuestionId}`).style.backgroundColor =
         "lightblue";
 
-    if (document.querySelector(`#i${id}`))
+    if (document.querySelector(`#i${id}`)&&id!=prevQuestionId)
       document.querySelector(`#i${id}`).style.backgroundColor = "white";
 
     if (tmp[0]) {
@@ -396,32 +394,33 @@ submit.addEventListener("click", () => {
 async function endExam(field) {
   if (field == "simple") {
     if (confirm("Are you sure you want to submit the Exam ?")) {
-      console.log(userAnswers,qs);
-      for (let i = 1; i <= total_questions; i++) {
-        if (qs[i - 1] && userAnswers[i - 1] == undefined) {
+      // console.log('UA',Object.keys(ua));
+      for (let j = 0; j < total_questions; j++) {
+        if (ua[qs[j]] == undefined) {
+          // console.log(qs[j], ua[qs[j]],all_correct_answers[j]);
           let a = await fetch(
-            `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(
-              qs[i - 1]
-            )}&correct_answer=${all_correct_answers[i - 1]}`
+            `/allAnswerGet?ans=${ua[qs[j]]}&id=${parseInt(
+              qs[j]
+            )}&correct_answer=${all_correct_answers[j]}`
           );
           let b = await a.json();
         }
       }
-      
-      // window.location.href = "/endExam";
     }
+
+    // window.location.href = "/endExam";
   } else if (field == "end") {
-    for (let i = 1; i <= total_questions; i++) {
-      if (qs[i - 1] && userAnswers[i - 1] == undefined) {
+    for (let j = 0; j < total_questions; j++) {
+      if (ua[qs[j]] == undefined) {
         let a = await fetch(
-          `/allAnswerGet?ans=${userAnswers[i - 1]}&id=${parseInt(
-            qs[i - 1]
-          )}&correct_answer=${all_correct_answers[i - 1]}`
+          `/allAnswerGet?ans=${ua[qs[j]]}&id=${parseInt(
+            qs[j]
+          )}&correct_answer=${all_correct_answers[j]}`
         );
         let b = await a.json();
       }
     }
-    
+
     // window.location.href = "/endExam";
   }
 }

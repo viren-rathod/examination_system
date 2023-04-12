@@ -268,12 +268,12 @@ const allAnswerGet = async (req, res) => {
       let query = `INSERT INTO user_answers (user_id,exam_id, question_id,user_answers,correct_answer,created_date,marks) VALUES (${
         req.session.userId
       },${req.session.exam_id},${parseInt(b.id)},'','${b.correct_answer}',NOW(),1)`;
-      let [data] = await con.execute(query);
-      res.json(data);
+      // let [data] = await con.execute(query);
+      // res.json(data);
     } else {
       let query = `update user_answers set user_answers = '' WHERE question_id=${b.id} and user_id=${req.session.userId}`;
-      let [data] = await con.execute(query);
-      res.json(data);
+      // let [data] = await con.execute(query);
+      // res.json(data);
     }
   }
 };
