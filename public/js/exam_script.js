@@ -11,7 +11,7 @@ async function getAnswers(temp) {
     if (e.checked) selectedAns = e.value;
   });
 }
-async function getQue(id, i) {
+async function getQue(id, i) {  
   index = parseInt(i) - 1;
   let que = await fetch(`/getCategoryName?id=${id}`);
   let cat_name = await que.json();
@@ -408,7 +408,7 @@ async function endExam(field) {
       }
     }
 
-    // window.location.href = "/endExam";
+    window.location.href = "/endExam";
   } else if (field == "end") {
     for (let j = 0; j < total_questions; j++) {
       if (ua[qs[j]] == undefined) {
@@ -421,7 +421,7 @@ async function endExam(field) {
       }
     }
 
-    // window.location.href = "/endExam";
+    window.location.href = "/endExam";
   }
 }
 
